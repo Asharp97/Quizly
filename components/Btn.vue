@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtLink :to="`${destination ? '/' + destination : ''}`">
-      <button type="button" :class="{ 'inv': inv }">
+      <button type="button" :class="[{ 'inv': inv }, { 'provider': provider }]">
         <Icon :name="icon" v-if="icon" />
         {{ text }}
         <slot />
@@ -11,48 +11,43 @@
 </template>
 
 <script setup>
-defineProps(['text', 'destination', "icon", 'inv']);
+defineProps(['text', 'destination', "icon", 'inv', 'provider']);
 </script>
 
 <style lang="scss" scoped>
 button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background-color: $dimgrey;
-  border: 1px solid $grey;
+  background-color: $blue;
+  border: 1px solid $blue;
   color: $white;
-  padding: 0.5rem 1rem;
-  border-radius: .5rem;
   font-size: clamp(0.9375rem, 0.841rem + 0.5149vw, 1.25rem);
-  white-space: nowrap;
-  margin-inline: auto;
-  cursor: pointer;
-  width: 100%;
-
 }
 
 .inv {
   background-color: $white;
-  color: $dimgrey ;
-  border: 1px solid $dimgrey;
+  color: $blue ;
+  border: 1px solid $blue;
+}
+
+.provider {
+  background-color: $white;
+  color: rgb(94, 94, 94);
+  border: 1px solid $grey;
+  font-weight: 500;
+  font: 500 16px / 150% -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 
   &:active,
   &:hover {
-    border: 1px solid $dimgrey;
-    background-color: $offwhite;
-    color: $grey;
+    background-color: $grey;
   }
 }
 
+
 button {
+  margin-bottom: 0;
 
   &:active,
   &:hover {
-    border: 1px solid $dimgrey;
-    background-color: $grey;
-    color: $white;
+    opacity: .8;
   }
 }
 </style>

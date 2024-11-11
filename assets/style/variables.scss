@@ -1,9 +1,20 @@
 $font-stack: "Montserrat";
-$brown: #615545;
-$golden: #9b773d;
-$black: #121112;
-$grey: #646263;
-$dimgrey: #444243;
-$white: #f2f0ef;
-$offwhite: #e2ded8;
+
+$yellow: #ffbb00;
+$orange: #fb6542;
+$blue: #375e97;
+
+$white: #ffffff;
+$black: #1f1f1f;
+
+$grey: #EEEEED;
+$dimgrey: #A499A4;
+$offwhite: #f6f7fb;
+
 $shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+$navHeight: 8rem;
+
+$drift: cubic-bezier(1, 0, 0.6, 1.1);
+
+$brake: cubic-bezier(0, 1, 0.6, 1);
+$reversebrake: cubic-bezier(0.6, 1, 0, 1);

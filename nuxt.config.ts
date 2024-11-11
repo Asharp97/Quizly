@@ -1,13 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
-  devtools: { enabled: false },
-  modules: ["@nuxtjs/supabase", "@nuxt/icon"],
+  devtools: { enabled: true },
+  modules: [
+    "@nuxtjs/supabase",
+    "@nuxt/icon",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
+  ],
   supabase: {
     redirect: false,
   },
   css: [
     "./assets/style/main.scss",
+    "./assets/style/animations.scss",
     "./assets/style/design-system.scss",
   ],
   vite: {
