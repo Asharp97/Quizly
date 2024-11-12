@@ -19,6 +19,15 @@ nav {
       align-items: center;
       gap: 1rem;
     }
+    .user {
+      .icon {
+        font-size: 2rem;
+        color: $blue;
+        &:hover {
+          color: $orange;
+        }
+      }
+    }
   }
 }
 .hero {
@@ -64,7 +73,6 @@ nav {
 .FullScreenModal {
   height: 100dvh;
   position: absolute;
-  // inset: 0;
   top: 0;
   bottom: 0;
   z-index: 10;

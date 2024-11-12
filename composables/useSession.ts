@@ -1,13 +1,19 @@
-// export const useSession = () => useState("sesssion", () => null);
-
 import { defineStore } from "pinia";
 
-export const useSession = defineStore("session", {
-  state: () => {
-    return {
-      user: null,
-      token: "",
-    };
+export const useSession = defineStore(
+  "session",
+  () => {
+    const user = ref("");
+    const token = ref("");
+
+    function clearSession() {
+      user.value = "";
+      token.value = "";
+    }
+
+    return { user, token, clearSession };
   },
-  persist: true,
-});
+  {
+    persist: true,
+  }
+);

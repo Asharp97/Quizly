@@ -86,7 +86,10 @@ a {
   text-decoration: none;
   color: inherit;
 }
-
+.row{
+  display: flex;
+  align-items: center;
+}
 .dropdown {
   cursor: pointer;
   position: relative;
@@ -99,7 +102,7 @@ a {
     background-color: $offwhite;
     color: black;
     right: 0;
-    top: 2rem;
+    top: 3rem;
     width: fit-content;
     min-width: 125px;
     border-radius: 10px;

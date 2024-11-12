@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
+    "@nuxt/eslint",
   ],
   supabase: {
     redirect: false,
@@ -20,6 +21,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
+          api: "modern",
           additionalData: '@use "./assets/style/variables.scss" as *;',
         },
       },

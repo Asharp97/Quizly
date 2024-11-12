@@ -1,10 +1,13 @@
-const show = ref(false);
-const component = ref();
+import { defineStore } from "pinia";
 
-export function useModal() {
-  return {
-    show,
-    component,
-    toggleModal: () => (show.value = !show.value),
-  };
-}
+export const useModal = defineStore("modal", () => {
+  const show = ref(false);
+  const confirm = ref(false);
+
+  function close() {
+    show.value = false;
+    confirm.value = false;
+  }
+
+  return { show, confirm, close };
+});

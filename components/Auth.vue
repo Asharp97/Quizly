@@ -1,12 +1,12 @@
 <template>
   <div class="auth ">
     <Transition name="slide-right">
-      <div class="auth-media FullScreenModal" v-if="show">
-
+      <div v-if="show" class="auth-media FullScreenModal">
+        <img src="" alt="">
       </div>
     </Transition>
     <Transition name="slide-left">
-      <div class="auth-forms FullScreenModal" v-if="show">
+      <div v-if="show" class="auth-forms FullScreenModal">
         <Icon name="material-symbols:close-rounded" @click="$emit('close')" class="close" />
 
         <div class="form">
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['show'])
+defineProps(['show'])
 </script>
 
 <style lang="scss" scoped>

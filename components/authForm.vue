@@ -3,10 +3,10 @@
     <form>
       <Btn icon="logos:google-icon" provider="true" @click="googleAuth"> Continue with Google </Btn>
 
-      <div class="hr"></div>
+      <div class="hr" />
 
       <div class="input-wrapper" :class="{ 'error': error[0].hasError }">
-        <input type="Email" placeholder="Email address" v-model="email" @blur="emailCheck" />
+        <input v-model="email" type="Email" placeholder="Email address" @blur="emailCheck">
 
         <Transition name="fade">
           <div class="errormessage" v-if="error[0].hasError">{{ error[0].message }}</div>
@@ -14,14 +14,17 @@
       </div>
 
       <div class="input-wrapper" :class="{ 'error': error[1].hasError }">
-        <input :type="showPassword ? 'text' : 'password'" placeholder="Password" v-model="password" @blur="passCheck" />
+        <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" @blur="passCheck">
         <Transition name="fade">
-          <div class="errormessage" v-if="error[1].hasError">{{ error[1].message }}</div>
+          <div v-if="error[1].hasError" class="errormessage">{{ error[1].message }}</div>
         </Transition>
 
-        <Icon :name="showPassword ? 'gridicons:visible' : 'gridicons:not-visible'" @click="showPassword = !showPassword"
-          class="icon" />
+        <Icon :name="showPassword ? 'gridicons:visible' : 'gridicons:not-visible'" class=" icon"
+          @click="showPassword = !showPassword" />
       </div>
+
+      <button @click="session.user = 'ali'">sign me up quick for test</button>
+      {{ session }}
 
       <btn text="Contiue with email" @click="login" />
     </form>
@@ -72,10 +75,8 @@ const login = async () => {
     password: password.value,
   })
   if (data) {
-    // setSession(data)
-    session.value = data
-    // console.log('look mom', data)
-    
+    session.user = data.user
+    session.token = data.session.access_token
   }
   else console.log(error)
 }
