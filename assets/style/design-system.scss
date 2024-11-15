@@ -86,7 +86,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
-.row{
+.row {
   display: flex;
   align-items: center;
 }
@@ -105,7 +105,6 @@ a {
     top: 3rem;
     width: fit-content;
     min-width: 125px;
-    border-radius: 10px;
     transform-origin: top right;
 
     // transform: translateY(-20px);
@@ -128,7 +127,7 @@ a {
           border-radius: 0 0 10px 10px;
         }
         &:first-child {
-          border-radius: 10px 10px 0 0;
+          border-radius: 10px 0px 0 0;
         }
         &:hover {
           background-color: rgba(128, 128, 128, 0.377);

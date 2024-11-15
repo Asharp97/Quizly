@@ -29,6 +29,7 @@ nav {
       }
     }
   }
+  
 }
 .hero {
   display: flex;
@@ -102,6 +103,20 @@ nav {
       width: 25rem;
       margin-inline: auto;
       height: 40dvh;
+      .form-buttons {
+        position: relative;
+        height: 2.5rem;
+        a {
+          width: 100%;
+          position: absolute;
+        }
+      }
+      .member {
+        text-decoration: underline;
+        text-align: center;
+        margin-top: 2rem;
+        cursor: pointer;
+      }
     }
   }
 }

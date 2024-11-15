@@ -1,13 +1,16 @@
 import { defineStore } from "pinia";
 
 export const useModal = defineStore("modal", () => {
-  const show = ref(false);
+  const auth = ref(false);
   const confirm = ref(false);
 
   function close() {
-    show.value = false;
+    auth.value = false;
     confirm.value = false;
   }
+  function showAuth() {
+    auth.value = true;
+  }
 
-  return { show, confirm, close };
+  return { auth, confirm, close, showAuth };
 });

@@ -1,24 +1,30 @@
 <template>
   <div>
-      <div class="bg FullScreenModal" @click.self="$emit('close')">
+    <Transition name="scale-up">
+      <div v-if="modal.confirm" class="bg FullScreenModal" @click.self="modal.close">
         <div class="card">
           <Icon :name="icon" class="icon" />
-          <div class="row">
-            <h3>
-              {{ msg }}
-            </h3>
-          </div>
+          <h3> {{ msg }} </h3>
           <div class="button-group">
             <button @click="$emit('confirm')">{{ actionText }}</button>
-            <button @click="$emit('close')">{{ cancelText }}</button>
+            <button @click="modal.close">{{ cancelText }}</button>
           </div>
         </div>
       </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-defineProps(['msg', 'actionText', 'cancelText', 'icon'])
+import { onKeyStroke } from '@vueuse/core'
+defineProps(['msg', 'action-Text', 'cancel-text', 'icon'])
+const modal = useModal();
+
+onKeyStroke('Escape', (e) => {
+  e.preventDefault()
+  modal.close()
+})
+
 </script>
 
 <style lang="scss" scoped>
@@ -45,12 +51,17 @@ defineProps(['msg', 'actionText', 'cancelText', 'icon'])
     .icon {
       font-size: 5rem;
       color: $orange;
+      margin-bottom: 1rem;
     }
 
     .button-group {
       display: flex;
       justify-content: space-evenly;
       gap: 1rem;
+
+      button {
+        margin-bottom: 0;
+      }
     }
   }
 }
@@ -58,20 +69,20 @@ defineProps(['msg', 'actionText', 'cancelText', 'icon'])
 .scale-up-enter-active {
   .bg {
     animation: blur .5s $brake;
+  }
 
-    .card {
-      animation: scale-up .5s $brake;
-    }
+  .card {
+    animation: scale-up .5s $brake;
   }
 }
 
 .scale-up-leave-active {
   .bg {
     animation: blur .5s ease-out reverse;
+  }
 
-    .card {
-      animation: scale-up .5s ease reverse;
-    }
+  .card {
+    animation: scale-up .5s ease reverse;
   }
 }
 

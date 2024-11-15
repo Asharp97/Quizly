@@ -40,10 +40,78 @@
 @keyframes fade-in {
   0% {
     opacity: 0;
-    transform: translateY(3rem);
+    transform: translateX(3rem);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
+  }
+}
+
+.slide-right-enter-active {
+  animation: slide-right 0.5s $brake;
+}
+
+.slide-right-leave-active {
+  animation: slide-right 0.5s $reversebrake reverse;
+}
+
+.slide-left-enter-active {
+  animation: slide-left 0.5s $brake;
+}
+
+.slide-left-leave-active {
+  animation: slide-left 0.5s $reversebrake reverse;
+}
+
+@keyframes slide-right {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slide-up-enter-active {
+  animation: slide-up-enter 0.5s $brake;
+}
+
+.slide-up-leave-active {
+  animation: slide-up-leave 0.5s $brake;
+}
+@keyframes slide-up-enter {
+  from {
+    transform: translateX(-30rem);
+    opacity: 0;
+    // filter: blur(5px);
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+    // filter: blur(0);
+  }
+}
+@keyframes slide-up-leave {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+    // filter: blur(0);
+  }
+  to {
+    transform: translateX(30rem);
+    opacity: 0;
+    // filter: blur(5px);
   }
 }

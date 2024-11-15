@@ -1,13 +1,13 @@
 <template>
   <div class="auth ">
     <Transition name="slide-right">
-      <div v-if="show" class="auth-media FullScreenModal">
+      <div v-if="modal.auth" class="auth-media FullScreenModal">
         <img src="" alt="">
       </div>
     </Transition>
     <Transition name="slide-left">
-      <div v-if="show" class="auth-forms FullScreenModal">
-        <Icon name="material-symbols:close-rounded" @click="$emit('close')" class="close" />
+      <div v-if="modal.auth" class="auth-forms FullScreenModal">
+        <Icon class="close" name="material-symbols:close-rounded" @click="modal.close" />
 
         <div class="form">
           <h2>Login or Sign up</h2>
@@ -21,44 +21,7 @@
 </template>
 
 <script setup>
-defineProps(['show'])
+const modal = useModal();
 </script>
 
-<style lang="scss" scoped>
-.slide-right-enter-active {
-  animation: slide-right .5s $brake;
-}
-
-.slide-right-leave-active {
-  animation: slide-right .5s $reversebrake reverse;
-}
-
-.slide-left-enter-active {
-  animation: slide-left .5s $brake;
-}
-
-.slide-left-leave-active {
-  animation: slide-left .5s $reversebrake reverse;
-}
-
-
-@keyframes slide-right {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-left {
-  0% {
-    transform: translateX(100%);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-</style>
+<style lang="scss" scoped></style>

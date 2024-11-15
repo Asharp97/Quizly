@@ -10,8 +10,12 @@ export const useSession = defineStore(
       user.value = "";
       token.value = "";
     }
+    function setSession(x: any) {
+      user.value = x.user;
+      token.value = x.session;
+    }
 
-    return { user, token, clearSession };
+    return { user, token, clearSession, setSession };
   },
   {
     persist: true,

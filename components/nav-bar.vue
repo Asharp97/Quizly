@@ -6,7 +6,6 @@
           <img src="/img/logo.png" alt="quizly logo">
         </NuxtLink>
 
-
         <div v-if="session.user" class="user dropdown">
           <Icon class="icon" name="material-symbols:account-circle-full" />
           <div class="menu-bg">
@@ -16,11 +15,11 @@
                   My Profile
                 </div>
               </NuxtLink>
-              <!-- <NuxtLink to="/quizMaker"> -->
-              <div class="item">
-                Make a quiz
-              </div>
-              <!-- </NuxtLink> -->
+              <NuxtLink to="/dashboard">
+                <div class="item">
+                  Dashboard
+                </div>
+              </NuxtLink>
               <div class="item" @click="modal.confirm = true">
                 Logout
               </div>
@@ -29,17 +28,15 @@
         </div>
 
         <div v-else class="auth-buttons">
-          <Btn text="Sign Up" @click="modal.show = true" />
-          <Btn text="Login" inv="true" @click="modal.show = true" />
+          <Btn text="Sign Up" @click="modal.auth = true" />
+          <Btn text="Login" inv="true" @click="modal.auth = true" />
         </div>
       </div>
     </nav>
     <Teleport to="body">
-      <Auth :show="modal.show" @close="modal.close" />
-      <Transition name="scale-up">
-        <prompt v-if="modal.confirm" @close="modal.close" @confirm="logout" msg="Are you sure you want to logout?"
-          actionText="Log me out" cancelText="Nevermind" icon="material-symbols:logout" />
-      </Transition>
+      <Auth />
+      <prompt msg="Are you sure you want to logout?" action-text="Log me out" cancel-text="Nevermind"
+        icon="material-symbols:logout" @confirm="logout" />
     </Teleport>
   </div>
 </template>
@@ -48,11 +45,16 @@
 const session = useSession();
 const supabase = useSupabaseClient();
 const modal = useModal();
+const router = useRouter();
 
 const logout = async () => {
   const { error } = await supabase.auth.signOut()
   if (error) console.log(error)
-  else session.clearSession()
+  else {
+    session.clearSession()
+    modal.close()
+    router.push('/');
+  }
 }
 
 </script>

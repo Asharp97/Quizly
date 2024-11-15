@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <NuxtLink :to="`${destination ? '/' + destination : ''}`">
-      <button type="button" :class="[{ 'inv': inv }, { 'provider': provider }]">
-        <Icon :name="icon" v-if="icon" />
-        {{ text }}
-        <slot />
-      </button>
-    </NuxtLink>
-  </div>
+  <NuxtLink :to="`${destination ? '/' + destination : ''}`">
+    <button type="button" :class="[{ 'inv': inv }, { 'provider': provider }]">
+      <Icon :name="icon" v-if="icon" />
+      {{ text }}
+      <slot />
+    </button>
+  </NuxtLink>
 </template>
 
 <script setup>
@@ -20,6 +18,8 @@ button {
   border: 1px solid $blue;
   color: $white;
   font-size: clamp(0.9375rem, 0.841rem + 0.5149vw, 1.25rem);
+  width: 100%;
+  font: 500 16px / 150% -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 }
 
 .inv {
@@ -33,7 +33,6 @@ button {
   color: rgb(94, 94, 94);
   border: 1px solid $grey;
   font-weight: 500;
-  font: 500 16px / 150% -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 
   &:active,
   &:hover {
