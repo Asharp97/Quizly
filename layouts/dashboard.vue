@@ -1,10 +1,10 @@
 <template>
   <div>
-    <nav>
-      <div class="nav-content container">
-        hey baby
-      </div>
-    </nav>
+    <admin-top-nav />
+    <div class="row">
+      <admin-side-nav />
+      <slot />
+    </div>
   </div>
 </template>
 

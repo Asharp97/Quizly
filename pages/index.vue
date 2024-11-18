@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-const router = useRouter();
-const session = useSession();
-const modal = useModal();
+const router = useRouter()
+const session = useSession()
+const modal = useModal()
 const supabase = useSupabaseClient()
 
 onMounted(async () => {

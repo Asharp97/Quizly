@@ -31,12 +31,12 @@ button {
 .provider {
   background-color: $white;
   color: rgb(94, 94, 94);
-  border: 1px solid $grey;
+  border: 1px solid $lightgrey;
   font-weight: 500;
 
   &:active,
   &:hover {
-    background-color: $grey;
+    background-color: $lightgrey;
   }
 }
 

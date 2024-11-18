@@ -20,13 +20,13 @@ button {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 
-  border: 2px solid $grey;
+  border: 2px solid $lightgrey;
   border-bottom: 0px solid white;
   margin-bottom: 0;
 
   &:active,
   &:hover {
-    background-color: $grey;
+    background-color: $lightgrey;
   }
 }
 
@@ -37,7 +37,7 @@ button {
   &:active,
   &:hover {
     color: $blue;
-    background-color: $grey;
+    background-color: $lightgrey;
   }
 }
 </style>

@@ -9,6 +9,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-inline: 2rem;
     .logo {
       img {
         height: 4rem;
@@ -19,17 +20,7 @@ nav {
       align-items: center;
       gap: 1rem;
     }
-    .user {
-      .icon {
-        font-size: 2rem;
-        color: $blue;
-        &:hover {
-          color: $orange;
-        }
-      }
-    }
   }
-  
 }
 .hero {
   display: flex;
@@ -64,10 +55,6 @@ nav {
     }
     h1 {
       display: flex;
-      ul {
-        li {
-        }
-      }
     }
   }
 }
@@ -118,5 +105,205 @@ nav {
         cursor: pointer;
       }
     }
+  }
+}
+.dashboard {
+  background-color: $cloudgrey;
+  width: 100%;
+  display: flex;
+  .side-nav {
+    display: flex;
+    .nav-wrapper {
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      border-left: 1px solid $white;
+      width: 22rem;
+      .back-icon-wrapper {
+        background-color: $white;
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        margin-bottom: 2rem;
+        cursor: pointer;
+      }
+      .hr {
+        margin-block: 2rem;
+        width: 100%;
+        margin-inline: 0;
+      }
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4rem;
+        .icon-wrapper {
+          background-color: white;
+          border-radius: 2rem;
+          color: black;
+        }
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-left: 1rem;
+
+        .list-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-inline: 0.5rem;
+          padding-block: 0.5rem;
+          border-radius: 0.5rem;
+
+          cursor: pointer;
+          &:hover {
+            background-color: $lightgrey;
+          }
+        }
+        .active {
+          background-color: $grey !important;
+        }
+      }
+    }
+  }
+  .quizes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    height: 100dvh;
+    width: 100%;
+
+    background-color: $white;
+    border-radius: 2rem;
+    padding: 2rem;
+
+    .quiz-titles,
+    .quiz-header {
+      grid-auto-columns: 1fr;
+      grid-template-rows: repeat(1, auto);
+      padding: 1rem;
+      grid-template-columns: calc(100% - 22rem) 6rem 8rem 2rem;
+      gap: 4px 28px;
+      display: grid;
+      width: calc(100%);
+      cursor: pointer;
+    }
+    .quiz-data {
+      .quiz-header {
+        padding-inline: 1rem;
+        width: 100%;
+        padding-block: 1rem;
+        border-radius: 1rem;
+        background-color: $lightgrey;
+        border-bottom: 4px solid transparent;
+      }
+      .active {
+        border-radius: 1rem 1rem 0 0;
+        border-bottom: 4px solid $blue;
+      }
+      .quiz-content {
+        background-color: $cloudgrey;
+        border-radius: 0 0 1rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 50dvh;
+        .qa {
+          flex: 1;
+          gap: 2rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .input-wrapper {
+            max-width: 25rem;
+            input {
+              padding-left: 0;
+              font-weight: 600;
+              font-style: $font-stack;
+              &::placeholder {
+                opacity: 0.7;
+              }
+            }
+          }
+          .question {
+            border-bottom: 1px solid $blue;
+            input {
+              color: $blue;
+              &::placeholder {
+                color: $blue;
+              }
+            }
+          }
+          .answer {
+            border-bottom: 1px solid $orange;
+            input {
+              color: $orange;
+              &::placeholder {
+                color: $orange;
+              }
+            }
+          }
+        }
+        .panel {
+          background-color: $white;
+          flex: 0 0 16rem;
+          height: 16rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          border-radius: 1rem 0 0 1rem;
+          padding: 1rem;
+        }
+      }
+    }
+  }
+}
+.admin-top-nav {
+  display: flex;
+  background-color: $cloudgrey;
+  padding-inline: 2rem;
+  padding-block: 1rem;
+  justify-content: space-between;
+  .logo-wrapper {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    .active-workspace {
+      margin-left: 4rem;
+      font-weight: 700;
+      .icon {
+      }
+    }
+  }
+  .logo {
+    width: 2rem;
+  }
+}
+.admin-side-nav {
+  background-color: $cloudgrey;
+  height: 100dvh;
+  width: 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+
+  .hr {
+    background-color: $white;
+    width: 100%;
+  }
+  .icon-wrapper {
+    .icon {
+      font-size: 2rem;
+    }
+  }
+  .active {
+    background-color: $orange;
+    color: $white;
   }
 }
