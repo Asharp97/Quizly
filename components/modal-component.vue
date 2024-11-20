@@ -2,16 +2,11 @@
   <div>
     <Transition name="scale-up">
       <div
-        v-if="modal.confirm"
+        v-if="condition"
         class="modal-bg FullScreenModal"
         @click.self="modal.close">
         <div class="card">
-          <Icon :name="icon" class="icon" />
-          <h3>{{ msg }}</h3>
-          <div class="button-group">
-            <button @click="$emit('confirm')">{{ actionText }}</button>
-            <button @click="modal.close">{{ cancelText }}</button>
-          </div>
+          <slot />
         </div>
       </div>
     </Transition>
@@ -20,7 +15,7 @@
 
 <script setup>
 import { onKeyStroke } from "@vueuse/core";
-defineProps(["msg", "action-Text", "cancel-text", "icon"]);
+defineProps(["condition"]);
 const modal = useModal();
 
 onKeyStroke("Escape", (e) => {
@@ -28,8 +23,3 @@ onKeyStroke("Escape", (e) => {
   modal.close();
 });
 </script>
-
-<style lang="scss" scoped>
-
-
-</style>

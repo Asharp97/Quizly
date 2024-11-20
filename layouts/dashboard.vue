@@ -2,7 +2,7 @@
   <div>
     <admin-top-nav />
     <div class="row">
-      <admin-side-nav />
+      <!-- <admin-side-nav /> -->
       <slot />
     </div>
   </div>

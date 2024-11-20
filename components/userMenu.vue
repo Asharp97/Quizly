@@ -1,14 +1,11 @@
 <template>
   <div>
     <div class="user dropdown showonhover">
-      <NuxtLink to="/profile" class="item">
+      <NuxtLink to="/dashboard" class="item">
         <Icon class="icon" name="material-symbols:account-circle-full" />
       </NuxtLink>
       <div class="menu-bg">
         <div class="menu">
-          <NuxtLink to="/profile" class="item">
-            My Profile
-          </NuxtLink>
           <NuxtLink to="/dashboard" class="item">
             Dashboard
           </NuxtLink>

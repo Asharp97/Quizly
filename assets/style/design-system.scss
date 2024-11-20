@@ -18,7 +18,7 @@ body {
   font: 100% $font-stack;
   color: $black;
   background-color: $white;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 button {
@@ -69,6 +69,7 @@ select {
   align-items: center;
   padding: 0.25rem;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 h1 {
@@ -83,9 +84,24 @@ h5,
 p {
   // margin-bottom: 1.5rem;
 }
-
-li {
-  list-style: none;
+.noContentWrapper {
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .noContent {
+    p {
+      max-width: 50rem;
+      background-color: $cloudgrey;
+      padding: 2rem;
+      border-radius: 2rem;
+    }
+  }
+}
+ul {
+  li {
+    list-style: none;
+  }
 }
 a {
   text-decoration: none;
@@ -100,6 +116,7 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .dropdown {
   cursor: pointer;
   position: relative;
@@ -109,11 +126,13 @@ a {
   .menu-bg {
     position: absolute;
     background-color: $offwhite;
+    border: 1px solid $dimgrey;
     color: black;
     right: 0;
     top: 3rem;
     width: fit-content;
     min-width: 125px;
+    border-radius: 10px 0 10px 10px;
     transform-origin: top right;
     z-index: 15;
     transition: 0.3s cubic-bezier(0, 0.93, 0.54, 1.19);
@@ -140,10 +159,11 @@ a {
       }
     }
   }
-  .icon{
+  .icon {
     z-index: 10;
   }
 }
+
 .showonhover {
   .menu-bg {
     transform: translateY(-20px);
@@ -157,6 +177,44 @@ a {
       transform: translateY(0);
       opacity: 1;
       visibility: visible;
+    }
+  }
+}
+
+.modal-bg {
+  background-color: rgba(0, 0, 0, 0.479);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  backdrop-filter: blur(1rem);
+  z-index: 20;
+  .card {
+    background-color: $offwhite;
+    height: 16rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    border-radius: 2rem;
+
+    .icon {
+      font-size: 5rem;
+      color: $orange;
+      margin-bottom: 1rem;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-evenly;
+      gap: 1rem;
+
+      button {
+        margin-bottom: 0;
+      }
     }
   }
 }

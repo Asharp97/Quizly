@@ -115,3 +115,98 @@
     // filter: blur(5px);
   }
 }
+
+.quick-left-enter-active {
+  animation: quick-left 0.5s $brake;
+}
+.quick-left-leave-active {
+  animation: quick-left-leave 0.5s $reversebrake reverse;
+}
+.quick-right-enter-active {
+  animation: quick-right 0.5s $brake;
+}
+.quick-right-leave-active {
+  animation: quick-right-leave 0.5s $reversebrake reverse;
+}
+@keyframes quick-left {
+  from {
+    transform: translateX(30rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes quick-right {
+  from {
+    transform: translateX(-30rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes quick-left-leave {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(30rem);
+    opacity: 0;
+  }
+}
+@keyframes quick-right-leave {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-30rem);
+    opacity: 0;
+  }
+}
+
+.scale-up-enter-active {
+  .bg {
+    animation: blur 0.5s $brake;
+  }
+
+  .card {
+    animation: scale-up 0.5s $brake;
+  }
+}
+
+.scale-up-leave-active {
+  .bg {
+    animation: blur 0.5s ease-out reverse;
+  }
+
+  .card {
+    animation: scale-up 0.5s ease reverse;
+  }
+}
+
+@keyframes scale-up {
+  0% {
+    opacity: 0;
+    scale: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes blur {
+  0% {
+    backdrop-filter: blur(0px);
+  }
+
+  100% {
+    backdrop-filter: blur(1rem);
+  }
+}
