@@ -161,6 +161,12 @@ nav {
           padding-inline: 0.5rem;
           padding-block: 0.5rem;
           border-radius: 0.5rem;
+          p {
+            span {
+              font-weight: 800;
+              color: $blue;
+            }
+          }
 
           cursor: pointer;
           &:hover {
@@ -168,7 +174,12 @@ nav {
           }
         }
         .active {
-          background-color: $grey !important;
+          background-color: $lightgrey !important;
+          p {
+            span {
+              color: $orange;
+            }
+          }
         }
       }
     }
@@ -223,10 +234,13 @@ nav {
         border-radius: 0 0 1rem 1rem;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-evenly;
         height: 50dvh;
+        gap: 2rem;
+        .addAnswer {
+          width: min-content;
+        }
         .qa {
-          flex: 1;
           gap: 2rem;
           display: flex;
           flex-direction: column;
@@ -234,7 +248,6 @@ nav {
           .input-wrapper {
             max-width: 25rem;
             input {
-              padding-left: 0;
               font-weight: 600;
               font-style: $font-stack;
               &::placeholder {
@@ -243,7 +256,7 @@ nav {
             }
           }
           .question {
-            border-bottom: 2px solid $blue;
+            border: 1px solid $blue;
             input {
               color: $blue;
               &::placeholder {
@@ -252,7 +265,7 @@ nav {
             }
           }
           .answer {
-            border-bottom: 1px solid $orange;
+            border: 1px solid $orange;
             input {
               color: $orange;
               &::placeholder {
@@ -263,12 +276,12 @@ nav {
         }
         .panel {
           background-color: $white;
-          flex: 0 0 16rem;
           height: 16rem;
           display: flex;
           flex-direction: column;
           gap: 1rem;
           border-radius: 1rem 0 0 1rem;
+          border-right: 1rem solid $cloudgrey;
           padding: 1rem;
         }
       }

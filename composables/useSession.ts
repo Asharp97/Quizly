@@ -21,3 +21,10 @@ export const useSession = defineStore(
     persist: true,
   }
 );
+
+
+// (quiz_id IN ( SELECT quizes.id
+//   FROM quizes
+//  WHERE (quizes.workspace_id IN ( SELECT workspaces.id
+//           FROM workspaces
+//          WHERE (workspaces.user_id = auth.uid())))))

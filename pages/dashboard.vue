@@ -5,43 +5,41 @@
         <div class="back-icon-wrapper" @click="quizEditor = true">
           <Icon
             name="material-symbols:chevron-right-rounded"
-            class="icon back"
-          />
+            class="icon back" />
         </div>
         <div class="title">
           <h3>Workspaces</h3>
-          <div class="icon-wrapper" @click="modal.show = 'postWorkspace'">
+          <div class="icon-wrapper" @click="handlPostWorkspace()">
             <Icon class="icon" name="material-symbols:add-2-rounded" />
           </div>
         </div>
         <div class="hr" />
         <ol class="list">
           <li
-            v-for="workspace in workspaces"
+            v-for="(workspace, n) in workspaces"
             :key="workspace.id"
             class="list-item"
             :class="{ active: activeWorkspace == workspace.id }"
-            @click="activeWorkspace = workspace.id"
-          >
+            @click="activeWorkspace = workspace.id">
             <!-- <input type="text" :value="workspace.name" disabled> -->
-            {{ workspace.name }}
+            <p>
+              <span> 0{{ n + 1 }}.</span>
+              {{ workspace.name }}
+            </p>
             <div class="icon-wrapper dropdown">
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="workspaceMenu = workspace.id"
-              />
+                @click="workspaceMenu = workspace.id" />
               <Transition name="scale-up">
                 <div
                   v-if="workspaceMenu == workspace.id"
                   ref="workspaceMenuRef"
-                  class="menu-bg"
-                >
+                  class="menu-bg">
                   <div class="menu">
                     <div
                       class="item"
-                      @click="handleEditWorkspace(workspace.id)"
-                    >
+                      @click="handleEditWorkspace(workspace.id)">
                       Edit Name
                     </div>
                     <div class="item" @click="deleteWorkspace(workspace.id)">
@@ -58,8 +56,7 @@
         <div class="back-icon-wrapper" @click="quizEditor = false">
           <Icon
             name="material-symbols:chevron-left-rounded"
-            class="icon back"
-          />
+            class="icon back" />
         </div>
         <div class="title">
           <h3>Questions</h3>
@@ -73,22 +70,21 @@
             v-for="(question, n) in questions"
             :key="question.id"
             class="list-item"
-            :class="{ active: activequestion == question.id }"
-            @click="activeQuestion = question.id"
-          >
-            <!-- <input type="text" :value="workspace.name" disabled> -->
-            0{{ n }}. {{ question.text }}
+            :class="{ active: activeQuestion == question.id }"
+            @click="activeQuestion = question.id">
+            <p>
+              <span> 0{{ n + 1 }}.</span>
+              {{ question.text }}
+            </p>
             <div class="icon-wrapper dropdown">
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="questionMenu = question.id"
-              />
+                @click="questionMenu = question.id" />
               <div
                 v-if="questionMenu == question.id"
                 ref="questionMenuRef"
-                class="menu-bg"
-              >
+                class="menu-bg">
                 <div class="menu">
                   <div class="item">Edit Name</div>
                   <div class="item">Delete question</div>
@@ -100,7 +96,7 @@
       </aside>
     </div>
     <div class="quizes-list">
-      <btn class="newQuizBtn" @click="modal.show = 'postQuiz'">
+      <btn class="newQuizBtn" @click="handlPostQuiz()">
         <div class="icon-wrapper">
           <Icon class="icon" name="material-symbols:add-2-rounded" />
         </div>
@@ -111,26 +107,24 @@
         <div>Responses</div>
         <div>Created at</div>
       </div>
-      <div v-if="!quizes.length" class="noContentWrapper">
-        <div class="noContent">
-          <p>
-            🎉 Looks like you're just getting started! No quizzes here yet.
-            Click
-            <strong>"Create New Quiz"</strong> to make your first one. 🚀
-          </p>
+      <no-content v-if="noContent || loading">
+        <p v-if="!quizes.length">
+          🎉 Looks like you're just getting started! No quizzes here yet. Click
+          <strong>"Create New Quiz"</strong> to make your first one. 🚀
+        </p>
+        <div v-if="loading" class="icon-wrapper loading">
+          <Icon name="eos-icons:bubble-loading" class="icon" />
         </div>
-      </div>
+      </no-content>
       <div
         v-for="quiz in quizes"
         :key="quiz.id"
         class="quiz-data"
-        @click="getQuestions(quiz.id)"
-      >
+        @click="getQuestions(quiz.id)">
         <div
           class="quiz-header"
           :class="{ active: activeQuiz == quiz.id }"
-          @click="activeQuiz = quiz.id"
-        >
+          @click="activeQuiz = quiz.id">
           <h3>{{ quiz.title }}</h3>
           <h3 v-if="quiz.responses">{{ quiz.responses }}</h3>
           <h3 v-else>-</h3>
@@ -139,8 +133,7 @@
             <Icon
               class="icon"
               name="mi:options-horizontal"
-              @click="quizMenu = quiz.id"
-            />
+              @click="quizMenu = quiz.id" />
             <div v-if="quizMenu == quiz.id" ref="quizMenuRef" class="menu-bg">
               <div class="menu">
                 <div class="item" @click="handlequizEditor(quiz.id)">
@@ -154,25 +147,30 @@
         <div v-if="activeQuiz == quiz.id" class="quiz-content">
           <div class="qa">
             <div class="input-wrapper question">
-              <input type="text" placeholder="Enter Your quesion here" />
+              <input
+                v-model="questionName"
+                type="text"
+                placeholder="Enter Your quesion here" />
             </div>
-            <div class="input-wrapper answer">
-              <input type="text" placeholder="And here is your answer" />
+            <div v-for="n in answerCount" :key="n" class="input-wrapper answer">
+              <input
+                v-model="answer[n - 1].text"
+                type="text"
+                placeholder="And here is your answer" />
             </div>
-            <btn text="Submit" />
+            <btn text="Submit" @click="submitQA()" />
           </div>
           <div class="panel">
-            <!-- <toggle-Switch v-model="test" label="Required" /> -->
+            <button class="addAnswer" @click="addAnswer()">Add Answer</button>
             <select
               id=""
               v-model="questionType"
               name=""
-              :class="!questionType ? 'placeholder' : ''"
-            >
+              :class="!questionType ? 'placeholder' : ''">
               <option value="" disabled>Question Type</option>
-              <option value="hey">hey</option>
-              <option value="hey">hey</option>
-              <option value="hey">2</option>
+              <option value="mcq">Multiple Choice</option>
+              <option value="tf">True or False</option>
+              <option value="text">Open Ended</option>
             </select>
           </div>
         </div>
@@ -181,8 +179,7 @@
         <ModalComponent
           :condition="modal.show"
           class="modal"
-          @clear-inputs="clearInputs()"
-        >
+          @clear-inputs="clearInputs()">
           <div>
             <input
               v-show="
@@ -191,13 +188,12 @@
               ref="workspaceModalInput"
               v-model="workspaceName"
               type="text"
-              placeholder="Workspace Title"
-            />
+              placeholder="Workspace Title" />
             <Btn v-if="modal.show == 'postWorkspace'" @click="postWorkspace"
-              >Submit</Btn
+              >New Workspace</Btn
             >
             <Btn v-if="modal.show == 'editWorkspace'" @click="editWorkspace"
-              >Submit</Btn
+              >Submit Edit</Btn
             >
           </div>
           <div>
@@ -206,10 +202,13 @@
               ref="quizModalInput"
               v-model="quizName"
               type="text"
-              placeholder="Workspace Title"
-            />
-            <Btn v-if="modal.show == 'postQuiz'" @click="postQuiz">Submit</Btn>
-            <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz">Submit</Btn>
+              placeholder="Quiz Title" />
+            <Btn v-if="modal.show == 'postQuiz'" @click="postQuiz"
+              >New Quiz</Btn
+            >
+            <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz"
+              >Submit Edit</Btn
+            >
           </div>
         </ModalComponent>
       </Teleport>
@@ -228,6 +227,9 @@ definePageMeta({
 const supabase = useSupabaseClient();
 const session = useSession();
 
+const loading = ref(false);
+const noContent = ref(false);
+
 const clearInputs = () => {
   workspaceName.value = "";
   quizName.value = "";
@@ -245,7 +247,6 @@ const getWorkspaces = async () => {
   const { data, error } = await supabase.from("workspaces").select();
   if (data) {
     workspaces.value = data;
-    activeWorkspace.value = workspaces.value[0].id;
   } else console.log(error);
 };
 const getWorkspace = async (x) => {
@@ -255,6 +256,12 @@ const getWorkspace = async (x) => {
     .eq("id", x);
   if (data) workspaceName.value = data[0].name;
   else console.log(error);
+};
+const handlPostWorkspace = async () => {
+  workspaceName.value = "Workspace #" + (workspaces.value.length + 1);
+  modal.show = "postWorkspace";
+  await nextTick();
+  workspaceModalInput.value.focus();
 };
 const postWorkspace = async () => {
   const { error } = await supabase
@@ -279,7 +286,6 @@ const handleEditWorkspace = async (x) => {
   modal.show = "editWorkspace";
   await nextTick();
   workspaceModalInput.value.focus();
-  workspaceName.value = workspaces.value[x - 1].name;
 };
 const editWorkspace = async () => {
   const { error } = await supabase
@@ -295,9 +301,6 @@ const editWorkspace = async () => {
 };
 onClickOutside(workspaceMenuRef, () => {
   workspaceMenu.value = null;
-  setTimeout(() => {
-    workspaceName.value = "";
-  }, 1000);
 });
 
 //Quizes FUNCTIONS
@@ -309,20 +312,33 @@ const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
 
 const getQuizes = async () => {
-  const { data, error } = await supabase
-    .from("quizes")
-    .select()
-    .eq("workspace_id", activeWorkspace.value);
-  if (data) {
-    quizes.value = data;
-    activeQuestion.value = quizes.value[0].id;
-  } else console.log(error);
+  try {
+    loading.value = true;
+    const { data, error } = await supabase
+      .from("quizes")
+      .select()
+      .eq("workspace_id", activeWorkspace.value);
+    if (data) {
+      quizes.value = data;
+      activeQuestion.value = quizes.value[0].id;
+      if (!quizes.value.length) noContent.value = true;
+    } else throw error;
+  } catch (e) {
+    console.log(e);
+  } finally {
+    loading.value = false;
+  }
 };
 const getQuiz = async (x) => {
   const { data, error } = await supabase.from("quizes").select().eq("id", x);
   if (data) quizName.value = data[0].title;
   else console.log(error);
-  console.log(quizName.value);
+};
+const handlPostQuiz = async () => {
+  quizName.value = "Quiz # " + (quizes.value.length + 1);
+  modal.show = "postQuiz";
+  await nextTick();
+  quizModalInput.value.focus();
 };
 const postQuiz = async () => {
   const { error } = await supabase
@@ -360,20 +376,18 @@ const editQuiz = async () => {
     quizName.value = "";
   }
 };
-onClickOutside(quizMenuRef, () => {
-  quizMenu.value = null;
-  setTimeout(() => {
-    quizName.value = "";
-  }, 1000);
-});
+onClickOutside(quizMenuRef, () => (quizMenu.value = null));
 
 //QUESTIONS FUNCTIONS
 const questions = ref([]);
 const activeQuestion = ref();
 const questioneMenu = ref(null);
 const questioneMenuRef = ref(null);
-onClickOutside(questioneMenuRef, () => (questioneMenu.value = null));
+
+const questionName = ref();
 const questionType = ref("");
+
+onClickOutside(questioneMenuRef, () => (questioneMenu.value = null));
 
 const getQuestions = async (x) => {
   const { data, error } = await supabase
@@ -385,12 +399,58 @@ const getQuestions = async (x) => {
     quizEditor.value = true;
   } else console.log(error);
 };
+const postQuestion = async () => {
+  const { data, error } = await supabase
+    .from("questions")
+    .insert({
+      text: questionName.value,
+      quiz_id: activeQuiz.value,
+      type: questionType.value,
+    })
+    .select();
+  if (error) console.log(error);
+  if (data) {
+    quizName.value = "";
+    activeQuestion.value = data[0].id;
+  }
+};
+
+const answerCount = ref(1);
+const answer = ref([
+  {
+    text: "welcome to chilis",
+    is_correct: false,
+  },
+]);
+const addAnswer = () => {
+  answer.value.push({ text: "", is_correct: false });
+  answerCount.value++;
+};
+
+const postAnswer = async () => {
+  const { error } = await supabase.from("answers").insert({
+    question_id: activeQuestion.value,
+    text: answer.value.text,
+    is_correct: answer.value.is_correct,
+  });
+  if (error) console.log(error);
+  else {
+    answer.value.text = "";
+  }
+};
+
+
+const submitQA = async () => {
+  await postQuestion();
+  await postAnswer(activeQuestion.value);
+  await getQuestions(activeQuiz.value);
+};
 
 const quizEditor = ref(false);
 
 onMounted(async () => {
   await getWorkspaces();
-  // await getQuizes()
+  activeWorkspace.value = workspaces.value[0].id;
 });
 
 watch(
@@ -402,9 +462,15 @@ watch(
 <style lang="scss" scoped>
 .qa {
   input {
-    background-color: transparent;
-    border: none;
+    // background-color: transparent;
+    // border: none;
     margin-bottom: 0;
+  }
+}
+.loading {
+  .icon {
+    font-size: 4rem;
+    color: $blue;
   }
 }
 </style>

@@ -4,8 +4,7 @@
       <div
         v-if="condition"
         class="modal-bg FullScreenModal"
-        @click.self="modal.close"
-      >
+        @click.self="close()">
         <div class="card">
           <slot />
         </div>
@@ -20,11 +19,18 @@ defineProps(["condition"]);
 const emit = defineEmits("clearInputs");
 const modal = useModal();
 
+const close = () => {
+  modal.close();
+  setTimeout(() => {
+    emit("clearInputs");
+  }, 500);
+};
+
 onKeyStroke("Escape", (e) => {
   e.preventDefault();
   modal.close();
   setTimeout(() => {
-    emit("clearInputs"); // Emit the event after 2 seconds
-  }, 2000);
+    emit("clearInputs");
+  }, 500);
 });
 </script>
