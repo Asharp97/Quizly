@@ -1,77 +1,28 @@
 <template>
   <div class="dashboard">
     <div class="side-nav">
-      <aside v-if="!quizEditor" class="nav-wrapper">
-        <div class="back-icon-wrapper" @click="quizEditor = true">
-          <Icon
-            name="material-symbols:chevron-right-rounded"
-            class="icon back" />
-        </div>
-        <div class="title">
-          <h3>Workspaces</h3>
-          <div class="icon-wrapper" @click="handlPostWorkspace()">
-            <Icon class="icon" name="material-symbols:add-2-rounded" />
-          </div>
-        </div>
-        <div class="hr" />
-        <ol class="list">
-          <li
-            v-for="(workspace, n) in workspaces"
-            :key="workspace.id"
-            class="list-item"
-            :class="{ active: activeWorkspace == workspace.id }"
-            @click="activeWorkspace = workspace.id">
-            <!-- <input type="text" :value="workspace.name" disabled> -->
-            <p>
-              <span> 0{{ n + 1 }}.</span>
-              {{ workspace.name }}
-            </p>
-            <div class="icon-wrapper dropdown">
-              <Icon
-                class="icon"
-                name="mi:options-horizontal"
-                @click="workspaceMenu = workspace.id" />
-              <Transition name="scale-up">
-                <div
-                  v-if="workspaceMenu == workspace.id"
-                  ref="workspaceMenuRef"
-                  class="menu-bg">
-                  <div class="menu">
-                    <div
-                      class="item"
-                      @click="handleEditWorkspace(workspace.id)">
-                      Edit Name
-                    </div>
-                    <div class="item" @click="deleteWorkspace(workspace.id)">
-                      Delete workspace
-                    </div>
-                  </div>
-                </div>
-              </Transition>
-            </div>
-          </li>
-        </ol>
-      </aside>
-      <aside v-if="quizEditor" class="nav-wrapper">
-        <div class="back-icon-wrapper" @click="quizEditor = false">
-          <Icon
-            name="material-symbols:chevron-left-rounded"
-            class="icon back" />
-        </div>
+      <aside class="nav-wrapper">
         <div class="title">
           <h3>Questions</h3>
           <div class="icon-wrapper">
-            <Icon class="icon" name="material-symbols:add-2-rounded" />
+            <Icon
+              class="icon"
+              name="material-symbols:add-2-rounded"
+              @click="handlePostQuestion()" />
           </div>
         </div>
         <div class="hr" />
+        <div v-if="noQuestions">
+          <p>no questions yet</p>
+        </div>
+        <!-- {{ questions.length }} -->
         <ol class="list">
           <li
             v-for="(question, n) in questions"
             :key="question.id"
             class="list-item"
             :class="{ active: activeQuestion == question.id }"
-            @click="activeQuestion = question.id">
+            @click="getQA(question.id)">
             <p>
               <span> 0{{ n + 1 }}.</span>
               {{ question.text }}
@@ -86,8 +37,9 @@
                 ref="questionMenuRef"
                 class="menu-bg">
                 <div class="menu">
-                  <div class="item">Edit Name</div>
-                  <div class="item">Delete question</div>
+                  <div class="item" @click="deleteQuestion(question.id)">
+                    Delete question
+                  </div>
                 </div>
               </div>
             </div>
@@ -152,22 +104,89 @@
                 type="text"
                 placeholder="Enter Your quesion here" />
             </div>
-            <div v-for="n in answerCount" :key="n" class="input-wrapper answer">
-              <input
-                v-model="answer[n - 1].text"
-                type="text"
-                placeholder="And here is your answer" />
+            <div v-if="questionType == 'mcq'" class="answer-list">
+              <div
+                v-for="answer in answers"
+                :key="answer.id"
+                class="answer-wrapper">
+                <div
+                  class="input-wrapper answer"
+                  :class="{ correct: answer.is_correct }">
+                  <input
+                    v-model="answer.text"
+                    type="text"
+                    placeholder="And here is your answer" />
+                </div>
+                <input
+                  v-model="answer.is_correct"
+                  class="checkbox"
+                  type="checkbox" />
+
+                <Icon
+                  :class="{ disabled: answers.length == 2 }"
+                  name="material-symbols:delete-outline-rounded"
+                  class="icon"
+                  @click="deleteAnswer(answer.id)" />
+              </div>
             </div>
-            <btn text="Submit" @click="submitQA()" />
+            <div v-if="questionType == 'tf'" class="tf">
+              <div class="answer-wrapper">
+                <div
+                  class="input-wrapper answer"
+                  :class="{ correct: tf.is_correct == true }">
+                  <input
+                    disabled
+                    value="TRUE"
+                    type="text"
+                    placeholder="And here is your answer" />
+                </div>
+                <input
+                  v-model="tf.is_correct"
+                  :value="true"
+                  name="tf"
+                  type="radio" />
+              </div>
+              <div class="answer-wrapper">
+                <div
+                  class="input-wrapper answer"
+                  :class="{ correct: tf.is_correct == false }">
+                  <input
+                    disabled
+                    value="FALSE"
+                    type="text"
+                    placeholder="And here is your answer" />
+                </div>
+                <input
+                  v-model="tf.is_correct"
+                  :value="false"
+                  name="tf"
+                  type="radio" />
+              </div>
+            </div>
+            <textarea
+              v-if="questionType == 'text'"
+              id=""
+              v-model="text.text"
+              placeholder="Stay tuned, We'll implement ai to asses the answer for you"
+              class="textArea"
+              name="" />
+            <btn text="Update" @click="submitQA()" />
           </div>
           <div class="panel">
-            <button class="addAnswer" @click="addAnswer()">Add Answer</button>
+            <Btn
+              :disabled="answers.length > 7 || questionType != 'mcq'"
+              :orange="true"
+              text="Add Answer"
+              icon="iconify i-material-symbols:add-2-rounded"
+              @click="addAnswer()" />
+            <p v-if="answers.length > 7" class="error">
+              woah woah take it easy there isn't that too much
+            </p>
             <select
               id=""
               v-model="questionType"
               name=""
               :class="!questionType ? 'placeholder' : ''">
-              <option value="" disabled>Question Type</option>
               <option value="mcq">Multiple Choice</option>
               <option value="tf">True or False</option>
               <option value="text">Open Ended</option>
@@ -180,23 +199,7 @@
           :condition="modal.show"
           class="modal"
           @clear-inputs="clearInputs()">
-          <div>
-            <input
-              v-show="
-                modal.show == 'postWorkspace' || modal.show == 'editWorkspace'
-              "
-              ref="workspaceModalInput"
-              v-model="workspaceName"
-              type="text"
-              placeholder="Workspace Title" />
-            <Btn v-if="modal.show == 'postWorkspace'" @click="postWorkspace"
-              >New Workspace</Btn
-            >
-            <Btn v-if="modal.show == 'editWorkspace'" @click="editWorkspace"
-              >Submit Edit</Btn
-            >
-          </div>
-          <div>
+          <div class="modal-content">
             <input
               v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
               ref="quizModalInput"
@@ -209,6 +212,24 @@
             <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz"
               >Submit Edit</Btn
             >
+            <select
+              v-if="modal.show == 'postQuestion'"
+              id=""
+              v-model="questionType"
+              name="">
+              <option value="mcq">Multiple Choice</option>
+              <option value="tf">True Or False</option>
+              <option value="text">Open Ended</option>
+            </select>
+            <input
+              v-show="modal.show == 'postQuestion'"
+              ref="questionModalInput"
+              v-model="questionName"
+              type="text"
+              placeholder="Question" />
+            <Btn v-if="modal.show == 'postQuestion'" @click="postQuestion()"
+              >Submit Question</Btn
+            >
           </div>
         </ModalComponent>
       </Teleport>
@@ -219,89 +240,18 @@
 <script setup>
 import { onClickOutside } from "@vueuse/core";
 import { formatDate } from "~/utils/formatdate";
-const modal = useModal();
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
 const supabase = useSupabaseClient();
+const modal = useModal();
 const session = useSession();
 
 const loading = ref(false);
 const noContent = ref(false);
 
-const clearInputs = () => {
-  workspaceName.value = "";
-  quizName.value = "";
-};
-
-//WORKSPACE FUNCTIONS
-const workspaces = ref([]);
-const activeWorkspace = ref();
-const workspaceMenu = ref(null);
-const workspaceMenuRef = ref(null);
-const workspaceModalInput = ref(null);
-
-const workspaceName = ref();
-const getWorkspaces = async () => {
-  const { data, error } = await supabase.from("workspaces").select();
-  if (data) {
-    workspaces.value = data;
-  } else console.log(error);
-};
-const getWorkspace = async (x) => {
-  const { data, error } = await supabase
-    .from("workspaces")
-    .select()
-    .eq("id", x);
-  if (data) workspaceName.value = data[0].name;
-  else console.log(error);
-};
-const handlPostWorkspace = async () => {
-  workspaceName.value = "Workspace #" + (workspaces.value.length + 1);
-  modal.show = "postWorkspace";
-  await nextTick();
-  workspaceModalInput.value.focus();
-};
-const postWorkspace = async () => {
-  const { error } = await supabase
-    .from("workspaces")
-    .insert({ name: workspaceName.value, user_id: session.user.id });
-  if (error) console.log(error);
-  else {
-    getWorkspaces();
-    modal.close();
-    workspaceName.value = "";
-  }
-};
-const deleteWorkspace = async (x) => {
-  const response = await supabase.from("workspaces").delete().eq("id", x);
-  if (response.status == 204) {
-    getWorkspaces();
-    modal.close();
-  }
-};
-const handleEditWorkspace = async (x) => {
-  await getWorkspace(x);
-  modal.show = "editWorkspace";
-  await nextTick();
-  workspaceModalInput.value.focus();
-};
-const editWorkspace = async () => {
-  const { error } = await supabase
-    .from("workspaces")
-    .update({ name: workspaceName.value })
-    .eq("id", activeWorkspace.value);
-  if (error) console.log(error);
-  else {
-    getWorkspaces();
-    modal.close();
-    workspaceName.value = "";
-  }
-};
-onClickOutside(workspaceMenuRef, () => {
-  workspaceMenu.value = null;
-});
+const clearInputs = () => (quizName.value = "");
 
 //Quizes FUNCTIONS
 const quizes = ref([]);
@@ -314,13 +264,10 @@ const quizModalInput = ref(null);
 const getQuizes = async () => {
   try {
     loading.value = true;
-    const { data, error } = await supabase
-      .from("quizes")
-      .select()
-      .eq("workspace_id", activeWorkspace.value);
+    const { data, error } = await supabase.from("quizes").select();
     if (data) {
       quizes.value = data;
-      activeQuestion.value = quizes.value[0].id;
+      activeQuiz.value = quizes.value[0].id;
       if (!quizes.value.length) noContent.value = true;
     } else throw error;
   } catch (e) {
@@ -335,7 +282,7 @@ const getQuiz = async (x) => {
   else console.log(error);
 };
 const handlPostQuiz = async () => {
-  quizName.value = "Quiz # " + (quizes.value.length + 1);
+  quizName.value = "Quiz #" + (quizes.value.length + 1);
   modal.show = "postQuiz";
   await nextTick();
   quizModalInput.value.focus();
@@ -343,7 +290,7 @@ const handlPostQuiz = async () => {
 const postQuiz = async () => {
   const { error } = await supabase
     .from("quizes")
-    .insert({ title: quizName.value, workspace_id: activeWorkspace.value });
+    .insert({ title: quizName.value, user_id: session.user.id });
   if (error) console.log(error);
   else {
     getQuizes();
@@ -381,23 +328,45 @@ onClickOutside(quizMenuRef, () => (quizMenu.value = null));
 //QUESTIONS FUNCTIONS
 const questions = ref([]);
 const activeQuestion = ref();
-const questioneMenu = ref(null);
-const questioneMenuRef = ref(null);
+const questionMenu = ref(null);
+const questionMenuRef = ref(null);
+const questionModalInput = ref(null);
 
 const questionName = ref();
-const questionType = ref("");
+const noQuestions = ref(false);
+const questionType = ref("mcq");
 
-onClickOutside(questioneMenuRef, () => (questioneMenu.value = null));
+onClickOutside(questionMenuRef, () => (questionMenu.value = null));
 
 const getQuestions = async (x) => {
   const { data, error } = await supabase
     .from("questions")
     .select()
+    .order("created_at", { ascending: false })
     .eq("quiz_id", x);
   if (data) {
-    questions.value = data;
-    quizEditor.value = true;
+    if (data.length > 0) {
+      questions.value = data;
+      activeQuestion.value = data[0].id;
+      questionName.value = data[0].text;
+      noQuestions.value = false;
+    } else noQuestions.value = true;
   } else console.log(error);
+};
+const getQuestion = async (x) => {
+  const { data, error } = await supabase.from("questions").select().eq("id", x);
+  if (data) {
+    if (data.length) {
+      questionName.value = data[0].text;
+      return data.type;
+    }
+  } else console.log(error);
+};
+const handlePostQuestion = async () => {
+  questionName.value = "Question #" + (questions.value.length + 1);
+  modal.show = "postQuestion";
+  await nextTick();
+  questionModalInput.value.focus();
 };
 const postQuestion = async () => {
   const { data, error } = await supabase
@@ -409,53 +378,137 @@ const postQuestion = async () => {
     })
     .select();
   if (error) console.log(error);
-  if (data) {
+  else {
     quizName.value = "";
     activeQuestion.value = data[0].id;
+    modal.close();
+    getQuestions(activeQuiz.value);
+  }
+};
+const updateQuestion = async () => {
+  const { data, error } = await supabase
+    .from("questions")
+    .upsert({
+      id: activeQuestion.value,
+      text: questionName.value,
+      quiz_id: activeQuiz.value,
+      type: questionType.value,
+    })
+    .select();
+  if (error) console.log(error);
+  else {
+    quizName.value = "";
+    activeQuestion.value = data[0].id;
+    modal.close();
+    getQuestions(activeQuiz.value);
+  }
+};
+const deleteQuestion = async (x) => {
+  const response = await supabase.from("questions").delete().eq("id", x);
+  if (response.status == 204) {
+    getQuestions(activeQuiz.value);
+    quizName.value = "";
   }
 };
 
-const answerCount = ref(1);
-const answer = ref([
+// ANSWERS
+const answers = ref([
   {
-    text: "welcome to chilis",
+    text: "",
+    is_correct: false,
+  },
+  {
+    text: "",
+    is_correct: false,
+  },
+  {
+    text: "",
     is_correct: false,
   },
 ]);
+const answersReset = () => {
+  answers.value = [
+    {
+      text: "",
+      is_correct: false,
+    },
+    {
+      text: "",
+      is_correct: false,
+    },
+    {
+      text: "",
+      is_correct: false,
+    },
+  ];
+};
+const tf = ref({
+  question_id: activeQuestion.value,
+  is_correct: false,
+});
+const text = ref({
+  question_id: activeQuestion.value,
+  text: "",
+});
+
 const addAnswer = () => {
-  answer.value.push({ text: "", is_correct: false });
-  answerCount.value++;
+  answers.value.push({ text: "", is_correct: false });
+};
+
+const deleteAnswer = async (x) => {
+  const response = await supabase.from("answers").delete().eq("id", x);
+  if (response.status == 204) getAnswer(activeQuestion.value);
 };
 
 const postAnswer = async () => {
-  const { error } = await supabase.from("answers").insert({
-    question_id: activeQuestion.value,
-    text: answer.value.text,
-    is_correct: answer.value.is_correct,
-  });
-  if (error) console.log(error);
-  else {
-    answer.value.text = "";
+  let query = supabase.from("answers");
+
+  if (questionType.value == "mcq") {
+    const answersWithQuestionId = answers.value.map((answer) => ({
+      ...answer,
+      question_id: activeQuestion.value,
+    }));
+
+    for (let i = 0; i < answersWithQuestionId.length; i++) {
+      const { error } = await query.upsert(answersWithQuestionId[i]);
+      if (error) console.log(error);
+    }
   }
+  if (questionType.value == "tf") query = query.upsert(tf.value);
+  if (questionType.value == "text") query = query.upsert(text.value);
+};
+const getAnswer = async (questionId) => {
+  const { data, error } = await supabase
+    .from("answers")
+    .select()
+    .eq("question_id", questionId);
+  if (data.length >= 2) {
+    answers.value = data;
+  } else answersReset();
+  if (error) console.log(error);
 };
 
-
+//BOTH
+const getQA = async (x) => {
+  activeQuestion.value = x;
+  await getQuestion(x);
+  await getAnswer(x);
+};
 const submitQA = async () => {
-  await postQuestion();
+  await updateQuestion();
   await postAnswer(activeQuestion.value);
   await getQuestions(activeQuiz.value);
 };
 
-const quizEditor = ref(false);
-
 onMounted(async () => {
-  await getWorkspaces();
-  activeWorkspace.value = workspaces.value[0].id;
+  await getQuizes();
+  await getQuestions(activeQuiz.value);
+  await getAnswer(activeQuestion.value);
 });
 
 watch(
-  () => activeWorkspace.value,
-  () => getQuizes()
+  () => activeQuiz.value,
+  () => getQuestions(activeQuiz.value)
 );
 </script>
 

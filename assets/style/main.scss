@@ -164,6 +164,7 @@ nav {
           p {
             span {
               font-weight: 800;
+              font-size: 22px;
               color: $blue;
             }
           }
@@ -210,7 +211,6 @@ nav {
       grid-template-rows: repeat(1, auto);
       padding: 1rem;
       grid-template-columns: calc(100% - 19rem) 6rem 8rem 2rem;
-      // gap: 4px 28px;
       gap: 1rem;
       display: grid;
       width: calc(100%);
@@ -233,9 +233,9 @@ nav {
         background-color: $cloudgrey;
         border-radius: 0 0 1rem 1rem;
         display: flex;
-        align-items: center;
+        padding: 4rem;
         justify-content: space-evenly;
-        height: 50dvh;
+        min-height: 50dvh;
         gap: 2rem;
         .addAnswer {
           width: min-content;
@@ -244,14 +244,54 @@ nav {
           gap: 2rem;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          .input-wrapper {
-            max-width: 25rem;
-            input {
-              font-weight: 600;
-              font-style: $font-stack;
-              &::placeholder {
-                opacity: 0.7;
+
+          width: 320px;
+          .tf,
+          .answer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            .answer-wrapper {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 1rem;
+
+              .correct {
+                border: 1px solid #508104 !important;
+                input {
+                  color: #508104 !important;
+                }
+              }
+              .input-wrapper {
+                max-width: 25rem;
+                width: 100%;
+                input {
+                  font-weight: 600;
+                  font-style: $font-stack;
+                  &::placeholder {
+                    opacity: 0.7;
+                  }
+                }
+              }
+              .disabled {
+                scale: 0.9;
+                color: $dimgrey !important;
+                cursor: not-allowed !important;
+              }
+              .icon {
+                cursor: pointer;
+                font-size: 2rem;
+                color: $orange;
+              }
+              .answer {
+                border: 1px solid $orange;
+                input {
+                  color: $orange;
+                  &::placeholder {
+                    color: $orange;
+                  }
+                }
               }
             }
           }
@@ -264,25 +304,7 @@ nav {
               }
             }
           }
-          .answer {
-            border: 1px solid $orange;
-            input {
-              color: $orange;
-              &::placeholder {
-                color: $orange;
-              }
-            }
-          }
-        }
-        .panel {
-          background-color: $white;
-          height: 16rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          border-radius: 1rem 0 0 1rem;
-          border-right: 1rem solid $cloudgrey;
-          padding: 1rem;
+
         }
       }
     }

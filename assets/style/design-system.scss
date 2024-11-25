@@ -34,12 +34,16 @@ button {
   margin-bottom: 1.5rem;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"],
+input[type="radio"] {
   width: 1.5rem;
   &:hover {
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.358);
   }
+}
+textarea {
+  height: 8rem !important;
 }
 textarea,
 input,
@@ -52,7 +56,6 @@ select {
   background-color: $white;
   line-height: 16px;
   width: 100%;
-  margin-bottom: 1.5rem;
   height: 2.5rem;
   &::placeholder {
     color: #949494;
@@ -191,7 +194,7 @@ a {
   z-index: 20;
   .card {
     background-color: $offwhite;
-    height: 16rem;
+    min-height: 16rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -200,7 +203,11 @@ a {
     max-width: 500px;
     width: 100%;
     border-radius: 2rem;
-
+    .modal-content {
+      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
     .icon {
       font-size: 5rem;
       color: $orange;
