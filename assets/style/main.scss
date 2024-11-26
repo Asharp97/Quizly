@@ -244,8 +244,7 @@ nav {
           gap: 2rem;
           display: flex;
           flex-direction: column;
-
-          width: 320px;
+          min-width: 20rem;
           .tf,
           .answer-list {
             display: flex;
@@ -304,7 +303,19 @@ nav {
               }
             }
           }
-
+          .button-group {
+            display: flex;
+            gap: 1rem;
+            .button-wrapper {
+              flex: 1;
+            }
+            .loading {
+              font-size: 2rem;
+            }
+          }
+        }
+        .panel {
+          min-width: 10rem;
         }
       }
     }

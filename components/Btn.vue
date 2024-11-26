@@ -1,5 +1,7 @@
 <template>
-  <NuxtLink :to="`${destination ? '/' + destination : ''}`">
+  <NuxtLink
+    :to="`${destination ? '/' + destination : ''}`"
+    class="button-wrapper">
     <button
       :disabled="disabled == true"
       type="button"
@@ -9,7 +11,11 @@
         { orange: orange },
         { disabled: disabled },
       ]">
-      <Icon :name="icon" v-if="icon" class="icon" />
+      <Icon
+        :name="icon"
+        v-if="icon"
+        class="icon"
+        :class="{ loading: loading }" />
       {{ text }}
       <slot />
     </button>
@@ -19,6 +25,7 @@
 <script setup>
 defineProps([
   "text",
+  "loading",
   "destination",
   "icon",
   "inv",

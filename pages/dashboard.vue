@@ -163,22 +163,21 @@
                   type="radio" />
               </div>
             </div>
-            <textarea
-              v-if="questionType == 'text'"
-              id=""
-              v-model="text.text"
-              placeholder="Stay tuned, We'll implement ai to asses the answer for you"
-              class="textArea"
-              name="" />
-            <btn text="Update" @click="submitQA()" />
+            <div class="button-group">
+              <Btn
+                :disabled="answers.length > 7 || questionType != 'mcq'"
+                :orange="true"
+                text="Add Answer"
+                icon="iconify i-material-symbols:add-2-rounded"
+                @click="addAnswer()" />
+              <Btn
+                :loading="loading"
+                text="Update"
+                :icon="loading ? 'line-md:uploading-loop' : 'line-md:uploading'"
+                @click="submitQA()" />
+            </div>
           </div>
           <div class="panel">
-            <Btn
-              :disabled="answers.length > 7 || questionType != 'mcq'"
-              :orange="true"
-              text="Add Answer"
-              icon="iconify i-material-symbols:add-2-rounded"
-              @click="addAnswer()" />
             <p v-if="answers.length > 7" class="error">
               woah woah take it easy there isn't that too much
             </p>
@@ -347,8 +346,6 @@ const getQuestions = async (x) => {
   if (data) {
     if (data.length > 0) {
       questions.value = data;
-      activeQuestion.value = data[0].id;
-      questionName.value = data[0].text;
       noQuestions.value = false;
     } else noQuestions.value = true;
   } else console.log(error);
@@ -358,6 +355,7 @@ const getQuestion = async (x) => {
   if (data) {
     if (data.length) {
       questionName.value = data[0].text;
+      questionType.value = data[0].type;
       return data.type;
     }
   } else console.log(error);
@@ -446,18 +444,20 @@ const tf = ref({
   question_id: activeQuestion.value,
   is_correct: false,
 });
-const text = ref({
-  question_id: activeQuestion.value,
-  text: "",
-});
 
 const addAnswer = () => {
   answers.value.push({ text: "", is_correct: false });
 };
+const removeAnswer = () => {
+  answers.value.splice(answers.value.length - 1, 1);
+};
 
 const deleteAnswer = async (x) => {
-  const response = await supabase.from("answers").delete().eq("id", x);
-  if (response.status == 204) getAnswer(activeQuestion.value);
+  if (typeof answers.value == "undefined") removeAnswer(x);
+  else {
+    const response = await supabase.from("answers").delete().eq("id", x);
+    if (response.status == 204) getAnswer(activeQuestion.value);
+  }
 };
 
 const postAnswer = async () => {
@@ -474,36 +474,47 @@ const postAnswer = async () => {
       if (error) console.log(error);
     }
   }
-  if (questionType.value == "tf") query = query.upsert(tf.value);
-  if (questionType.value == "text") query = query.upsert(text.value);
+  if (questionType.value == "tf") {
+    tf.value.question_id = activeQuestion.value;
+    const { error } = await query.upsert(tf.value);
+    if (error) console.log(error);
+  }
 };
-const getAnswer = async (questionId) => {
+const getAnswer = async (questionId, type) => {
   const { data, error } = await supabase
     .from("answers")
     .select()
     .eq("question_id", questionId);
-  if (data.length >= 2) {
-    answers.value = data;
-  } else answersReset();
-  if (error) console.log(error);
+  if (data) {
+    if (type == "mcq")
+      if (data.length >= 2) answers.value = data;
+      else answersReset();
+    else if (type == "tf") tf.value = data[0];
+  } else console.log(error);
+  console.log(data);
 };
 
 //BOTH
 const getQA = async (x) => {
   activeQuestion.value = x;
   await getQuestion(x);
-  await getAnswer(x);
+  await getAnswer(x, questionType.value);
 };
 const submitQA = async () => {
+  loading.value = true;
   await updateQuestion();
   await postAnswer(activeQuestion.value);
   await getQuestions(activeQuiz.value);
+  loading.value = false;
 };
 
 onMounted(async () => {
   await getQuizes();
   await getQuestions(activeQuiz.value);
-  await getAnswer(activeQuestion.value);
+  activeQuestion.value = questions.value[0].id;
+  questionName.value = questions.value[0].text;
+  questionType.value = questions.value[0].type;
+  await getAnswer(activeQuestion.value, questionType.value);
 });
 
 watch(
