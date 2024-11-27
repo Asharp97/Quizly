@@ -113,6 +113,7 @@
                   class="input-wrapper answer"
                   :class="{ correct: answer.is_correct }">
                   <input
+                    ref="answerInput"
                     v-model="answer.text"
                     type="text"
                     placeholder="And here is your answer" />
@@ -172,7 +173,7 @@
                 @click="addAnswer()" />
               <Btn
                 :loading="loading"
-                text="Update"
+                text="Save"
                 :icon="loading ? 'line-md:uploading-loop' : 'line-md:uploading'"
                 @click="submitQA()" />
             </div>
@@ -246,7 +247,6 @@ definePageMeta({
 const supabase = useSupabaseClient();
 const modal = useModal();
 const session = useSession();
-
 const loading = ref(false);
 const noContent = ref(false);
 
@@ -344,10 +344,15 @@ const getQuestions = async (x) => {
     .order("created_at", { ascending: false })
     .eq("quiz_id", x);
   if (data) {
+    questions.value = data;
     if (data.length > 0) {
-      questions.value = data;
       noQuestions.value = false;
-    } else noQuestions.value = true;
+    } else {
+      noQuestions.value = true;
+      answersReset();
+      questionName.value = "";
+      activeQuestion.value = null;
+    }
   } else console.log(error);
 };
 const getQuestion = async (x) => {
@@ -356,9 +361,9 @@ const getQuestion = async (x) => {
     if (data.length) {
       questionName.value = data[0].text;
       questionType.value = data[0].type;
-      return data.type;
     }
   } else console.log(error);
+  return data?.[0] || null; // Return the first question or null if none is found
 };
 const handlePostQuestion = async () => {
   questionName.value = "Question #" + (questions.value.length + 1);
@@ -424,36 +429,24 @@ const answers = ref([
     is_correct: false,
   },
 ]);
-const answersReset = () => {
-  answers.value = [
-    {
-      text: "",
-      is_correct: false,
-    },
-    {
-      text: "",
-      is_correct: false,
-    },
-    {
-      text: "",
-      is_correct: false,
-    },
-  ];
-};
+const answerInput = ref(null);
+
 const tf = ref({
   question_id: activeQuestion.value,
   is_correct: false,
 });
 
-const addAnswer = () => {
+const addAnswer = async () => {
   answers.value.push({ text: "", is_correct: false });
+  await nextTick();
+  answerInput.value[answerInput.value.length - 1].focus();
 };
 const removeAnswer = () => {
   answers.value.splice(answers.value.length - 1, 1);
 };
 
 const deleteAnswer = async (x) => {
-  if (typeof answers.value == "undefined") removeAnswer(x);
+  if (typeof answers.value[x] == "undefined") removeAnswer(x);
   else {
     const response = await supabase.from("answers").delete().eq("id", x);
     if (response.status == 204) getAnswer(activeQuestion.value);
@@ -476,7 +469,8 @@ const postAnswer = async () => {
   }
   if (questionType.value == "tf") {
     tf.value.question_id = activeQuestion.value;
-    const { error } = await query.upsert(tf.value);
+    const { data, error } = await query.upsert(tf.value).select();
+    tf.value = data[0];
     if (error) console.log(error);
   }
 };
@@ -489,9 +483,8 @@ const getAnswer = async (questionId, type) => {
     if (type == "mcq")
       if (data.length >= 2) answers.value = data;
       else answersReset();
-    else if (type == "tf") tf.value = data[0];
+    else if (type == "tf") if (data.length == 1) tf.value = data[0];
   } else console.log(error);
-  console.log(data);
 };
 
 //BOTH
@@ -506,6 +499,33 @@ const submitQA = async () => {
   await postAnswer(activeQuestion.value);
   await getQuestions(activeQuiz.value);
   loading.value = false;
+  await cleanup();
+};
+
+const cleanup = async () => {
+  const question = await getQuestion(activeQuestion.value);
+  if (question.type === "tf") {
+    const { data } = await supabase
+      .from("answers")
+      .select()
+      .eq("question_id", activeQuestion.value)
+      .not("text", "is", null);
+    if (data) console.log(data);
+  }
+  if (question.type === "mcq") {
+    const { data } = await supabase
+      .from("answers")
+      .select()
+      .eq("question_id", activeQuestion.value)
+      .is("text", null);
+    if (data) console.log(data);
+  }
+};
+const answersReset = () => {
+  for (let i = 0; i < answers.value.length; i++) {
+    answers.value[i].text = "";
+    answers.value[i].is_correct = false;
+  }
 };
 
 onMounted(async () => {
@@ -519,7 +539,16 @@ onMounted(async () => {
 
 watch(
   () => activeQuiz.value,
-  () => getQuestions(activeQuiz.value)
+  () => {
+    getQuestions(activeQuiz.value);
+  }
+);
+watch(
+  () => questionType.value,
+  () => {
+    if (questionType.value == "mcq") tf.value.is_correct = false;
+    if (questionType.value == "tf") answersReset();
+  }
 );
 </script>
 
