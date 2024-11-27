@@ -8,7 +8,8 @@
             <Icon
               class="icon"
               name="material-symbols:add-2-rounded"
-              @click="handlePostQuestion()" />
+              @click="handlePostQuestion()"
+            />
           </div>
         </div>
         <div class="hr" />
@@ -18,26 +19,29 @@
         <!-- {{ questions.length }} -->
         <ol class="list">
           <li
-            v-for="(question, n) in questions"
-            :key="question.id"
+            v-for="(ask, n) in questions"
+            :key="ask.id"
             class="list-item"
-            :class="{ active: activeQuestion == question.id }"
-            @click="getQA(question.id)">
+            :class="{ active: activeQuestion == ask.id }"
+            @click="getQA(ask.id)"
+          >
             <p>
               <span> 0{{ n + 1 }}.</span>
-              {{ question.text }}
+              {{ ask.text }}
             </p>
             <div class="icon-wrapper dropdown">
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="questionMenu = question.id" />
+                @click="questionMenu = ask.id"
+              />
               <div
-                v-if="questionMenu == question.id"
+                v-if="questionMenu == ask.id"
                 ref="questionMenuRef"
-                class="menu-bg">
+                class="menu-bg"
+              >
                 <div class="menu">
-                  <div class="item" @click="deleteQuestion(question.id)">
+                  <div class="item" @click="deleteQuestion(ask.id)">
                     Delete question
                   </div>
                 </div>
@@ -69,99 +73,114 @@
         </div>
       </no-content>
       <div
-        v-for="quiz in quizes"
-        :key="quiz.id"
+        v-for="exam in quizes"
+        :key="exam.id"
         class="quiz-data"
-        @click="getQuestions(quiz.id)">
+        @click="getQuestions(exam.id)"
+      >
         <div
           class="quiz-header"
-          :class="{ active: activeQuiz == quiz.id }"
-          @click="activeQuiz = quiz.id">
-          <h3>{{ quiz.title }}</h3>
-          <h3 v-if="quiz.responses">{{ quiz.responses }}</h3>
+          :class="{ active: activeQuiz == exam.id }"
+          @click="activeQuiz = exam.id"
+        >
+          <h3>{{ exam.title }}</h3>
+          <h3 v-if="exam.responses">{{ exam.responses }}</h3>
           <h3 v-else>-</h3>
-          <h4>{{ formatDate(quiz.created_at) }}</h4>
+          <h4>{{ formatDate(exam.created_at) }}</h4>
           <div class="icon-wrapper dropdown">
             <Icon
               class="icon"
               name="mi:options-horizontal"
-              @click="quizMenu = quiz.id" />
-            <div v-if="quizMenu == quiz.id" ref="quizMenuRef" class="menu-bg">
+              @click="quizMenu = exam.id"
+            />
+            <div v-if="quizMenu == exam.id" ref="quizMenuRef" class="menu-bg">
               <div class="menu">
-                <div class="item" @click="handlequizEditor(quiz.id)">
+                <div class="item" @click="handlequizEditor(exam.id)">
                   Edit title
                 </div>
-                <div class="item" @click="deleteQuiz(quiz.id)">Delete quiz</div>
+                <div class="item" @click="deleteQuiz(exam.id)">Delete quiz</div>
               </div>
             </div>
           </div>
         </div>
-        <div v-if="activeQuiz == quiz.id" class="quiz-content">
+        <div v-if="activeQuiz == exam.id" class="quiz-content">
           <div class="qa">
             <div class="input-wrapper question">
               <input
                 v-model="questionName"
                 type="text"
-                placeholder="Enter Your quesion here" />
+                placeholder="Enter Your quesion here"
+              />
             </div>
             <div v-if="questionType == 'mcq'" class="answer-list">
               <div
-                v-for="answer in answers"
-                :key="answer.id"
-                class="answer-wrapper">
+                v-for="reply in answers"
+                :key="reply.id"
+                class="answer-wrapper"
+              >
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: answer.is_correct }">
+                  :class="{ correct: reply.is_correct }"
+                >
                   <input
                     ref="answerInput"
-                    v-model="answer.text"
+                    v-model="reply.text"
                     type="text"
-                    placeholder="And here is your answer" />
+                    placeholder="And here is your answer"
+                  />
                 </div>
                 <input
-                  v-model="answer.is_correct"
+                  v-model="reply.is_correct"
                   class="checkbox"
-                  type="checkbox" />
+                  type="checkbox"
+                />
 
                 <Icon
                   :class="{ disabled: answers.length == 2 }"
                   name="material-symbols:delete-outline-rounded"
                   class="icon"
-                  @click="deleteAnswer(answer.id)" />
+                  @click="deleteAnswer(reply.id)"
+                />
               </div>
             </div>
             <div v-if="questionType == 'tf'" class="tf">
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == true }">
+                  :class="{ correct: tf.is_correct == true }"
+                >
                   <input
                     disabled
                     value="TRUE"
                     type="text"
-                    placeholder="And here is your answer" />
+                    placeholder="And here is your answer"
+                  />
                 </div>
                 <input
                   v-model="tf.is_correct"
                   :value="true"
                   name="tf"
-                  type="radio" />
+                  type="radio"
+                />
               </div>
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == false }">
+                  :class="{ correct: tf.is_correct == false }"
+                >
                   <input
                     disabled
                     value="FALSE"
                     type="text"
-                    placeholder="And here is your answer" />
+                    placeholder="And here is your answer"
+                  />
                 </div>
                 <input
                   v-model="tf.is_correct"
                   :value="false"
                   name="tf"
-                  type="radio" />
+                  type="radio"
+                />
               </div>
             </div>
             <div class="button-group">
@@ -170,12 +189,14 @@
                 :orange="true"
                 text="Add Answer"
                 icon="iconify i-material-symbols:add-2-rounded"
-                @click="addAnswer()" />
+                @click="addAnswer()"
+              />
               <Btn
                 :loading="loading"
                 text="Save"
                 :icon="loading ? 'line-md:uploading-loop' : 'line-md:uploading'"
-                @click="submitQA()" />
+                @click="submitQA()"
+              />
             </div>
           </div>
           <div class="panel">
@@ -186,7 +207,8 @@
               id=""
               v-model="questionType"
               name=""
-              :class="!questionType ? 'placeholder' : ''">
+              :class="!questionType ? 'placeholder' : ''"
+            >
               <option value="mcq">Multiple Choice</option>
               <option value="tf">True or False</option>
               <option value="text">Open Ended</option>
@@ -194,46 +216,48 @@
           </div>
         </div>
       </div>
-      <Teleport to="body">
-        <ModalComponent
-          :condition="modal.show"
-          class="modal"
-          @clear-inputs="clearInputs()">
-          <div class="modal-content">
-            <input
-              v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
-              ref="quizModalInput"
-              v-model="quizName"
-              type="text"
-              placeholder="Quiz Title" />
-            <Btn v-if="modal.show == 'postQuiz'" @click="postQuiz"
-              >New Quiz</Btn
-            >
-            <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz"
-              >Submit Edit</Btn
-            >
-            <select
-              v-if="modal.show == 'postQuestion'"
-              id=""
-              v-model="questionType"
-              name="">
-              <option value="mcq">Multiple Choice</option>
-              <option value="tf">True Or False</option>
-              <option value="text">Open Ended</option>
-            </select>
-            <input
-              v-show="modal.show == 'postQuestion'"
-              ref="questionModalInput"
-              v-model="questionName"
-              type="text"
-              placeholder="Question" />
-            <Btn v-if="modal.show == 'postQuestion'" @click="postQuestion()"
-              >Submit Question</Btn
-            >
-          </div>
-        </ModalComponent>
-      </Teleport>
     </div>
+    <Teleport to="body">
+      <ModalComponent
+        :condition="modal.show"
+        class="modal"
+        @clear-inputs="clearInputs()"
+      >
+        <div class="modal-content">
+          <input
+            v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
+            ref="quizModalInput"
+            v-model="quizName"
+            type="text"
+            placeholder="Quiz Title"
+          />
+          <Btn v-if="modal.show == 'postQuiz'" @click="postQuiz">New Quiz</Btn>
+          <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz"
+            >Submit Edit</Btn
+          >
+          <select
+            v-if="modal.show == 'postQuestion'"
+            id=""
+            v-model="questionType"
+            name=""
+          >
+            <option value="mcq">Multiple Choice</option>
+            <option value="tf">True Or False</option>
+            <option value="text">Open Ended</option>
+          </select>
+          <input
+            v-show="modal.show == 'postQuestion'"
+            ref="questionModalInput"
+            v-model="questionName"
+            type="text"
+            placeholder="Question"
+          />
+          <Btn v-if="modal.show == 'postQuestion'" @click="postQuestion()"
+            >Submit Question</Btn
+          >
+        </div>
+      </ModalComponent>
+    </Teleport>
   </div>
 </template>
 
@@ -259,6 +283,8 @@ const quizName = ref();
 const quizMenu = ref(null);
 const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
+
+
 
 const getQuizes = async () => {
   try {
@@ -351,7 +377,7 @@ const getQuestions = async (x) => {
       noQuestions.value = true;
       answersReset();
       questionName.value = "";
-      activeQuestion.value = null;
+      // activeQuestion.value = null;
     }
   } else console.log(error);
 };
