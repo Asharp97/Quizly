@@ -87,12 +87,12 @@ h5,
 p {
   // margin-bottom: 1.5rem;
 }
-.noContentWrapper {
+.fscreenWrapper {
   height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  .noContent {
+  .fscreen {
     p {
       max-width: 50rem;
       background-color: $cloudgrey;

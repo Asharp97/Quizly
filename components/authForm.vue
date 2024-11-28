@@ -104,7 +104,7 @@ const login = async () => {
       password: password.value,
     });
     if (data) {
-      session.setSession(data);
+      session.set(data);
       modal.close();
       // router.push('/dashboard')
     }
@@ -117,7 +117,7 @@ const signUp = async () => {
     password: password.value,
   });
   if (data) {
-    await session.setSession(data);
+    await session.set(data);
     modal.close();
     router.push("/dashboard");
     router.replace("/dashboard");
@@ -141,7 +141,7 @@ const googleAuth = async () => {
     if (data) {
       console.log("Google Auth Data:", data);
       // await router.push('/dashboard');
-      session.setSession(data);
+      session.set(data);
       // modal.close();
       console.log(session);
     }

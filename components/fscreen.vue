@@ -1,6 +1,6 @@
 <template>
-  <div class="noContentWrapper">
-    <div class="noContent">
+  <div class="fscreenWrapper">
+    <div class="fscreen">
       <slot />
     </div>
   </div>

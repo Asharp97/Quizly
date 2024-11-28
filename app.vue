@@ -16,7 +16,7 @@ onMounted(async () => {
   } = await supabase.auth.getSession();
 
   if (authSession) {
-    session.setSession(authSession);
+    session.set(authSession);
     modal.close();
     // Clean up the URL
     router.replace(router.currentRoute.value.path);

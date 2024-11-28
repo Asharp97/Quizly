@@ -6,18 +6,18 @@
       </NuxtLink>
       <div class="menu-bg">
         <div class="menu">
-          <NuxtLink to="/dashboard" class="item">
-            Dashboard
-          </NuxtLink>
-          <div class="item" @click="modal.confirm = true">
-            Logout
-          </div>
+          <NuxtLink to="/dashboard" class="item"> Dashboard </NuxtLink>
+          <div class="item" @click="modal.confirm = true">Logout</div>
         </div>
       </div>
     </div>
     <Teleport to="body">
-      <prompt msg="Are you sure you want to logout?" action-text="Log me out" cancel-text="Nevermind"
-        icon="material-symbols:logout" @confirm="logout" />
+      <prompt
+        msg="Are you sure you want to logout?"
+        action-text="Log me out"
+        cancel-text="Nevermind"
+        icon="material-symbols:logout"
+        @confirm="logout" />
     </Teleport>
   </div>
 </template>
@@ -29,14 +29,14 @@ const session = useSession();
 const modal = useModal();
 
 const logout = async () => {
-  const { error } = await supabase.auth.signOut()
-  if (error) console.log(error)
+  const { error } = await supabase.auth.signOut();
+  if (error) console.log(error);
   else {
-    session.clearSession()
-    modal.close()
-    router.push('/');
+    session.clear();
+    modal.close();
+    router.push("/");
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

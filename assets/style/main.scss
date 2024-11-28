@@ -109,6 +109,7 @@ nav {
 }
 .dashboard {
   background-color: $cloudgrey;
+  height: calc(100dvh - $navHeight);
   width: 100%;
   display: flex;
   .side-nav {
@@ -190,7 +191,6 @@ nav {
     flex-direction: column;
     gap: 0.5rem;
 
-    height: calc(100dvh - $navHeight);
     width: 100%;
 
     background-color: $white;
@@ -327,6 +327,7 @@ nav {
   padding-inline: 2rem;
   padding-block: 1rem;
   justify-content: space-between;
+  height: $navHeight;
   .logo-wrapper {
     width: fit-content;
     display: flex;
