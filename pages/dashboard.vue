@@ -12,7 +12,7 @@
           </div>
         </div>
         <div class="hr" />
-        <div v-if="noQuestions">
+        <div v-if="questions.length == 0">
           <p>no questions yet</p>
         </div>
         <ol class="list">
@@ -58,7 +58,7 @@
         <div>Responses</div>
         <div>Created at</div>
       </div>
-      <Fscreen v-if="noContent">
+      <Fscreen v-if="quizes.length == 0">
         <p>
           🎉 Looks like you're just getting started! No quizzes here yet. Click
           <strong>"Create New Quiz"</strong> to make your first one. 🚀
@@ -257,8 +257,6 @@ const modal = useModal();
 const session = useSession();
 
 const loading = ref(false);
-const noContent = ref(false);
-const noQuestions = ref(false);
 const openPanel = ref(true);
 
 //Quizes FUNCTIONS
@@ -274,13 +272,11 @@ const getQuizes = async () => {
     if (data.length) {
       quizes.value = data;
       quiz.set(data[0]);
-      noContent.value = false;
     } else throw error;
     return data?.[0] || null;
   } catch (e) {
     quizes.value = [];
     console.log("no questions yet", e);
-    noContent.value = true;
   } finally {
     loading.value = false;
   }
@@ -355,10 +351,7 @@ const getQuestions = async (x) => {
       .eq("quiz_id", x);
     if (data) {
       questions.value = data;
-      if (data.length > 0) {
-        noQuestions.value = false;
-      } else {
-        noQuestions.value = true;
+      if (data.length) {
         answersReset();
         question.reset();
       }
