@@ -3,25 +3,25 @@
     <div class="side-nav">
       <aside class="nav-wrapper">
         <div class="title">
-          <h3>Questions</h3>
+          <h3>Quizzes</h3>
           <div class="icon-wrapper">
             <Icon
               class="icon"
               name="material-symbols:add-2-rounded"
-              @click="handlePostQuestion()" />
+              @click="handlPostQuiz()" />
           </div>
         </div>
         <div class="hr" />
-        <div v-if="questions.length == 0">
-          <p>no questions yet</p>
+        <div v-if="quizes.length == 0">
+          <p>no Quizzes yet</p>
         </div>
         <ol class="list">
           <li
-            v-for="(ask, n) in questions"
+            v-for="(ask, n) in quizes"
             :key="ask.id"
             class="list-item"
-            :class="{ active: question.id == ask.id }"
-            @click="getQA(ask.id)">
+            :class="{ active: quiz.id == ask.id }"
+            @click="quiz.id = ask.id">
             <p>
               <span> 0{{ n + 1 }}.</span>
               {{ ask.text }}
@@ -30,14 +30,15 @@
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="question.menu = ask.id" />
-              <div
-                v-if="question.menu == ask.id"
-                ref="questionMenuRef"
-                class="menu-bg">
+                @click="quiz.menu = ask.id" />
+              <div v-if="quiz.menu == ask.id" ref="quizMenuRef" class="menu-bg">
                 <div class="menu">
-                  <div class="item" @click="deleteQuestion(ask.id)">
-                    Delete question
+                  <div class="item">Copy link</div>
+                  <div class="item" @click="handleQuizEditor(ask.id)">
+                    Edit title
+                  </div>
+                  <div class="item" @click="deleteQuiz(ask.id)">
+                    Delete Quiz
                   </div>
                 </div>
               </div>
@@ -47,41 +48,38 @@
       </aside>
     </div>
     <div class="quizes-list">
-      <btn class="newQuizBtn" @click="handlPostQuiz()">
+      <btn class="newQuizBtn" @click="handlePostQuestion()">
         <div class="icon-wrapper">
           <Icon class="icon" name="material-symbols:add-2-rounded" />
         </div>
-        <p>Create New Quiz</p>
+        Create New Question
       </btn>
-      <div v-if="quizes.length" class="quiz-titles">
+      <div v-if="questions.length" class="quiz-titles">
         <div />
         <div>Responses</div>
         <div>Created at</div>
       </div>
-      <Fscreen v-if="quizes.length == 0">
+      <Fscreen v-if="!questions.length">
         <p>
-          🎉 Looks like you're just getting started! No quizzes here yet. Click
-          <strong>"Create New Quiz"</strong> to make your first one. 🚀
+          🎉 Looks like you're just getting started! No questions here yet.
+          Click
+          <strong>"Create New Question"</strong> to make your first one. 🚀
         </p>
       </Fscreen>
-      <div
-        v-for="exam in quizes"
-        :key="exam.id"
-        class="quiz-data"
-        @click="getQuestions(exam.id)">
+      <div v-for="exam in questions" :key="exam.id" class="quiz-data">
         <div
           class="quiz-header"
-          :class="{ active: quiz.id == exam.id }"
+          :class="{ active: question.id == exam.id }"
           @click="
             () => {
-              if (quiz.id == exam.id) openPanel = !openPanel;
+              if (question.id == exam.id) openPanel = !openPanel;
               else {
-                quiz.id = exam.id;
+                question.id = exam.id;
                 openPanel = true;
               }
             }
           ">
-          <h3>{{ exam.title }}</h3>
+          <h3>{{ exam.text }}</h3>
           <h3 v-if="exam.responses">{{ exam.responses }}</h3>
           <h3 v-else>-</h3>
           <h4>{{ formatDate(exam.created_at) }}</h4>
@@ -89,19 +87,21 @@
             <Icon
               class="icon"
               name="mi:options-horizontal"
-              @click="quiz.menu = exam.id" />
-            <div v-if="quiz.menu == exam.id" ref="quizMenuRef" class="menu-bg">
+              @click="question.menu = exam.id" />
+            <div
+              v-if="question.menu == exam.id"
+              ref="questionMenuRef"
+              class="menu-bg">
               <div class="menu">
-                <div class="item" @click="handlequizEditor(exam.id)">
-                  Edit title
+                <div class="item" @click="deleteQuestion(exam.id)">
+                  Delete quiz
                 </div>
-                <div class="item" @click="deleteQuiz(exam.id)">Delete quiz</div>
               </div>
             </div>
           </div>
         </div>
         <div
-          v-if="quiz.id == exam.id && openPanel == true"
+          v-if="question.id == exam.id && openPanel == true"
           class="quiz-content">
           <div class="qa">
             <div class="input-wrapper question">
@@ -124,6 +124,7 @@
                     type="text"
                     placeholder="And here is your answer" />
                 </div>
+                {{ reply }}
                 <input
                   v-model="reply.is_correct"
                   class="checkbox"
@@ -141,11 +142,7 @@
                 <div
                   class="input-wrapper answer"
                   :class="{ correct: tf.is_correct == true }">
-                  <input
-                    disabled
-                    value="TRUE"
-                    type="text"
-                    placeholder="And here is your answer" />
+                  <input disabled value="TRUE" type="text" />
                 </div>
                 <input
                   v-model="tf.is_correct"
@@ -157,11 +154,7 @@
                 <div
                   class="input-wrapper answer"
                   :class="{ correct: tf.is_correct == false }">
-                  <input
-                    disabled
-                    value="FALSE"
-                    type="text"
-                    placeholder="And here is your answer" />
+                  <input disabled value="FALSE" type="text" />
                 </div>
                 <input
                   v-model="tf.is_correct"
@@ -248,6 +241,8 @@ import { formatDate } from "~/utils/formatdate";
 import { useQuiz } from "../composables/useQuiz.ts";
 import { useQuestion } from "../composables/useQuestion.ts";
 
+const log = console.log;
+
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
@@ -268,7 +263,10 @@ const quizModalInput = ref(null);
 const getQuizes = async () => {
   try {
     loading.value = true;
-    const { data, error } = await supabase.from("quizes").select();
+    const { data, error } = await supabase
+      .from("quizes")
+      .select()
+      .order("created_at", { ascending: false });
     if (data.length) {
       quizes.value = data;
       quiz.set(data[0]);
@@ -283,7 +281,7 @@ const getQuizes = async () => {
 };
 const getQuiz = async (x) => {
   const { data, error } = await supabase.from("quizes").select().eq("id", x);
-  if (data) quiz.name = data[0].title;
+  if (data) quiz.name = data[0].text;
   else console.log(error);
 };
 const handlPostQuiz = async () => {
@@ -295,7 +293,7 @@ const handlPostQuiz = async () => {
 const postQuiz = async () => {
   const { data, error } = await supabase
     .from("quizes")
-    .insert({ title: quiz.name, user_id: session.user.id })
+    .insert({ text: quiz.name, user_id: session.user.id })
     .select();
   if (error) console.log(error);
   else {
@@ -313,7 +311,7 @@ const deleteQuiz = async (x) => {
     modal.close();
   }
 };
-const handlequizEditor = async (x) => {
+const handleQuizEditor = async (x) => {
   await getQuiz(x);
   modal.show = "editQuiz";
   await nextTick();
@@ -322,7 +320,7 @@ const handlequizEditor = async (x) => {
 const editQuiz = async () => {
   const { error } = await supabase
     .from("quizes")
-    .update({ title: quiz.name })
+    .update({ text: quiz.name })
     .eq("id", quiz.id);
   if (error) console.log(error);
   else {
@@ -355,17 +353,13 @@ const getQuestions = async (x) => {
         answersReset();
         question.reset();
       }
-    } else {
-      console.log(error);
-    }
+    } else console.log(error);
   }
 };
 const getQuestion = async (x) => {
   const { data, error } = await supabase.from("questions").select().eq("id", x);
-  if (data) {
-    question.set(data[0]);
-  } else console.log(error);
-  return data?.[0] || null; // Return the first question or null if none is found
+  if (data) question.set(data[0]);
+  else console.log(error);
 };
 const handlePostQuestion = async () => {
   question.name = "Question #" + (questions.value.length + 1);
@@ -490,13 +484,6 @@ const getAnswer = async (questionId, type) => {
 };
 
 //BOTH
-const getQA = async (x) => {
-  if (x) {
-    question.id = x;
-    await getQuestion(x);
-    await getAnswer(x, question.type);
-  }
-};
 const submitQA = async () => {
   loading.value = true;
   if (question.id) await updateQuestion();
@@ -508,27 +495,18 @@ const submitQA = async () => {
 };
 
 const cleanup = async () => {
-  const ask = await getQuestion(question.id);
-  if (ask.type === "tf") {
-    await supabase
-      .from("answers")
-      .delete()
-      .eq("question_id", question.id)
-      .not("text", "is", null);
-  }
-  if (ask.type === "mcq") {
-    await supabase
-      .from("answers")
-      .delete()
-      .eq("question_id", question.id)
-      .is("text", null);
-  }
+  const query = supabase
+    .from("answers")
+    .delete()
+    .eq("question_id", question.id);
+  if (question.type === "tf") await query.not("text", "is", null);
+  if (question.type === "mcq") await query.is("text", null);
 };
 const answersReset = () => {
   answers.value = [
-    { text: "", is_correct: "" },
-    { text: "", is_correct: "" },
-    { text: "", is_correct: "" },
+    { text: "", is_correct: false },
+    { text: "", is_correct: false },
+    { text: "", is_correct: false },
   ];
 };
 
@@ -547,6 +525,15 @@ watch(
   () => quiz.id,
   () => {
     getQuestions(quiz.id);
+  }
+);
+watch(
+  () => question.id,
+  async () => {
+    if (question.id) {
+      await getQuestion(question.id);
+      await getAnswer(question.id, question.type);
+    }
   }
 );
 watch(
