@@ -14,6 +14,9 @@ importers:
       '@nuxtjs/supabase':
         specifier: ^1.4.2
         version: 1.4.2
+      nanoid:
+        specifier: ^5.0.9
+        version: 5.0.9
       nuxt:
         specifier: ^3.14.159
         version: 3.14.159(@parcel/watcher@2.5.0)(@types/node@22.9.0)(eslint@9.14.0(jiti@2.4.0))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.25.0)(sass-embedded@1.80.6)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.11(@types/node@22.9.0)(sass-embedded@1.80.6)(terser@5.36.0))(webpack-sources@3.2.3)
@@ -2720,8 +2723,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.0.8:
-    resolution: {integrity: sha512-TcJPw+9RV9dibz1hHUzlLVy8N4X9TnwirAjrU08Juo6BNKggzVfP2ZJ/3ZUSq15Xl5i85i+Z89XBO90pB2PghQ==}
+  nanoid@5.0.9:
+    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -4970,7 +4973,7 @@ snapshots:
       is-docker: 3.0.0
       jiti: 1.21.6
       mri: 1.2.0
-      nanoid: 5.0.8
+      nanoid: 5.0.9
       ofetch: 1.4.1
       package-manager-detector: 0.2.2
       parse-git-config: 3.0.0
@@ -7222,7 +7225,7 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  nanoid@5.0.8: {}
+  nanoid@5.0.9: {}
 
   nanotar@0.1.1: {}
 
