@@ -265,6 +265,10 @@ import { nanoid } from "nanoid"; // Generate unique IDs
 
 import { useQuiz } from "../composables/useQuiz.ts";
 import { useQuestion } from "../composables/useQuestion.ts";
+definePageMeta({
+  middleware: "auth",
+  layout: "dashboard",
+});
 
 const log = console.log;
 
@@ -279,10 +283,6 @@ const copyQuiz = (x) => {
   );
 };
 
-definePageMeta({
-  middleware: "auth",
-  layout: "dashboard",
-});
 const supabase = useSupabaseClient();
 const modal = useModal();
 const session = useSession();
@@ -307,7 +307,6 @@ const getQuizes = async () => {
       quizes.value = data;
       quiz.set(data[0]);
     } else throw error;
-    return data?.[0] || null;
   } catch (e) {
     quizes.value = [];
   } finally {
@@ -337,7 +336,7 @@ const postQuiz = async () => {
     .select();
   if (error) console.log(error);
   else {
-    getQuizes();
+    quizes.value = await quiz.get();
     modal.close();
     quiz.name = "";
     quiz.id = data[0].id;
@@ -346,13 +345,12 @@ const postQuiz = async () => {
 const deleteQuiz = async (x) => {
   const response = await supabase.from("quizes").delete().eq("id", x);
   if (response.status == 204) {
-    const res = await getQuizes();
-    quiz.set(res[0]);
+    quizes.value = await quiz.get();
     modal.close();
   }
 };
 const handleQuizEditor = async (x) => {
-  await getQuiz(x);
+  await quiz.get(x);
   modal.show = "editQuiz";
   await nextTick();
   quizModalInput.value.focus();
@@ -364,7 +362,7 @@ const editQuiz = async () => {
     .eq("id", quiz.id);
   if (error) console.log(error);
   else {
-    getQuizes();
+    quizes.value = await quiz.get();
     modal.close();
     quiz.name = "";
   }
@@ -555,8 +553,9 @@ const answersReset = () => {
 };
 
 onMounted(async () => {
-  const res = await getQuizes();
-  if (res) {
+  quizes.value = await quiz.get();
+  log(quiz.id);
+  if (quiz) {
     await getQuestions(quiz.id);
     if (questions.value.length) {
       question.set(questions.value[0]);
@@ -569,7 +568,7 @@ watch(
   () => quiz.id,
   () => {
     getQuestions(quiz.id);
-    getQuiz(quiz.id);
+    quiz.get(quiz.id);
   }
 );
 watch(
