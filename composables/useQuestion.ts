@@ -2,10 +2,17 @@
 import { defineStore } from "pinia";
 
 export const useQuestion = defineStore("question", () => {
+  const supabase = useSupabaseClient();
+  const session = useSession();
+  const modal = useModal();
+  const db = supabase.from("questions");
+
   const id = ref(null);
   const name = ref("");
   const type = ref("mcq");
   const quizId = ref(null);
+
+  const list = ref([]);
 
   const menu = ref(null);
 
@@ -25,5 +32,21 @@ export const useQuestion = defineStore("question", () => {
     type.value = x.type;
   }
 
-  return { id, name, menu, type, quizId, reset, set };
+  const get = async (x?: number) => {
+    if (x) {
+      const { data, error } = await db
+        .select()
+        .order("created_at", { ascending: false })
+        .eq("quiz_id", x);
+      if (data) {
+        list.value = data;
+        if (data.length) {
+          // answersReset();
+          reset();
+        }
+      } else console.log(error);
+    }
+  };
+
+  return { id, name, menu, type, quizId, list, reset, set };
 });

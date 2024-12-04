@@ -8,22 +8,20 @@
             <Icon
               class="icon"
               name="material-symbols:add-2-rounded"
-              @click="handlPostQuiz()"
-            />
+              @click="handlPostQuiz()" />
           </div>
         </div>
         <div class="hr" />
-        <div v-if="quizes.length == 0">
+        <div v-if="quiz.list.length == 0">
           <p>no Quizzes yet</p>
         </div>
         <ol class="list">
           <li
-            v-for="(ask, n) in quizes"
+            v-for="(ask, n) in quiz.list"
             :key="ask.id"
             class="list-item"
             :class="{ active: quiz.id == ask.id }"
-            @click="quiz.id = ask.id"
-          >
+            @click="quiz.id = ask.id">
             <p>
               <span> 0{{ n + 1 }}.</span>
               {{ ask.text }}
@@ -32,17 +30,14 @@
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="quiz.menu = ask.id"
-              />
+                @click="quiz.menu = ask.id" />
               <div v-if="quiz.menu == ask.id" ref="quizMenuRef" class="menu-bg">
                 <div class="menu">
                   <div class="item" @click="copyQuiz(ask.id)">Copy link</div>
                   <div class="item" @click="handleQuizEditor(ask.id)">
                     Edit title
                   </div>
-                  <div class="item" @click="deleteQuiz(ask.id)">
-                    Delete Quiz
-                  </div>
+                  <div class="item" @click="quiz.del(ask.id)">Delete Quiz</div>
                 </div>
               </div>
             </div>
@@ -81,8 +76,7 @@
                 openPanel = true;
               }
             }
-          "
-        >
+          ">
           <h3>{{ exam.text }}</h3>
           <h3 v-if="exam.responses">{{ exam.responses }}</h3>
           <h3 v-else>-</h3>
@@ -91,13 +85,11 @@
             <Icon
               class="icon"
               name="mi:options-horizontal"
-              @click="question.menu = exam.id"
-            />
+              @click="question.menu = exam.id" />
             <div
               v-if="question.menu == exam.id"
               ref="questionMenuRef"
-              class="menu-bg"
-            >
+              class="menu-bg">
               <div class="menu">
                 <div class="item" @click="deleteQuestion(exam.id)">
                   Delete quiz
@@ -108,76 +100,65 @@
         </div>
         <div
           v-if="question.id == exam.id && openPanel == true"
-          class="quiz-content"
-        >
+          class="quiz-content">
           <div class="qa">
             <div class="input-wrapper question">
               <input
                 v-model="question.name"
                 type="text"
-                placeholder="Enter Your quesion here"
-              />
+                placeholder="Enter Your quesion here" />
             </div>
             <div v-if="question.type == 'mcq'" class="answer-list">
               <div
-                v-for="reply in answers"
+                v-for="(reply, n) in answers"
                 :key="reply.id"
-                class="answer-wrapper"
-              >
+                class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: reply.is_correct }"
-                >
+                  :class="{ correct: reply.is_correct }">
                   <input
                     ref="answerInput"
                     v-model="reply.text"
                     type="text"
-                    placeholder="And here is your answer"
-                  />
+                    placeholder="And here is your answer" />
                 </div>
                 {{ reply }}
                 <input
                   v-model="reply.is_correct"
                   class="checkbox"
-                  type="checkbox"
-                />
+                  type="checkbox" />
 
                 <Icon
                   :class="{ disabled: answers.length == 2 }"
                   name="material-symbols:delete-outline-rounded"
                   class="icon"
-                  @click="deleteAnswer(reply.id)"
-                />
+                  @click="deleteAnswer(reply.id, n)" />
               </div>
             </div>
             <div v-if="question.type == 'tf'" class="tf">
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == true }"
-                >
+                  :class="{ correct: tf.is_correct == true }">
                   <input disabled value="TRUE" type="text" />
                 </div>
                 <input
                   v-model="tf.is_correct"
                   :value="true"
                   name="tf"
-                  type="radio"
-                />
+                  type="radio" />
               </div>
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == false }"
-                >
+                  :class="{ correct: tf.is_correct == false }">
                   <input disabled value="FALSE" type="text" />
                 </div>
                 <input
                   v-model="tf.is_correct"
                   :value="false"
                   name="tf"
-                  type="radio"
-                />
+                  type="radio" />
               </div>
             </div>
             <div class="button-group">
@@ -186,14 +167,12 @@
                 :orange="true"
                 text="Add Answer"
                 icon="iconify i-material-symbols:add-2-rounded"
-                @click="addAnswer()"
-              />
+                @click="addAnswer()" />
               <Btn
                 :loading="loading"
                 text="Save"
                 :icon="loading ? 'line-md:uploading-loop' : 'line-md:uploading'"
-                @click="submitQA()"
-              />
+                @click="submitQA()" />
             </div>
           </div>
           <div class="panel">
@@ -204,8 +183,7 @@
               id=""
               v-model="question.type"
               name=""
-              :class="!question.type ? 'placeholder' : ''"
-            >
+              :class="!question.type ? 'placeholder' : ''">
               <option value="mcq">Multiple Choice</option>
               <option value="tf">True or False</option>
               <option value="text">Open Ended</option>
@@ -218,26 +196,23 @@
       <ModalComponent
         :condition="modal.show"
         class="modal"
-        @clear-inputs="quiz.name = ''"
-      >
+        @clear-inputs="quiz.name = ''">
         <div class="modal-content">
           <input
             v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
             ref="quizModalInput"
             v-model="quiz.name"
             type="text"
-            placeholder="Quiz Title"
-          />
-          <Btn v-if="modal.show == 'postQuiz'" @click="postQuiz">New Quiz</Btn>
-          <Btn v-if="modal.show == 'editQuiz'" @click="editQuiz"
+            placeholder="Quiz Title" />
+          <Btn v-if="modal.show == 'postQuiz'" @click="quiz.post">New Quiz</Btn>
+          <Btn v-if="modal.show == 'editQuiz'" @click="quiz.edit"
             >Submit Edit</Btn
           >
           <select
             v-if="modal.show == 'postQuestion'"
             id=""
             v-model="question.type"
-            name=""
-          >
+            name="">
             <option value="mcq">Multiple Choice</option>
             <option value="tf">True Or False</option>
             <option value="text">Open Ended</option>
@@ -247,8 +222,7 @@
             ref="questionModalInput"
             v-model="question.name"
             type="text"
-            placeholder="Question"
-          />
+            placeholder="Question" />
           <Btn v-if="modal.show == 'postQuestion'" @click="postQuestion()"
             >Submit Question</Btn
           >
@@ -261,21 +235,16 @@
 <script setup>
 import { onClickOutside } from "@vueuse/core";
 import { formatDate } from "~/utils/formatdate";
-import { nanoid } from "nanoid"; // Generate unique IDs
 
+//composables
 import { useQuiz } from "../composables/useQuiz.ts";
 import { useQuestion } from "../composables/useQuestion.ts";
+
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
-
 const log = console.log;
-
-const genKey = () => {
-  quiz.sharingKey = nanoid(10);
-  return quiz.sharingKey;
-};
 
 const copyQuiz = (x) => {
   navigator.clipboard.writeText(
@@ -285,88 +254,35 @@ const copyQuiz = (x) => {
 
 const supabase = useSupabaseClient();
 const modal = useModal();
-const session = useSession();
 
 const loading = ref(false);
 const openPanel = ref(true);
 
 //Quizes FUNCTIONS
 const quiz = useQuiz();
-const quizes = ref([]);
 const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
 
 const getQuizes = async () => {
-  try {
-    loading.value = true;
-    const { data, error } = await supabase
-      .from("quizes")
-      .select()
-      .order("created_at", { ascending: false });
-    if (data.length) {
-      quizes.value = data;
-      quiz.set(data[0]);
-    } else throw error;
-  } catch (e) {
-    quizes.value = [];
-  } finally {
-    loading.value = false;
-  }
+  loading.value = true;
+  await quiz.get();
+  loading.value = false;
 };
-const getQuiz = async (x) => {
-  const { data, error } = await supabase.from("quizes").select().eq("id", x);
-  if (data) quiz.set(data[0]);
-  else console.log(error);
-};
+
 const handlPostQuiz = async () => {
-  quiz.name = "Quiz #" + (quizes.value.length + 1);
+  quiz.name = "Quiz #" + (quiz.list.length + 1);
   modal.show = "postQuiz";
   await nextTick();
   quizModalInput.value.focus();
 };
 
-const postQuiz = async () => {
-  const { data, error } = await supabase
-    .from("quizes")
-    .insert({
-      text: quiz.name,
-      sharing_key: genKey(),
-      user_id: session.user.id,
-    })
-    .select();
-  if (error) console.log(error);
-  else {
-    quizes.value = await quiz.get();
-    modal.close();
-    quiz.name = "";
-    quiz.id = data[0].id;
-  }
-};
-const deleteQuiz = async (x) => {
-  const response = await supabase.from("quizes").delete().eq("id", x);
-  if (response.status == 204) {
-    quizes.value = await quiz.get();
-    modal.close();
-  }
-};
 const handleQuizEditor = async (x) => {
   await quiz.get(x);
   modal.show = "editQuiz";
   await nextTick();
   quizModalInput.value.focus();
 };
-const editQuiz = async () => {
-  const { error } = await supabase
-    .from("quizes")
-    .update({ text: quiz.name })
-    .eq("id", quiz.id);
-  if (error) console.log(error);
-  else {
-    quizes.value = await quiz.get();
-    modal.close();
-    quiz.name = "";
-  }
-};
+
 onClickOutside(quizMenuRef, () => (quiz.menu = null));
 
 //QUESTIONS FUNCTIONS
@@ -407,8 +323,8 @@ const handlePostQuestion = async () => {
 };
 const postQuestion = async () => {
   if (!quiz.id) {
-    quiz.name = "Quiz #" + (quizes.value.length + 1);
-    await postQuiz();
+    quiz.name = "Quiz #" + (quiz.list.length + 1);
+    await quiz.post();
   }
   const { data, error } = await supabase
     .from("questions")
@@ -479,12 +395,12 @@ const addAnswer = async () => {
   await nextTick();
   answerInput.value[answerInput.value.length - 1].focus();
 };
-const removeAnswer = () => {
-  answers.value.splice(answers.value.length - 1, 1);
+const removeAnswer = (n) => {
+  answers.value.splice(n, 1);
 };
 
-const deleteAnswer = async (x) => {
-  if (typeof answers.value[x] == "undefined") removeAnswer(x);
+const deleteAnswer = async (x, n) => {
+  if (typeof answers.value[x] == "undefined") removeAnswer(n);
   else {
     const response = await supabase.from("answers").delete().eq("id", x);
     if (response.status == 204) getAnswer(question.id);
@@ -553,8 +469,7 @@ const answersReset = () => {
 };
 
 onMounted(async () => {
-  quizes.value = await quiz.get();
-  log(quiz.id);
+  await getQuizes();
   if (quiz) {
     await getQuestions(quiz.id);
     if (questions.value.length) {
@@ -592,8 +507,6 @@ watch(
 <style lang="scss" scoped>
 .qa {
   input {
-    // background-color: transparent;
-    // border: none;
     margin-bottom: 0;
   }
 }
