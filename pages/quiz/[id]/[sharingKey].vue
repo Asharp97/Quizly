@@ -10,13 +10,15 @@
             required
             name="First name"
             type="text"
-            placeholder="First Name" />
+            placeholder="First Name"
+          />
           <input
             v-model="lastName"
             required
             name="Last name"
             type="text"
-            placeholder="Last Name" />
+            placeholder="Last Name"
+          />
         </div>
         <input
           v-model="email"
@@ -24,7 +26,8 @@
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck" />
+          @blur="emailCheck"
+        />
         <Transition name="fade">
           <div v-if="emailError" class="errormessage">{{ emailError }}</div>
         </Transition>
@@ -38,9 +41,10 @@
           <div
             v-for="(ans, n) in answer.list"
             :key="ans.id"
+            :class="{ selected: selectedAnswer.includes(n) }"
+            class="box"
             @click="toggleBox(n)"
-            :class="{ selected: selectedAnswer.includes(ans.id) }"
-            class="box">
+          >
             <h3>{{ ans.text }}</h3>
           </div>
         </div>
@@ -48,6 +52,9 @@
       <div class="icon-wrapper" @click="next()">
         <Icon name="material-symbols:chevron-right-rounded" class="icon" />
       </div>
+      selected answers : {{ selectedAnswer }}
+      <br />
+      is correct answer: {{ correct }}
     </div>
   </div>
 </template>
@@ -62,7 +69,8 @@ const quiz = useQuiz();
 const question = useQuestion();
 const answer = useAnswers();
 
-const n = ref(0);
+const counter = ref(0);
+const correct = ref(false);
 
 const firstName = ref("");
 const lastName = ref("");
@@ -72,33 +80,38 @@ const log = console.log;
 
 const startQuiz = async () => {
   if (emailCheck() && notEmpty()) {
+    // const { data, error } = await supabase
+    //   .from("participants")
+    //   .select()
+    //   .eq("quiz_id", id)
+    //   .eq("email", email.value)
+    //   .single();
+    // if (data) emailError.value = "Seems like you already took this quiz dude";
+    // else {
     const { data, error } = await supabase
       .from("participants")
-      .select()
-      .eq("quiz_id", id)
-      .eq("email", email.value)
-      .single();
-    if (data) emailError.value = "Seems like you already took this quiz dude";
-    else {
-      const { data, error } = await supabase
-        .from("participants")
-        .insert({
-          name: firstName.value.concat(" ", lastName.value),
-          email: email.value,
-          quiz_id: id,
-        })
-        .select();
-      if (data) {
-        participant.set(data[0]);
-        question.get(id);
-        answer.get(question.id);
-      }
-      if (error) log(error);
+      .insert({
+        name: firstName.value.concat(" ", lastName.value),
+        email: email.value,
+        quiz_id: id,
+      })
+      .select();
+    if (data) {
+      participant.set(data[0]);
+      question.get(id);
+      question.set(question.list[0]);
+      answer.get();
     }
+    if (error) log(error);
   }
+  // }
 };
 
+participant.reset();
+
 const selectedAnswer = ref([]);
+
+counter.value = 0;
 
 const toggleBox = (id) => {
   if (selectedAnswer.value.includes(id)) {
@@ -113,14 +126,16 @@ const toggleBox = (id) => {
 onMounted(async () => {
   if (question.id) {
     await question.get(id);
-    await answer.get(question.id);
+    await answer.get();
   }
 });
 
 const next = async () => {
-  n.value++;
-  question.set(question.list[n.value]);
-  await answer.get(question.id);
+  if (counter.value < question.list.length) {
+    counter.value++;
+    question.set(question.list[counter.value]);
+    await answer.get();
+  } else log("out of bounds");
 };
 
 const emailError = ref(null);

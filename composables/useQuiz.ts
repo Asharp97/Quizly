@@ -5,6 +5,7 @@ export const useQuiz = defineStore("quiz", () => {
   const supabase = useSupabaseClient();
   const session = useSession();
   const modal = useModal();
+  const log = console.log;
 
   const id = ref();
   const name = ref();
@@ -40,8 +41,10 @@ export const useQuiz = defineStore("quiz", () => {
         .from("quizes")
         .select()
         .eq("id", x);
-      if (data) set(data[0]);
-      else console.log(error);
+      if (data) {
+        set(data[0]);
+        log(id);
+      } else console.log(error);
     } else {
       const { data, error } = await supabase
         .from("quizes")
@@ -50,7 +53,7 @@ export const useQuiz = defineStore("quiz", () => {
           ascending: true,
         });
       if (data) {
-        // set(data[0]);
+        set(data[0]);
         list.value = data;
       } else console.log(error);
     }

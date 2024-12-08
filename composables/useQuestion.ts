@@ -38,7 +38,6 @@ export const useQuestion = defineStore("question", () => {
         .eq("quiz_id", x);
       if (data) {
         list.value = data;
-        set(data[0]);
       } else console.log(error);
     }
   };

@@ -46,7 +46,6 @@
       </aside>
     </div>
     <div class="quizes-list">
-      {{ quiz.id }}
       <btn class="newQuizBtn" @click="handlePostQuestion()">
         <div class="icon-wrapper">
           <Icon class="icon" name="material-symbols:add-2-rounded" />
@@ -114,7 +113,6 @@
                 v-for="(reply, n) in answer.list"
                 :key="reply.id"
                 class="answer-wrapper">
-                {{reply}}
                 <div
                   class="input-wrapper answer"
                   :class="{ correct: reply.is_correct }">
@@ -341,8 +339,8 @@ onMounted(async () => {
 watch(
   () => quiz.id,
   async () => {
-    await question.get(quiz.id);
     await quiz.get(quiz.id);
+    await question.get(quiz.id);
   }
 );
 watch(

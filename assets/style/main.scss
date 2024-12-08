@@ -409,7 +409,11 @@ nav {
         }
       }
       .selected {
-        background-color: $orange;
+        background-color: $blue;
+        color: $white;
+        &:hover {
+          background-color: $orange;
+        }
       }
     }
   }
