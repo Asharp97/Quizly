@@ -46,25 +46,26 @@
       </aside>
     </div>
     <div class="quizes-list">
+      {{ quiz.id }}
       <btn class="newQuizBtn" @click="handlePostQuestion()">
         <div class="icon-wrapper">
           <Icon class="icon" name="material-symbols:add-2-rounded" />
         </div>
         Create New Question
       </btn>
-      <div v-if="questions.length" class="quiz-titles">
+      <div v-if="question.list.length" class="quiz-titles">
         <div />
         <div>Responses</div>
         <div>Created at</div>
       </div>
-      <Fscreen v-if="!questions.length">
+      <Fscreen v-if="!question.list.length">
         <p>
           🎉 Looks like you're just getting started! No questions here yet.
           Click
           <strong>"Create New Question"</strong> to make your first one. 🚀
         </p>
       </Fscreen>
-      <div v-for="exam in questions" :key="exam.id" class="quiz-data">
+      <div v-for="exam in question.list" :key="exam.id" class="quiz-data">
         <div
           class="quiz-header"
           :class="{ active: question.id == exam.id }"
@@ -72,7 +73,7 @@
             () => {
               if (question.id == exam.id) openPanel = !openPanel;
               else {
-                question.id = exam.id;
+                question.set(exam);
                 openPanel = true;
               }
             }
@@ -91,7 +92,7 @@
               ref="questionMenuRef"
               class="menu-bg">
               <div class="menu">
-                <div class="item" @click="deleteQuestion(exam.id)">
+                <div class="item" @click="question.del(exam.id)">
                   Delete quiz
                 </div>
               </div>
@@ -110,9 +111,10 @@
             </div>
             <div v-if="question.type == 'mcq'" class="answer-list">
               <div
-                v-for="(reply, n) in answers"
+                v-for="(reply, n) in answer.list"
                 :key="reply.id"
                 class="answer-wrapper">
+                {{reply}}
                 <div
                   class="input-wrapper answer"
                   :class="{ correct: reply.is_correct }">
@@ -122,28 +124,27 @@
                     type="text"
                     placeholder="And here is your answer" />
                 </div>
-                {{ reply }}
                 <input
                   v-model="reply.is_correct"
                   class="checkbox"
                   type="checkbox" />
 
                 <Icon
-                  :class="{ disabled: answers.length == 2 }"
+                  :class="{ disabled: answer.list.length == 2 }"
                   name="material-symbols:delete-outline-rounded"
                   class="icon"
-                  @click="deleteAnswer(reply.id, n)" />
+                  @click="answer.del(reply.id, n)" />
               </div>
             </div>
             <div v-if="question.type == 'tf'" class="tf">
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == true }">
+                  :class="{ correct: answer.tf.is_correct == true }">
                   <input disabled value="TRUE" type="text" />
                 </div>
                 <input
-                  v-model="tf.is_correct"
+                  v-model="answer.tf.is_correct"
                   :value="true"
                   name="tf"
                   type="radio" />
@@ -151,11 +152,11 @@
               <div class="answer-wrapper">
                 <div
                   class="input-wrapper answer"
-                  :class="{ correct: tf.is_correct == false }">
+                  :class="{ correct: answer.tf.is_correct == false }">
                   <input disabled value="FALSE" type="text" />
                 </div>
                 <input
-                  v-model="tf.is_correct"
+                  v-model="answer.tf.is_correct"
                   :value="false"
                   name="tf"
                   type="radio" />
@@ -163,7 +164,7 @@
             </div>
             <div class="button-group">
               <Btn
-                :disabled="answers.length > 7 || question.type != 'mcq'"
+                :disabled="answer.list.length > 7 || question.type != 'mcq'"
                 :orange="true"
                 text="Add Answer"
                 icon="iconify i-material-symbols:add-2-rounded"
@@ -176,7 +177,7 @@
             </div>
           </div>
           <div class="panel">
-            <p v-if="answers.length > 7" class="error">
+            <p v-if="answer.list.length > 7" class="error">
               woah woah take it easy there isn't that too much
             </p>
             <select
@@ -204,6 +205,13 @@
             v-model="quiz.name"
             type="text"
             placeholder="Quiz Title" />
+          <textarea
+            v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
+            id="description"
+            v-model="quiz.description"
+            name="description"
+            placeholder="Description" />
+
           <Btn v-if="modal.show == 'postQuiz'" @click="quiz.post">New Quiz</Btn>
           <Btn v-if="modal.show == 'editQuiz'" @click="quiz.edit"
             >Submit Edit</Btn
@@ -223,7 +231,7 @@
             v-model="question.name"
             type="text"
             placeholder="Question" />
-          <Btn v-if="modal.show == 'postQuestion'" @click="postQuestion()"
+          <Btn v-if="modal.show == 'postQuestion'" @click="question.post()"
             >Submit Question</Btn
           >
         </div>
@@ -235,16 +243,17 @@
 <script setup>
 import { onClickOutside } from "@vueuse/core";
 import { formatDate } from "~/utils/formatdate";
+import { useAnswers } from "../composables/useAnswers.ts";
 
 //composables
-import { useQuiz } from "../composables/useQuiz.ts";
-import { useQuestion } from "../composables/useQuestion.ts";
+// import { useQuiz } from "../composables/useQuiz.ts";
+// import { useQuestion } from "../composables/useQuestion.ts";
+const log = console.log;
 
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
-const log = console.log;
 
 const copyQuiz = (x) => {
   navigator.clipboard.writeText(
@@ -252,7 +261,6 @@ const copyQuiz = (x) => {
   );
 };
 
-const supabase = useSupabaseClient();
 const modal = useModal();
 
 const loading = ref(false);
@@ -287,219 +295,69 @@ onClickOutside(quizMenuRef, () => (quiz.menu = null));
 
 //QUESTIONS FUNCTIONS
 const question = useQuestion();
-const questions = ref([]);
-
 const questionMenuRef = ref(null);
 const questionModalInput = ref(null);
 
-onClickOutside(questionMenuRef, () => (question.menu = null));
-
-const getQuestions = async (x) => {
-  if (x) {
-    const { data, error } = await supabase
-      .from("questions")
-      .select()
-      .order("created_at", { ascending: false })
-      .eq("quiz_id", x);
-    if (data) {
-      questions.value = data;
-      if (data.length) {
-        answersReset();
-        question.reset();
-      }
-    } else console.log(error);
-  }
-};
-const getQuestion = async (x) => {
-  const { data, error } = await supabase.from("questions").select().eq("id", x);
-  if (data) question.set(data[0]);
-  else console.log(error);
-};
 const handlePostQuestion = async () => {
-  question.name = "Question #" + (questions.value.length + 1);
+  question.name = "Question #" + (question.list.length + 1);
   modal.show = "postQuestion";
   await nextTick();
   questionModalInput.value.focus();
 };
-const postQuestion = async () => {
-  if (!quiz.id) {
-    quiz.name = "Quiz #" + (quiz.list.length + 1);
-    await quiz.post();
-  }
-  const { data, error } = await supabase
-    .from("questions")
-    .insert({
-      text: question.name,
-      quiz_id: quiz.id,
-      type: question.type,
-    })
-    .select();
-  if (error) console.log(error);
-  else {
-    quiz.name = "";
-    question.id = data[0].id;
-    modal.close();
-    getQuestions(quiz.id);
-  }
-};
-const updateQuestion = async () => {
-  const { data, error } = await supabase
-    .from("questions")
-    .upsert({
-      id: question.id,
-      text: question.name,
-      quiz_id: quiz.id,
-      type: question.type,
-    })
-    .select();
-  if (error) console.log(error);
-  else {
-    quiz.name = "";
-    question.id = data[0].id;
-    modal.close();
-    getQuestions(quiz.id);
-  }
-};
-const deleteQuestion = async (x) => {
-  const response = await supabase.from("questions").delete().eq("id", x);
-  if (response.status == 204) {
-    getQuestions(quiz.id);
-    quiz.name = "";
-  }
-};
+
+onClickOutside(questionMenuRef, () => (question.menu = null));
 
 // ANSWERS
-const answers = ref([
-  {
-    text: "",
-    is_correct: false,
-  },
-  {
-    text: "",
-    is_correct: false,
-  },
-  {
-    text: "",
-    is_correct: false,
-  },
-]);
+const answer = useAnswers();
+
 const answerInput = ref(null);
 
-const tf = ref({
-  question_id: question.id,
-  is_correct: false,
-});
-
 const addAnswer = async () => {
-  answers.value.push({ text: "", is_correct: false });
+  answer.list.push({ text: "", is_correct: false });
   await nextTick();
   answerInput.value[answerInput.value.length - 1].focus();
-};
-const removeAnswer = (n) => {
-  answers.value.splice(n, 1);
-};
-
-const deleteAnswer = async (x, n) => {
-  if (typeof answers.value[x] == "undefined") removeAnswer(n);
-  else {
-    const response = await supabase.from("answers").delete().eq("id", x);
-    if (response.status == 204) getAnswer(question.id);
-  }
-};
-
-const postAnswer = async () => {
-  let query = supabase.from("answers");
-
-  if (question.type == "mcq") {
-    const answersWithQuestionId = answers.value.map((answer) => ({
-      ...answer,
-      question_id: question.id,
-    }));
-
-    for (let i = 0; i < answersWithQuestionId.length; i++) {
-      const { error } = await query.upsert(answersWithQuestionId[i]);
-      if (error) console.log(error);
-    }
-  }
-  if (question.type == "tf") {
-    tf.value.question_id = question.id;
-    const { data, error } = await query.upsert(tf.value).select();
-    tf.value = data[0];
-    if (error) console.log(error);
-  }
-};
-const getAnswer = async (questionId, type) => {
-  const { data, error } = await supabase
-    .from("answers")
-    .select()
-    .eq("question_id", questionId);
-  if (data) {
-    if (type == "mcq")
-      if (data.length >= 2) answers.value = data;
-      else answersReset();
-    else if (type == "tf") if (data.length == 1) tf.value = data[0];
-  } else console.log(error);
 };
 
 //BOTH
 const submitQA = async () => {
   loading.value = true;
-  if (question.id) await updateQuestion();
-  else await postQuestion();
-  await postAnswer(question.id);
-  await getQuestions(quiz.id);
+  await question.update();
+  await answer.post(question.id);
+  await answer.cleanup();
+  await question.get(quiz.id);
   loading.value = false;
-  await cleanup();
-};
-
-const cleanup = async () => {
-  const query = supabase
-    .from("answers")
-    .delete()
-    .eq("question_id", question.id);
-  if (question.type === "tf") await query.not("text", "is", null);
-  if (question.type === "mcq") await query.is("text", null);
-};
-const answersReset = () => {
-  answers.value = [
-    { text: "", is_correct: false },
-    { text: "", is_correct: false },
-    { text: "", is_correct: false },
-  ];
 };
 
 onMounted(async () => {
   await getQuizes();
   if (quiz) {
-    await getQuestions(quiz.id);
-    if (questions.value.length) {
-      question.set(questions.value[0]);
-      await getAnswer(question.id, question.type);
+    if (question.list.length) {
+      question.set(question.list[0]);
+      await answer.get();
     }
   }
 });
 
 watch(
   () => quiz.id,
-  () => {
-    getQuestions(quiz.id);
-    quiz.get(quiz.id);
+  async () => {
+    await question.get(quiz.id);
+    await quiz.get(quiz.id);
   }
 );
 watch(
   () => question.id,
   async () => {
     if (question.id) {
-      await getQuestion(question.id);
-      await getAnswer(question.id, question.type);
+      await answer.get();
     }
   }
 );
 watch(
   () => question.type,
   () => {
-    if (question.type == "mcq") tf.value.is_correct = false;
-    if (question.type == "tf") answersReset();
+    if (question.type == "mcq") answer.tf.is_correct = false;
+    if (question.type == "tf") answer.reset();
   }
 );
 </script>

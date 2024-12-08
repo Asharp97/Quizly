@@ -96,8 +96,6 @@ const passCheck = () => {
 };
 
 const login = async () => {
-  emailCheck();
-  passCheck();
   if (passCheck() && emailCheck()) {
     const { data } = await supabase.auth.signInWithPassword({
       email: email.value,
@@ -174,11 +172,6 @@ const googleAuth = async () => {
     cursor: pointer;
     color: $dimgrey;
   }
-}
-
-.errormessage {
-  color: $orange;
-  font-weight: 500;
 }
 
 .fade-enter-active {

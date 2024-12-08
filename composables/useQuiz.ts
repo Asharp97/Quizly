@@ -6,17 +6,18 @@ export const useQuiz = defineStore("quiz", () => {
   const session = useSession();
   const modal = useModal();
 
-  const db = supabase.from("quizes");
-
   const id = ref();
-  const name = ref("");
+  const name = ref();
   const menu = ref(null);
-  const sharingKey = ref(null);
+  const sharingKey = ref();
+  const description = ref();
 
   const list = ref([]);
 
   const user = ref();
   const responses = ref();
+
+  const qquiz = ref({});
 
   function reset() {
     id.value = null;
@@ -24,26 +25,33 @@ export const useQuiz = defineStore("quiz", () => {
     menu.value = null;
     sharingKey.value = null;
   }
+
   function set(x: any) {
-    id.value = x.id;
-    name.value = x.text;
-    user.value = x.user_id;
-    sharingKey.value = x.sharing_key;
-    responses.value = x.responses;
+    id.value = x?.id;
+    name.value = x?.text;
+    user.value = x?.user_id;
+    sharingKey.value = x?.sharing_key;
+    responses.value = x?.responses;
   }
+
   const get = async (x?: number) => {
-    const query = db.select();
     if (x) {
-      const { data, error } = await query.eq("id", x);
+      const { data, error } = await supabase
+        .from("quizes")
+        .select()
+        .eq("id", x);
       if (data) set(data[0]);
       else console.log(error);
     } else {
-      const { data, error } = await query.order("created_at", {
-        ascending: false,
-      });
-      if (data?.length) {
+      const { data, error } = await supabase
+        .from("quizes")
+        .select()
+        .order("created_at", {
+          ascending: true,
+        });
+      if (data) {
+        // set(data[0]);
         list.value = data;
-        set(data[0]);
       } else console.log(error);
     }
   };
@@ -66,14 +74,17 @@ export const useQuiz = defineStore("quiz", () => {
     }
   };
   const del = async (x: number) => {
-    const response = await db.delete().eq("id", x);
+    const response = await supabase.from("quizes").delete().eq("id", x);
     if (response.status == 204) {
       await get();
       modal.close();
     }
   };
   const edit = async () => {
-    const { error } = await db.update({ text: name.value }).eq("id", id.value);
+    const { error } = await supabase
+      .from("quizes")
+      .update({ text: name.value, description: description.value })
+      .eq("id", id.value);
     if (error) console.log(error);
     else {
       await get();

@@ -20,8 +20,6 @@ onMounted(async () => {
     modal.close();
     // Clean up the URL
     router.replace(router.currentRoute.value.path);
-  } else {
-    console.error("No session found after redirect.");
   }
 });
 </script>
