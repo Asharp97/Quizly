@@ -197,128 +197,138 @@ nav {
     border-radius: 2rem;
     padding: 2rem;
     overflow-y: scroll;
-    .newQuizBtn {
-      width: fit-content;
-      margin-left: auto;
-      .icon-wrapper {
-        padding: 0.25rem;
-        background-color: $white;
-        color: $blue;
-      }
-    }
-    .quiz-titles,
-    .quiz-header {
-      grid-auto-columns: 1fr;
-      grid-template-rows: repeat(1, auto);
-      padding: 1rem;
-      grid-template-columns: calc(100% - 19rem) 6rem 8rem 2rem;
-      gap: 1rem;
-      display: grid;
-      width: calc(100%);
-    }
-    .quiz-data {
-      .quiz-header {
-        cursor: pointer;
-        padding-inline: 1rem;
-        width: 100%;
-        padding-block: 1rem;
-        border-radius: 1rem;
-        background-color: $lightgrey;
-        border-bottom: 4px solid transparent;
-      }
-      .active {
-        border-radius: 1rem 1rem 0 0;
-        border-bottom: 4px solid $blue;
-      }
-      .quiz-content {
-        background-color: $cloudgrey;
-        border-radius: 0 0 1rem 1rem;
-        display: flex;
-        padding: 4rem;
-        justify-content: space-evenly;
-        min-height: 50dvh;
-        gap: 2rem;
-        .addAnswer {
-          width: min-content;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      .newQuizBtn {
+        width: fit-content;
+        margin-left: auto;
+        .icon-wrapper {
+          padding: 0.25rem;
+          background-color: $white;
+          color: $blue;
         }
-        .qa {
-          gap: 2rem;
+      }
+    }
+
+    .quetion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      .quiz-titles,
+      .quiz-header {
+        grid-auto-columns: 1fr;
+        grid-template-rows: repeat(1, auto);
+        padding: 1rem;
+        grid-template-columns: calc(100% - 12rem) 8rem 2rem;
+        gap: 1rem;
+        display: grid;
+        width: calc(100%);
+      }
+      .quiz-data {
+        .quiz-header {
+          cursor: pointer;
+          padding-inline: 1rem;
+          width: 100%;
+          padding-block: 1rem;
+          border-radius: 1rem;
+          background-color: $lightgrey;
+          border-bottom: 4px solid transparent;
+        }
+        .active {
+          border-radius: 1rem 1rem 0 0;
+          border-bottom: 4px solid $blue;
+        }
+        .quiz-content {
+          background-color: $cloudgrey;
+          border-radius: 0 0 1rem 1rem;
           display: flex;
-          flex-direction: column;
-          min-width: 20rem;
-          .tf,
-          .answer-list {
+          padding: 4rem;
+          justify-content: space-evenly;
+          min-height: 50dvh;
+          gap: 2rem;
+          .addAnswer {
+            width: min-content;
+          }
+          .qa {
+            gap: 2rem;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-            .answer-wrapper {
+            min-width: 20rem;
+            .tf,
+            .answer-list {
               display: flex;
-              align-items: center;
-              justify-content: space-between;
-              gap: 1rem;
+              flex-direction: column;
+              gap: 0.5rem;
+              .answer-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 1rem;
 
-              .correct {
-                border: 1px solid #508104 !important;
-                input {
-                  color: #508104 !important;
-                }
-              }
-              .input-wrapper {
-                max-width: 25rem;
-                width: 100%;
-                input {
-                  font-weight: 600;
-                  font-style: $font-stack;
-                  &::placeholder {
-                    opacity: 0.7;
+                .correct {
+                  border: 1px solid #508104 !important;
+                  input {
+                    color: #508104 !important;
                   }
                 }
-              }
-              .disabled {
-                scale: 0.9;
-                color: $dimgrey !important;
-                cursor: not-allowed !important;
-              }
-              .icon {
-                cursor: pointer;
-                font-size: 2rem;
-                color: $orange;
-              }
-              .answer {
-                border: 1px solid $orange;
-                input {
+                .input-wrapper {
+                  max-width: 25rem;
+                  width: 100%;
+                  input {
+                    font-weight: 600;
+                    font-style: $font-stack;
+                  }
+                }
+                .disabled {
+                  scale: 0.9;
+                  color: $dimgrey !important;
+                  cursor: not-allowed !important;
+                }
+                .icon {
+                  cursor: pointer;
+                  font-size: 2rem;
                   color: $orange;
-                  &::placeholder {
+                }
+                .answer {
+                  border: 1px solid $orange;
+                  input {
                     color: $orange;
+                    &::placeholder {
+                      color: $orange;
+                    }
                   }
                 }
               }
             }
-          }
-          .question {
-            border: 1px solid $blue;
-            input {
-              color: $blue;
-              &::placeholder {
+            .question {
+              border: 1px solid $blue;
+              input {
                 color: $blue;
+                &::placeholder {
+                  color: $blue;
+                }
+              }
+            }
+            .button-group {
+              display: flex;
+              gap: 1rem;
+              .button-wrapper {
+                flex: 1;
+              }
+              .loading {
+                font-size: 2rem;
               }
             }
           }
-          .button-group {
-            display: flex;
-            gap: 1rem;
-            .button-wrapper {
-              flex: 1;
-            }
-            .loading {
-              font-size: 2rem;
-            }
+          .panel {
+            min-width: 10rem;
           }
-        }
-        .panel {
-          min-width: 10rem;
         }
       }
+    }
+    .view-results{
+      
     }
   }
 }

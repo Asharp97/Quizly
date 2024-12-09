@@ -23,10 +23,9 @@ export const useQuestion = defineStore("question", () => {
   }
 
   function set(x: any) {
-    id.value = x.id;
-    name.value = x.text;
-    type.value = x.type;
-    quiz.id = x.quizId;
+    id.value = x?.id;
+    name.value = x?.text;
+    type.value = x?.type;
   }
 
   const get = async (x?: number) => {

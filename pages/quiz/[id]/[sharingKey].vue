@@ -10,15 +10,13 @@
             required
             name="First name"
             type="text"
-            placeholder="First Name"
-          />
+            placeholder="First Name" />
           <input
             v-model="lastName"
             required
             name="Last name"
             type="text"
-            placeholder="Last Name"
-          />
+            placeholder="Last Name" />
         </div>
         <input
           v-model="email"
@@ -26,8 +24,7 @@
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck"
-        />
+          @blur="emailCheck" />
         <Transition name="fade">
           <div v-if="emailError" class="errormessage">{{ emailError }}</div>
         </Transition>
@@ -43,8 +40,7 @@
             :key="ans.id"
             :class="{ selected: selectedAnswer.includes(n) }"
             class="box"
-            @click="toggleBox(n)"
-          >
+            @click="selectAnswer(n)">
             <h3>{{ ans.text }}</h3>
           </div>
         </div>
@@ -52,19 +48,18 @@
       <div class="icon-wrapper" @click="next()">
         <Icon name="material-symbols:chevron-right-rounded" class="icon" />
       </div>
-      selected answers : {{ selectedAnswer }}
-      <br />
-      is correct answer: {{ correct }}
+      
     </div>
   </div>
 </template>
 
 <script setup>
 const id = useRoute().params.id;
-const sharingKey = useRoute().params.sharingKey;
+// const sharingKey = useRoute().params.sharingKey;
 const supabase = useSupabaseClient();
+const router = useRouter();
 const participant = useParticipant();
-
+const modal = useModal();
 const quiz = useQuiz();
 const question = useQuestion();
 const answer = useAnswers();
@@ -107,35 +102,71 @@ const startQuiz = async () => {
   // }
 };
 
-participant.reset();
+// participant.reset(); //REMOVE MEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+onMounted(async () => {
+  quiz.id = id;
+  if (id) {
+    await question.get(id);
+    question.set(question.list[0]);
+    await answer.get();
+  }
+});
 
 const selectedAnswer = ref([]);
 
 counter.value = 0;
 
-const toggleBox = (id) => {
-  if (selectedAnswer.value.includes(id)) {
+const selectAnswer = (x) => {
+  if (selectedAnswer.value.includes(x)) {
     selectedAnswer.value = selectedAnswer.value.filter(
-      (answerId) => answerId !== id
+      (answerId) => answerId !== x
     );
   } else {
-    selectedAnswer.value.push(id);
+    selectedAnswer.value.push(x);
   }
 };
 
-onMounted(async () => {
-  if (question.id) {
-    await question.get(id);
-    await answer.get();
-  }
-});
-
+let correctCount = 0;
+const scoreCheck = async () => {
+  await answer.get();
+  for (let i = 0; i < selectedAnswer.value.length; i++)
+    if (answer.list[selectedAnswer.value[i]].is_correct === false) return false;
+  correctCount++;
+  return true;
+};
+const showAnswers = ref(false);
+let finalQuizScore = 0;
 const next = async () => {
-  if (counter.value < question.list.length) {
+  correct.value = await scoreCheck();
+  selectedAnswer.value = [];
+  if (counter.value < question.list.length - 1) {
     counter.value++;
     question.set(question.list[counter.value]);
     await answer.get();
-  } else log("out of bounds");
+  } else {
+    finalQuizScore = Math.round((correctCount / question.list.length) * 100);
+    await submitScore();
+    await incrementResponses();
+
+    if (!question.show_result) {
+      modal.show = "quizDone";
+      router.push("/");
+    } else showAnswers.value = true;
+  }
+};
+const submitScore = async () => {
+  const { error } = await supabase.from("scores").insert({
+    quiz_id: id,
+    participant_id: participant.id,
+    score: finalQuizScore,
+  });
+  if (error) log(error);
+};
+
+const incrementResponses = async () => {
+  const { error } = await supabase.rpc("increment", { row_id: id });
+  if (error) log(error);
 };
 
 const emailError = ref(null);

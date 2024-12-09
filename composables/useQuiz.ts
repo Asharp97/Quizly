@@ -12,6 +12,7 @@ export const useQuiz = defineStore("quiz", () => {
   const menu = ref(null);
   const sharingKey = ref();
   const description = ref();
+  const show_result = ref();
 
   const list = ref([]);
 
@@ -33,6 +34,7 @@ export const useQuiz = defineStore("quiz", () => {
     user.value = x?.user_id;
     sharingKey.value = x?.sharing_key;
     responses.value = x?.responses;
+    show_result.value = x?.show_result;
   }
 
   const get = async (x?: number) => {
@@ -41,10 +43,8 @@ export const useQuiz = defineStore("quiz", () => {
         .from("quizes")
         .select()
         .eq("id", x);
-      if (data) {
-        set(data[0]);
-        log(id);
-      } else console.log(error);
+      if (data) set(data[0]);
+      else console.log(error);
     } else {
       const { data, error } = await supabase
         .from("quizes")

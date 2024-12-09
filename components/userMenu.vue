@@ -7,7 +7,7 @@
       <div class="menu-bg">
         <div class="menu">
           <NuxtLink to="/dashboard" class="item"> Dashboard </NuxtLink>
-          <div class="item" @click="modal.confirm = true">Logout</div>
+          <div class="item" @click="modal.show = 'confirm'">Logout</div>
         </div>
       </div>
     </div>
@@ -17,7 +17,13 @@
         action-text="Log me out"
         cancel-text="Nevermind"
         icon="material-symbols:logout"
+        condition="confirm"
         @confirm="logout" />
+      <prompt
+        msg="Your Quiz has been successfully Published"
+        condition="quizDone"
+        cancel-text="Okay"
+        icon="line-md:confirm-circle" />
     </Teleport>
   </div>
 </template>

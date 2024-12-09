@@ -1,13 +1,13 @@
 <template>
-  <div class="checkbox-wrapper-17">
-    <p>{{ label }}</p>
+  <div class="checkbox-wrapper">
+    <h4>{{ label }}</h4>
     <input
-      id="switch-17"
+      id="checkbox"
       type="checkbox"
       :checked="modelValue"
       @input="updateValue($event.target.checked)" />
 
-    <label for="switch-17" />
+    <label for="checkbox" />
   </div>
 </template>
 
@@ -21,18 +21,18 @@ function updateValue(value) {
 </script>
 
 <style lang="scss" scoped>
-.checkbox-wrapper-17 {
+.checkbox-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.checkbox-wrapper-17 input[type="checkbox"] {
+.checkbox-wrapper input[type="checkbox"] {
   height: 0;
   width: 0;
   visibility: hidden;
 }
 
-.checkbox-wrapper-17 label {
+.checkbox-wrapper label {
   $size: 3rem;
 
   cursor: pointer;
@@ -44,7 +44,7 @@ function updateValue(value) {
   position: relative;
 }
 
-.checkbox-wrapper-17 label:after {
+.checkbox-wrapper label:after {
   content: "";
   position: absolute;
   top: 6%;
@@ -56,16 +56,16 @@ function updateValue(value) {
   transition: 0.3s;
 }
 
-.checkbox-wrapper-17 input:checked + label {
+.checkbox-wrapper input:checked + label {
   background: $blue;
 }
 
-.checkbox-wrapper-17 input:checked + label:after {
+.checkbox-wrapper input:checked + label:after {
   left: calc(100% - 2.5%);
   transform: translateX(-100%);
 }
 
-.checkbox-wrapper-17 label:active:after {
+.checkbox-wrapper label:active:after {
   width: 55%;
 }
 </style>
