@@ -22,9 +22,8 @@ export const useParticipant = defineStore(
         .from("participants")
         .select()
         .eq("quiz_id", quiz.id)
-        .eq("email", email.value)
-        .single();
-      if (data) {
+        .eq("email", email.value);
+      if (data?.length) {
         emailError.value = "Seems like you already took this quiz dude";
         return false;
       } else {
@@ -36,6 +35,10 @@ export const useParticipant = defineStore(
     function reset() {
       id.value = null;
       credStore.value = false;
+      firstName.value = "";
+      lastName.value = "";
+      email.value = "";
+      emailError.value = "";
     }
 
     function set(x: any) {
@@ -60,7 +63,7 @@ export const useParticipant = defineStore(
         set(data[0]);
         question.get(quiz.id);
         question.set(question.list[0]);
-        answer.get();
+        answer.get(question.id);
       }
       if (error) console.log(error);
     };

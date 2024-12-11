@@ -5,20 +5,38 @@
       <p v-if="quiz.description">{{ quiz.description }}</p>
       <form action="" class="form">
         <div class="name">
-          <input
-            v-model="participant.firstName"
-            required
-            name="First name"
-            type="text"
-            placeholder="First Name"
-          />
-          <input
-            v-model="participant.lastName"
-            required
-            name="Last name"
-            type="text"
-            placeholder="Last Name"
-          />
+          <div class="input-wrapper">
+            <input
+              v-model="participant.firstName"
+              required
+              name="First name"
+              type="text"
+              placeholder="First Name"
+              @blur="
+                firstNameErr = notEmpty(participant.firstName, 'First Name')
+              " />
+            <Transition name="fade">
+              <div v-if="firstNameErr" class="errormessage">
+                {{ firstNameErr }}
+              </div>
+            </Transition>
+          </div>
+          <div class="input-wrapper">
+            <input
+              v-model="participant.lastName"
+              required
+              name="Last name"
+              type="text"
+              placeholder="Last Name"
+              @blur="
+                lasttNameErr = notEmpty(participant.lastName, 'First Name')
+              " />
+            <Transition name="fade">
+              <div v-if="lasttNameErr" class="errormessage">
+                {{ lasttNameErr }}
+              </div>
+            </Transition>
+          </div>
         </div>
         <input
           v-model="participant.email"
@@ -26,8 +44,7 @@
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck"
-        />
+          @blur="emailCheck" />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
             {{ participant.emailError }}
@@ -37,28 +54,18 @@
       <Btn @click="startQuiz">Let's take the quiz</Btn>
     </div>
     <div v-else>
-      <div class="quiz-wrapper">
-        <h2>{{ question.name }}</h2>
-        <div class="boxes">
-          <div
-            v-for="(ans, n) in answer.list"
-            :key="ans.id"
-            :class="{ selected: selectedAnswer.includes(n) }"
-            class="box"
-            @click="selectAnswer(n)"
-          >
-            <h3>{{ ans.text }}</h3>
-          </div>
-        </div>
-      </div>
-      <div class="icon-wrapper" @click="next()">
-        <Icon name="material-symbols:chevron-right-rounded" class="icon" />
-      </div>
+      <quiz-wrapper
+        :selected-answer="selectedAnswer"
+        :answer="answer.list"
+        :question="question.name"
+        @next="next"
+        @select-answer="selectAnswer" />
     </div>
   </div>
 </template>
 
 <script setup>
+import { validateEmail, notEmpty } from "@/utils/validations";
 const id = useRoute().params.id;
 // const sharingKey = useRoute().params.sharingKey;
 const supabase = useSupabaseClient();
@@ -69,6 +76,9 @@ const quiz = useQuiz();
 const question = useQuestion();
 const answer = useAnswers();
 
+const firstNameErr = ref("");
+const lasttNameErr = ref("");
+
 const log = console.log;
 
 onMounted(async () => {
@@ -76,14 +86,9 @@ onMounted(async () => {
   if (id) {
     await question.get(id);
     question.set(question.list[0]);
-    await answer.get();
+    await answer.get(question.id);
   }
 });
-
-const startQuiz = async () => {
-  if (emailCheck() && participant.firstName && participant.lastName)
-    if (await participant.hasTakenQuiz()) participant.credStore = true;
-};
 
 let correctCount = 0;
 const selectedAnswer = ref([]);
@@ -91,6 +96,14 @@ const counter = ref(0);
 const correct = ref(false);
 const showAnswers = ref(false);
 let finalQuizScore = 0;
+
+const startQuiz = async () => {
+  firstNameErr.value = notEmpty(participant.firstName, "First Name");
+  lasttNameErr.value = notEmpty(participant.lastName, "Last Name");
+
+  if (emailCheck() && participant.firstName && participant.lastName)
+    if (await participant.hasTakenQuiz()) participant.credStore = true;
+};
 
 const selectAnswer = (x) => {
   if (selectedAnswer.value.includes(x)) {
@@ -103,7 +116,7 @@ const selectAnswer = (x) => {
 };
 
 const scoreCheck = async () => {
-  await answer.get();
+  await answer.get(question.id);
   for (let i = 0; i < selectedAnswer.value.length; i++)
     if (answer.list[selectedAnswer.value[i]].is_correct === false) return false;
   correctCount++;
@@ -115,7 +128,7 @@ const next = async () => {
   if (counter.value < question.list.length - 1) {
     counter.value++;
     question.set(question.list[counter.value]);
-    await answer.get();
+    await answer.get(question.id);
   } else {
     finalQuizScore = Math.round((correctCount / question.list.length) * 100);
     await participant.postCredintials();

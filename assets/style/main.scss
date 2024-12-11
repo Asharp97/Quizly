@@ -327,8 +327,7 @@ nav {
         }
       }
     }
-    .view-results{
-      
+    .view-results {
     }
   }
 }
@@ -437,4 +436,11 @@ nav {
       font-size: 5rem;
     }
   }
+}
+.review {
+  max-width: 45rem;
+  margin-inline: auto;
+  margin-block: 5rem;
+  display: flex;
+  gap: 1rem;
 }

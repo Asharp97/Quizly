@@ -193,9 +193,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="view-results">
-        view data
-      </div>
+      <div v-else class="view-results">view data</div>
     </div>
     <Teleport to="body">
       <ModalComponent
@@ -344,7 +342,7 @@ watch(
 watch(
   () => question.id,
   async () => {
-    if (question.id) await answer.get();
+    if (question.id) await answer.get(question.id);
   }
 );
 watch(

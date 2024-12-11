@@ -45,16 +45,21 @@ export const useAnswers = defineStore("answers", () => {
     ];
   };
 
-  const get = async () => {
+  const get = async (x: number) => {
     const { data, error } = await supabase
       .from("answers")
       .select()
-      .eq("question_id", question.id);
+      .eq("question_id", x);
     if (data) {
       if (question.type == "mcq")
-        if (data.length > 1) set(data);
-        else reset();
-      if (question.type == "tf") tf.value = data[0];
+        if (data.length > 1) {
+          set(data);
+          return data;
+        } else reset();
+      if (question.type == "tf") {
+        tf.value = data[0];
+        return data[0];
+      }
     } else console.log(error);
   };
 

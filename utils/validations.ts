@@ -35,7 +35,7 @@ export function validatePassword(password: string): {
   return { isValid: true, error: null };
 }
 
-export function notEmpty(x: any) {
-  if (x) return true;
-  return false;
+export function notEmpty(x: any, y: string) {
+  if (!x) return y + " is required";
+  return '';
 }
