@@ -31,10 +31,12 @@ export const useQuiz = defineStore("quiz", () => {
   function set(x: any) {
     id.value = x?.id;
     name.value = x?.text;
+    description.value = x?.description;
     user.value = x?.user_id;
     sharingKey.value = x?.sharing_key;
     responses.value = x?.responses;
     show_result.value = x?.show_result;
+    
   }
 
   const get = async (x?: number) => {
@@ -82,6 +84,7 @@ export const useQuiz = defineStore("quiz", () => {
       await get();
       modal.close();
     }
+    log(response)
   };
   const edit = async () => {
     const { error } = await supabase

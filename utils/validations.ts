@@ -34,3 +34,8 @@ export function validatePassword(password: string): {
 
   return { isValid: true, error: null };
 }
+
+export function notEmpty(x: any) {
+  if (x) return true;
+  return false;
+}

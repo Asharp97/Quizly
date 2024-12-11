@@ -1,32 +1,37 @@
 <template>
   <div class="sharingkey container">
-    <div v-if="!participant.id" class="form-wrapper">
+    <div v-if="!participant.credStore" class="form-wrapper">
       <h2>{{ quiz.name }}</h2>
       <p v-if="quiz.description">{{ quiz.description }}</p>
       <form action="" class="form">
         <div class="name">
           <input
-            v-model="firstName"
+            v-model="participant.firstName"
             required
             name="First name"
             type="text"
-            placeholder="First Name" />
+            placeholder="First Name"
+          />
           <input
-            v-model="lastName"
+            v-model="participant.lastName"
             required
             name="Last name"
             type="text"
-            placeholder="Last Name" />
+            placeholder="Last Name"
+          />
         </div>
         <input
-          v-model="email"
+          v-model="participant.email"
           required
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck" />
+          @blur="emailCheck"
+        />
         <Transition name="fade">
-          <div v-if="emailError" class="errormessage">{{ emailError }}</div>
+          <div v-if="participant.emailError" class="errormessage">
+            {{ participant.emailError }}
+          </div>
         </Transition>
       </form>
       <Btn @click="startQuiz">Let's take the quiz</Btn>
@@ -40,7 +45,8 @@
             :key="ans.id"
             :class="{ selected: selectedAnswer.includes(n) }"
             class="box"
-            @click="selectAnswer(n)">
+            @click="selectAnswer(n)"
+          >
             <h3>{{ ans.text }}</h3>
           </div>
         </div>
@@ -48,7 +54,6 @@
       <div class="icon-wrapper" @click="next()">
         <Icon name="material-symbols:chevron-right-rounded" class="icon" />
       </div>
-      
     </div>
   </div>
 </template>
@@ -64,45 +69,7 @@ const quiz = useQuiz();
 const question = useQuestion();
 const answer = useAnswers();
 
-const counter = ref(0);
-const correct = ref(false);
-
-const firstName = ref("");
-const lastName = ref("");
-const email = ref("");
-
 const log = console.log;
-
-const startQuiz = async () => {
-  if (emailCheck() && notEmpty()) {
-    // const { data, error } = await supabase
-    //   .from("participants")
-    //   .select()
-    //   .eq("quiz_id", id)
-    //   .eq("email", email.value)
-    //   .single();
-    // if (data) emailError.value = "Seems like you already took this quiz dude";
-    // else {
-    const { data, error } = await supabase
-      .from("participants")
-      .insert({
-        name: firstName.value.concat(" ", lastName.value),
-        email: email.value,
-        quiz_id: id,
-      })
-      .select();
-    if (data) {
-      participant.set(data[0]);
-      question.get(id);
-      question.set(question.list[0]);
-      answer.get();
-    }
-    if (error) log(error);
-  }
-  // }
-};
-
-// participant.reset(); //REMOVE MEEEEEEEEEEEEEEEEEEEEEEEEEE
 
 onMounted(async () => {
   quiz.id = id;
@@ -113,9 +80,17 @@ onMounted(async () => {
   }
 });
 
-const selectedAnswer = ref([]);
+const startQuiz = async () => {
+  if (emailCheck() && participant.firstName && participant.lastName)
+    if (await participant.hasTakenQuiz()) participant.credStore = true;
+};
 
-counter.value = 0;
+let correctCount = 0;
+const selectedAnswer = ref([]);
+const counter = ref(0);
+const correct = ref(false);
+const showAnswers = ref(false);
+let finalQuizScore = 0;
 
 const selectAnswer = (x) => {
   if (selectedAnswer.value.includes(x)) {
@@ -127,7 +102,6 @@ const selectAnswer = (x) => {
   }
 };
 
-let correctCount = 0;
 const scoreCheck = async () => {
   await answer.get();
   for (let i = 0; i < selectedAnswer.value.length; i++)
@@ -135,8 +109,6 @@ const scoreCheck = async () => {
   correctCount++;
   return true;
 };
-const showAnswers = ref(false);
-let finalQuizScore = 0;
 const next = async () => {
   correct.value = await scoreCheck();
   selectedAnswer.value = [];
@@ -146,8 +118,9 @@ const next = async () => {
     await answer.get();
   } else {
     finalQuizScore = Math.round((correctCount / question.list.length) * 100);
+    await participant.postCredintials();
     await submitScore();
-    await incrementResponses();
+    await participant.incrementResponses();
 
     if (!question.show_result) {
       modal.show = "quizDone";
@@ -164,24 +137,11 @@ const submitScore = async () => {
   if (error) log(error);
 };
 
-const incrementResponses = async () => {
-  const { error } = await supabase.rpc("increment", { row_id: id });
-  if (error) log(error);
-};
-
-const emailError = ref(null);
-
-const notEmpty = () => {
-  if (firstName.value && lastName.value) return true;
-  else return false;
-};
 const emailCheck = () => {
-  const { isValid, error } = validateEmail(email.value);
-  emailError.value = error;
+  const { isValid, error } = validateEmail(participant.email);
+  participant.emailError = error;
   return isValid;
 };
-
-question.get(quiz.id);
 
 definePageMeta({
   middleware: "verify-quiz",
