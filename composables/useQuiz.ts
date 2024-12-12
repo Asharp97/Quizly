@@ -13,6 +13,8 @@ export const useQuiz = defineStore("quiz", () => {
   const sharingKey = ref();
   const description = ref();
   const show_result = ref();
+  const time = ref();
+  const deadLine = ref();
 
   const list = ref([]);
 
@@ -26,6 +28,7 @@ export const useQuiz = defineStore("quiz", () => {
     name.value = "";
     menu.value = null;
     sharingKey.value = null;
+    time.value = null;
   }
 
   function set(x: any) {
@@ -35,8 +38,9 @@ export const useQuiz = defineStore("quiz", () => {
     user.value = x?.user_id;
     sharingKey.value = x?.sharing_key;
     responses.value = x?.responses;
+    time.value = x?.time;
+    deadLine.value = x?.deadLine;
     show_result.value = x?.show_result;
-    
   }
 
   const get = async (x?: number) => {
@@ -84,7 +88,7 @@ export const useQuiz = defineStore("quiz", () => {
       await get();
       modal.close();
     }
-    log(response)
+    log(response);
   };
   const edit = async () => {
     const { error } = await supabase

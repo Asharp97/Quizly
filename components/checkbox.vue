@@ -2,17 +2,18 @@
   <div class="checkbox-wrapper">
     <h4>{{ label }}</h4>
     <input
-      id="checkbox"
+      :id="id"
       type="checkbox"
       :checked="modelValue"
-      @input="updateValue($event.target.checked)" />
+      @input="updateValue($event.target.checked)"
+    />
 
-    <label for="checkbox" />
+    <label :for="id" />
   </div>
 </template>
 
 <script setup>
-defineProps(["modelValue", "label"]);
+defineProps(["modelValue", "label", "id"]);
 const emit = defineEmits(["update:modelValue"]);
 
 function updateValue(value) {
@@ -23,6 +24,7 @@ function updateValue(value) {
 <style lang="scss" scoped>
 .checkbox-wrapper {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
 }
@@ -40,7 +42,7 @@ function updateValue(value) {
   height: calc($size / 2);
   background: grey;
   display: block;
-  border-radius: 100px;
+  // border-radius: 100px;
   position: relative;
 }
 
@@ -52,7 +54,7 @@ function updateValue(value) {
   width: calc(50% - 5%);
   height: calc(100% - 11%);
   background: #fff;
-  border-radius: 90px;
+  // border-radius: 90px;
   transition: 0.3s;
 }
 

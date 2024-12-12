@@ -14,7 +14,8 @@
               placeholder="First Name"
               @blur="
                 firstNameErr = notEmpty(participant.firstName, 'First Name')
-              " />
+              "
+            />
             <Transition name="fade">
               <div v-if="firstNameErr" class="errormessage">
                 {{ firstNameErr }}
@@ -30,7 +31,8 @@
               placeholder="Last Name"
               @blur="
                 lasttNameErr = notEmpty(participant.lastName, 'First Name')
-              " />
+              "
+            />
             <Transition name="fade">
               <div v-if="lasttNameErr" class="errormessage">
                 {{ lasttNameErr }}
@@ -44,7 +46,8 @@
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck" />
+          @blur="emailCheck"
+        />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
             {{ participant.emailError }}
@@ -58,8 +61,10 @@
         :selected-answer="selectedAnswer"
         :answer="answer.list"
         :question="question.name"
+        :show-arrows="true"
         @next="next"
-        @select-answer="selectAnswer" />
+        @select-answer="selectAnswer"
+      />
     </div>
   </div>
 </template>

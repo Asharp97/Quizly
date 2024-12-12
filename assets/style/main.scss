@@ -154,6 +154,21 @@ nav {
         flex-direction: column;
         gap: 0.25rem;
         margin-left: 1rem;
+        li {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          .quiz-name-title {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+          }
+          .quiz-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+          }
+        }
 
         .list-item {
           display: flex;
@@ -185,6 +200,9 @@ nav {
         }
       }
     }
+  }
+  .expand {
+    width: 25rem !important;
   }
   .quizes-list {
     display: flex;
@@ -220,7 +238,7 @@ nav {
         grid-auto-columns: 1fr;
         grid-template-rows: repeat(1, auto);
         padding: 1rem;
-        grid-template-columns: calc(100% - 12rem) 8rem 2rem;
+        grid-template-columns: calc(100% - 21rem) 8rem 8rem 2rem;
         gap: 1rem;
         display: grid;
         width: calc(100%);
