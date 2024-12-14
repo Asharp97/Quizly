@@ -7,6 +7,7 @@
       <div class="menu-bg">
         <div class="menu">
           <NuxtLink to="/dashboard" class="item"> Dashboard </NuxtLink>
+          <NuxtLink to="/results" class="item"> Quiz Results</NuxtLink>
           <div class="item" @click="modal.show = 'confirm'">Logout</div>
         </div>
       </div>

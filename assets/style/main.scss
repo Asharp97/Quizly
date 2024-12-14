@@ -107,104 +107,117 @@ nav {
     }
   }
 }
-.dashboard {
+.side-nav {
   background-color: $cloudgrey;
   height: calc(100dvh - $navHeight);
-  width: 100%;
   display: flex;
-  .side-nav {
+  width: 22rem;
+  // overflow: hidden;
+  .nav-wrapper {
     display: flex;
-    width: 22rem;
-    // overflow: hidden;
-    .nav-wrapper {
+    flex-direction: column;
+    padding: 2rem;
+    border-left: 1px solid $white;
+    width: 100%;
+    flex-shrink: 0;
+    overflow: hidden;
+    .back-icon-wrapper {
+      background-color: $white;
+      font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      cursor: pointer;
+    }
+    .hr {
+      margin-block: 2rem;
+      width: 100%;
+      margin-inline: 0;
+    }
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4rem;
+      .icon-wrapper {
+        background-color: white;
+        border-radius: 2rem;
+        color: black;
+      }
+    }
+    .list {
       display: flex;
       flex-direction: column;
-      padding: 2rem;
-      border-left: 1px solid $white;
-      width: 100%;
-      flex-shrink: 0;
-      overflow: hidden;
-      .back-icon-wrapper {
-        background-color: $white;
-        font-size: 2rem;
-        width: 2rem;
-        height: 2rem;
-        border-radius: 50%;
-        margin-bottom: 2rem;
-        cursor: pointer;
-      }
-      .hr {
-        margin-block: 2rem;
-        width: 100%;
-        margin-inline: 0;
-      }
-      .title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4rem;
-        .icon-wrapper {
-          background-color: white;
-          border-radius: 2rem;
-          color: black;
-        }
-      }
-      .list {
+      gap: 0.25rem;
+      margin-left: 1rem;
+      li {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
-        margin-left: 1rem;
-        li {
+        gap: 1rem;
+        .quiz-name-title {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          position: relative;
+          .expired {
+            position: absolute;
+            background-color: red;
+            color: white;
+            padding: 0.25rem;
+            transform: rotate(-45deg);
+            font-size: 10px;
+            font-weight: 600;
+            left: -2rem;
+            top: -1rem;
+            border-radius: 0.5rem;
+          }
+        }
+        .quiz-panel {
           display: flex;
           flex-direction: column;
           gap: 1rem;
-          .quiz-name-title {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-          }
-          .quiz-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        }
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-inline: 0.5rem;
+        padding-block: 0.5rem;
+        border-radius: 0.5rem;
+        p {
+          span {
+            font-weight: 800;
+            font-size: 22px;
+            color: $blue;
           }
         }
 
-        .list-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding-inline: 0.5rem;
-          padding-block: 0.5rem;
-          border-radius: 0.5rem;
-          p {
-            span {
-              font-weight: 800;
-              font-size: 22px;
-              color: $blue;
-            }
-          }
-
-          cursor: pointer;
-          &:hover {
-            background-color: $lightgrey;
-          }
+        cursor: pointer;
+        &:hover {
+          background-color: $lightgrey;
         }
-        .active {
-          background-color: $lightgrey !important;
-          p {
-            span {
-              color: $orange;
-            }
+      }
+      .active {
+        background-color: $lightgrey !important;
+        p {
+          span {
+            color: $orange;
           }
         }
       }
     }
   }
-  .expand {
-    width: 25rem !important;
-  }
-  .quizes-list {
+}
+.dashboard {
+  height: calc(100dvh - $navHeight);
+  background-color: $cloudgrey;
+  width: 100%;
+  display: flex;
+  .quizes-list,
+  .results {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -345,8 +358,6 @@ nav {
         }
       }
     }
-    .view-results {
-    }
   }
 }
 .admin-top-nav {
@@ -461,4 +472,19 @@ nav {
   margin-block: 5rem;
   display: flex;
   gap: 1rem;
+}
+.quizSettings {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 12rem;
+  }
+  .quiz-panel {
+  }
+  .quiz-inputs {
+  }
 }

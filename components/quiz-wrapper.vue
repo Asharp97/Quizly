@@ -49,12 +49,22 @@ defineEmits(["next", "selectAnswer"]);
 }
 .icon-wrapper {
   width: fit-content;
-  background-color: $cloudgrey;
+  background-color: $lightgrey;
   color: $blue;
   margin-left: auto;
   margin-top: 1rem;
+  &:hover {
+    background-color: $grey;
+    box-shadow: $shadow;
+    .icon {
+      transform: translateX(0.5rem);
+      color: $orange;
+      opacity: 0.8;
+      scale: 1 0.9;
+    }
+  }
   .icon {
-    font-size: 5rem;
+    font-size: 3rem;
   }
 }
 </style>

@@ -88,13 +88,19 @@ p {
   // margin-bottom: 1.5rem;
 }
 .fscreenWrapper {
-  height: 100dvh;
+  height: calc(100dvh - $navHeight - 8rem);
   display: flex;
   align-items: center;
   justify-content: center;
   .fscreen {
+    display: flex;
+    flex-direction: column;
     p {
       max-width: 50rem;
+      padding-top: 0.5rem;
+      padding-bottom: 2rem;
+    }
+    .bg {
       background-color: $cloudgrey;
       padding: 2rem;
       border-radius: 2rem;
@@ -131,8 +137,8 @@ a {
     background-color: $offwhite;
     border: 1px solid $dimgrey;
     color: black;
-    right: 0;
-    top: 3rem;
+    right: 1rem;
+    top: 2rem;
     width: fit-content;
     min-width: 125px;
     border-radius: 10px 0 10px 10px;
@@ -200,7 +206,7 @@ a {
     justify-content: center;
     flex-direction: column;
     padding: 2rem;
-    max-width: 500px;
+    max-width: 40rem;
     width: 100%;
     border-radius: 2rem;
     .modal-content {
@@ -224,6 +230,12 @@ a {
       }
     }
   }
+}
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .errormessage {

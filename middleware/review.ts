@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     .from("quizes")
     .select("show_result")
     .eq("id", id)
-  if (!data[0].show_result) return navigateTo("/error");
-
+    .single();
+  if (!data?.show_result) return navigateTo("/error");
   if (await !participant.hasTakenQuiz()) return navigateTo("/error");
 });

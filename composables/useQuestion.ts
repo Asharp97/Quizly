@@ -53,10 +53,11 @@ export const useQuestion = defineStore("question", () => {
         quiz_id: quiz.id,
         type: type.value,
       })
-      .select();
+      .select()
+      .single();
     if (error) console.log(error);
     else {
-      set(data[0]);
+      set(data);
       modal.close();
       get(quiz.id);
     }
@@ -71,10 +72,11 @@ export const useQuestion = defineStore("question", () => {
         quiz_id: quiz.id,
         type: type.value,
       })
-      .select();
+      .select()
+      .single();
     if (error) console.log(error);
     else {
-      set(data[0]);
+      set(data);
       modal.close();
       get(quiz.id);
     }

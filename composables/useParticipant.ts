@@ -58,9 +58,10 @@ export const useParticipant = defineStore(
           email: email.value,
           quiz_id: quiz.id,
         })
-        .select();
+        .select()
+        .single();
       if (data) {
-        set(data[0]);
+        set(data);
         question.get(quiz.id);
         question.set(question.list[0]);
         answer.get(question.id);

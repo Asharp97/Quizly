@@ -11,36 +11,41 @@ export const useQuiz = defineStore("quiz", () => {
   const name = ref();
   const menu = ref(null);
   const sharingKey = ref();
-  const description = ref();
-  const show_result = ref();
-  const time = ref();
-  const deadLine = ref();
+
+  const description = ref("123");
+  const show_result = ref(false);
+  const time = ref(null);
+  const deadLine = ref(null);
 
   const list = ref([]);
 
   const user = ref();
   const responses = ref();
 
-  const qquiz = ref({});
-
   function reset() {
     id.value = null;
     name.value = "";
     menu.value = null;
     sharingKey.value = null;
+
     time.value = null;
+    deadLine.value = null;
+    show_result.value = null;
+    description.value = "";
   }
 
   function set(x: any) {
     id.value = x?.id;
     name.value = x?.text;
     description.value = x?.description;
-    user.value = x?.user_id;
     sharingKey.value = x?.sharing_key;
+
     responses.value = x?.responses;
     time.value = x?.time;
     deadLine.value = x?.deadLine;
     show_result.value = x?.show_result;
+
+    user.value = x?.user_id;
   }
 
   const get = async (x?: number) => {
@@ -48,9 +53,10 @@ export const useQuiz = defineStore("quiz", () => {
       const { data, error } = await supabase
         .from("quizes")
         .select()
-        .eq("id", x);
-      if (data) set(data[0]);
-      else console.log(error);
+        .eq("id", x)
+        .single();
+      if (data) set(data);
+      else log(error);
     } else {
       const { data, error } = await supabase
         .from("quizes")
@@ -59,27 +65,33 @@ export const useQuiz = defineStore("quiz", () => {
           ascending: true,
         });
       if (data) {
-        set(data[0]);
+        if (!id.value) set(data[0]);
         list.value = data;
-      } else console.log(error);
+      } else log(error);
     }
   };
 
   const post = async () => {
+    boolCheck();
     sharingKey.value = nanoid(10);
     const { data, error } = await supabase
       .from("quizes")
       .insert({
         text: name.value,
         sharing_key: sharingKey.value,
+        description: description.value,
+        show_result: show_result.value,
+        time: time.value,
+        deadLine: deadLine.value,
         user_id: session.user.id,
       })
-      .select();
-    if (error) console.log(error);
+      .select()
+      .single();
+    if (error) log(error);
     else {
       await get();
       modal.close();
-      set(data[0]);
+      set(data);
     }
   };
   const del = async (x: number) => {
@@ -88,19 +100,48 @@ export const useQuiz = defineStore("quiz", () => {
       await get();
       modal.close();
     }
-    log(response);
   };
+
+  const boolCheck = () => {
+    if (deadLine.value == true || deadLine.value == false)
+      deadLine.value = null;
+    if (time.value == true || time.value == false) time.value = null;
+  };
+
   const edit = async () => {
+    boolCheck();
     const { error } = await supabase
       .from("quizes")
-      .update({ text: name.value, description: description.value })
+      .update({
+        text: name.value,
+        description: description.value,
+        show_result: show_result.value,
+        time: time.value,
+        deadLine: deadLine.value,
+      })
       .eq("id", id.value);
-    if (error) console.log(error);
+    if (error) log(error);
     else {
       await get();
       modal.close();
     }
   };
 
-  return { id, name, menu, sharingKey, list, reset, set, get, post, del, edit };
+  return {
+    id,
+    name,
+    menu,
+    description,
+    deadLine,
+    time,
+    show_result,
+    sharingKey,
+    list,
+    reset,
+    set,
+    get,
+    post,
+    del,
+    edit,
+  };
 });

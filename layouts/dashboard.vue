@@ -2,14 +2,14 @@
   <div>
     <admin-top-nav />
     <div class="row">
-      <!-- <admin-side-nav /> -->
-      <slot />
+      <quiz-side-nav />
+      <div class="dashboard">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped></style>

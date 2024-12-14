@@ -14,8 +14,7 @@
               placeholder="First Name"
               @blur="
                 firstNameErr = notEmpty(participant.firstName, 'First Name')
-              "
-            />
+              " />
             <Transition name="fade">
               <div v-if="firstNameErr" class="errormessage">
                 {{ firstNameErr }}
@@ -31,8 +30,7 @@
               placeholder="Last Name"
               @blur="
                 lasttNameErr = notEmpty(participant.lastName, 'First Name')
-              "
-            />
+              " />
             <Transition name="fade">
               <div v-if="lasttNameErr" class="errormessage">
                 {{ lasttNameErr }}
@@ -46,8 +44,7 @@
           name="email"
           type="Email"
           placeholder="Email address"
-          @blur="emailCheck"
-        />
+          @blur="emailCheck" />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
             {{ participant.emailError }}
@@ -57,14 +54,14 @@
       <Btn @click="startQuiz">Let's take the quiz</Btn>
     </div>
     <div v-else>
+      <count-down :minutes="quiz.time" @timeup="terminateQuiz()" />
       <quiz-wrapper
         :selected-answer="selectedAnswer"
         :answer="answer.list"
         :question="question.name"
         :show-arrows="true"
         @next="next"
-        @select-answer="selectAnswer"
-      />
+        @select-answer="selectAnswer" />
     </div>
   </div>
 </template>
@@ -135,17 +132,22 @@ const next = async () => {
     question.set(question.list[counter.value]);
     await answer.get(question.id);
   } else {
-    finalQuizScore = Math.round((correctCount / question.list.length) * 100);
-    await participant.postCredintials();
-    await submitScore();
-    await participant.incrementResponses();
-
-    if (!question.show_result) {
-      modal.show = "quizDone";
-      router.push("/");
-    } else showAnswers.value = true;
+    await terminateQuiz();
   }
 };
+
+const terminateQuiz = async () => {
+  finalQuizScore = Math.round((correctCount / question.list.length) * 100);
+  await participant.postCredintials();
+  await submitScore();
+  await participant.incrementResponses();
+
+  if (!question.show_result) {
+    modal.show = "quizDone";
+    router.push("/");
+  } else showAnswers.value = true;
+};
+
 const submitScore = async () => {
   const { error } = await supabase.from("scores").insert({
     quiz_id: id,
