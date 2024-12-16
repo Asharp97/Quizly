@@ -54,7 +54,10 @@
       <Btn @click="startQuiz">Let's take the quiz</Btn>
     </div>
     <div v-else>
-      <count-down :minutes="quiz.time" @timeup="terminateQuiz()" />
+      <count-down
+        v-if="quiz.time"
+        :minutes="quiz.time"
+        @timeup="terminateQuiz()" />
       <quiz-wrapper
         :selected-answer="selectedAnswer"
         :answer="answer.list"
@@ -70,13 +73,14 @@
 import { validateEmail, notEmpty } from "@/utils/validations";
 const id = useRoute().params.id;
 // const sharingKey = useRoute().params.sharingKey;
-const supabase = useSupabaseClient();
 const router = useRouter();
 const participant = useParticipant();
 const modal = useModal();
 const quiz = useQuiz();
 const question = useQuestion();
 const answer = useAnswers();
+const score = useScore();
+const watch = stopWatch();
 
 const firstNameErr = ref("");
 const lasttNameErr = ref("");
@@ -92,19 +96,20 @@ onMounted(async () => {
   }
 });
 
-let correctCount = 0;
 const selectedAnswer = ref([]);
 const counter = ref(0);
 const correct = ref(false);
 const showAnswers = ref(false);
-let finalQuizScore = 0;
 
 const startQuiz = async () => {
   firstNameErr.value = notEmpty(participant.firstName, "First Name");
   lasttNameErr.value = notEmpty(participant.lastName, "Last Name");
 
   if (emailCheck() && participant.firstName && participant.lastName)
-    if (await participant.hasTakenQuiz()) participant.credStore = true;
+    if (await participant.hasTakenQuiz()) {
+      participant.credStore = true;
+      watch.start();
+    }
 };
 
 const selectAnswer = (x) => {
@@ -121,11 +126,15 @@ const scoreCheck = async () => {
   await answer.get(question.id);
   for (let i = 0; i < selectedAnswer.value.length; i++)
     if (answer.list[selectedAnswer.value[i]].is_correct === false) return false;
-  correctCount++;
+  participant.correctCount++;
   return true;
 };
 const next = async () => {
   correct.value = await scoreCheck();
+  score.submissions.push({
+    question_id: question.id,
+    answer_id: selectedAnswer.value,
+  });
   selectedAnswer.value = [];
   if (counter.value < question.list.length - 1) {
     counter.value++;
@@ -137,24 +146,27 @@ const next = async () => {
 };
 
 const terminateQuiz = async () => {
-  finalQuizScore = Math.round((correctCount / question.list.length) * 100);
-  await participant.postCredintials();
-  await submitScore();
+  participant.score = Math.round(
+    (participant.correctCount / question.list.length) * 100
+  );
+  participant.timeSpent = watch.stop();
+  await participant.post();
   await participant.incrementResponses();
+
+  score.submissions = score.submissions.map((x) => ({
+    ...x,
+    participant_id: participant.id,
+  }));
+
+  for (let i = 0; i < score.submissions.length; i++) {
+    score.post(score.submissions[i]);
+  }
+  score.reset();
 
   if (!question.show_result) {
     modal.show = "quizDone";
     router.push("/");
   } else showAnswers.value = true;
-};
-
-const submitScore = async () => {
-  const { error } = await supabase.from("scores").insert({
-    quiz_id: id,
-    participant_id: participant.id,
-    score: finalQuizScore,
-  });
-  if (error) log(error);
 };
 
 const emailCheck = () => {

@@ -111,11 +111,13 @@ const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
 
 const localDeadline = ref();
+const localTime = ref();
 const updateDeadLine = () => {
   if (localDeadline.value) {
     quiz.deadLine = new Date(localDeadline.value).toISOString();
   }
 };
+
 watch(
   () => quiz.deadLine,
   () => {
@@ -163,18 +165,6 @@ const handleQuizEditor = async (x) => {
   await nextTick();
   quizModalInput.value.focus();
 };
-const date = ref("");
-const time = ref("");
-watch(
-  () => [date.value, time.value],
-  () => {
-    if (date.value && time.value)
-      quiz.deadLine = new Date(
-        `${date?.value}T${time?.value}:00Z`
-      ).toISOString();
-  }
-);
-
 onClickOutside(quizMenuRef, () => (quiz.menu = null));
 </script>
 

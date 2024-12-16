@@ -30,7 +30,7 @@ export const useQuiz = defineStore("quiz", () => {
 
     time.value = null;
     deadLine.value = null;
-    show_result.value = null;
+    show_result.value = false;
     description.value = "";
   }
 
@@ -105,7 +105,8 @@ export const useQuiz = defineStore("quiz", () => {
   const boolCheck = () => {
     if (deadLine.value == true || deadLine.value == false)
       deadLine.value = null;
-    if (time.value == true || time.value == false) time.value = null;
+    if (time.value == true || time.value == false || time.value == 0)
+      time.value = null;
   };
 
   const edit = async () => {

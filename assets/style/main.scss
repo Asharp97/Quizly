@@ -131,7 +131,7 @@ nav {
       cursor: pointer;
     }
     .hr {
-      margin-block: 2rem;
+      margin-bottom: 2rem;
       width: 100%;
       margin-inline: 0;
     }
@@ -355,6 +355,46 @@ nav {
           .panel {
             min-width: 10rem;
           }
+        }
+      }
+    }
+  }
+  .results {
+    gap: 2rem;
+    .table-wrapper {
+      box-shadow: $shadow;
+      border-radius: 1rem 1rem 0rem 0rem;
+      // padding-bottom: 1rem;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        th,
+        td {
+          text-align: start;
+          padding: 1rem;
+        }
+        tr {
+          &:nth-child(even) {
+            background-color: $cloudgrey;
+          }
+        }
+        th {
+          border-bottom: 1px solid $grey;
+        }
+      }
+    }
+    .box-wrapper {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      flex: 1 1 0;
+      .box {
+        background-color: $cloudgrey;
+        border-radius: 1rem;
+        padding: 1rem;
+        min-width: 18rem;
+        .title {
+          margin-bottom: 0;
         }
       }
     }

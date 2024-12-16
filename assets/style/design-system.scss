@@ -253,3 +253,23 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  .icon {
+    font-size: 2rem;
+  }
+}
+
+.link {
+  color: $blue;
+  font-weight: 600;
+}
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
