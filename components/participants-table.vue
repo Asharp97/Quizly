@@ -21,9 +21,9 @@
           <td>{{ n + 1 }}</td>
           <td>{{ part.name }}</td>
           <td>
-            <a :href="`mailto:${part.email}`" class="link ellipsis">
+            <NuxtLink :to="`mailto:${part.email}`" class="link ellipsis">
               {{ part.email }}
-            </a>
+            </NuxtLink>
           </td>
           <td>{{ part.score }}%</td>
           <td>{{ part.correct_count }}/{{ question.list.length }}</td>

@@ -11,39 +11,41 @@ export const useScore = defineStore("score", () => {
 
   const id = ref();
   const list = ref([]);
-  const score = ref();
+  const scores = ref();
   const submissions = ref([]);
 
   function reset() {
     id.value = null;
     list.value = [];
-    score.value = null;
+    scores.value = null;
     submissions.value = [];
   }
 
   function set(x: any) {
     id.value = x?.id;
-    score.value = x?.score;
+    scores.value = x?.score;
   }
 
-  const get = async (x?: number) => {
-    if (x) {
+  const get = async (x?: number, y?: number) => {
+    if (x && y) {
       const { data, error } = await supabase
         .from("scores")
         .select()
-        .eq("participant_id", x)
-        .single();
+        .eq("question_id", x)
+        .eq("participant_id", y);
       if (data) {
-        set(data);
-        return data?.score;
-      } else log(error);
-    } else {
-      const { data, error } = await supabase.from("scores").select();
-      if (data) {
-        if (!id.value) set(data[0]);
-        list.value = data;
+        return data;
       } else log(error);
     }
+  };
+
+  const mostMissed = async (quizId: number) => {
+    const { data, error } = await supabase.rpc("get_most_missed", {
+      p_quiz_id: quizId,
+    });
+    if (error) {
+      console.error("Error:", error.message);
+    } else return data;
   };
 
   const post = async (x: Array<number>) => {
@@ -58,9 +60,10 @@ export const useScore = defineStore("score", () => {
 
   return {
     id,
-    score,
+    scores,
     submissions,
     list,
+    mostMissed,
     reset,
     get,
     post,

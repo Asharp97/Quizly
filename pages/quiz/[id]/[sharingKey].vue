@@ -44,6 +44,7 @@
           name="email"
           type="Email"
           placeholder="Email address"
+          @keyup.enter="startQuiz"
           @blur="emailCheck" />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
@@ -134,6 +135,7 @@ const next = async () => {
   score.submissions.push({
     question_id: question.id,
     answer_id: selectedAnswer.value,
+    is_correct: correct.value,
   });
   selectedAnswer.value = [];
   if (counter.value < question.list.length - 1) {
@@ -156,6 +158,7 @@ const terminateQuiz = async () => {
   score.submissions = score.submissions.map((x) => ({
     ...x,
     participant_id: participant.id,
+    quiz_id: quiz.id,
   }));
 
   for (let i = 0; i < score.submissions.length; i++) {
@@ -163,10 +166,10 @@ const terminateQuiz = async () => {
   }
   score.reset();
 
-  if (!question.show_result) {
+  if (!quiz.show_result) {
     modal.show = "quizDone";
     router.push("/");
-  } else showAnswers.value = true;
+  } else router.push(`/quiz/${id}/review`);
 };
 
 const emailCheck = () => {

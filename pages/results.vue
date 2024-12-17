@@ -4,7 +4,6 @@
     <div class="title">
       <h2>Aggregate Insights</h2>
     </div>
-
     <div class="box-wrapper">
       <databox
         title="Participants count"
@@ -18,7 +17,7 @@
       <databox
         title="Most Missed Question"
         icon="hugeicons:unavailable"
-        :number="count" />
+        :number="mostMissed" />
     </div>
   </div>
 </template>
@@ -32,13 +31,16 @@ const quiz = useQuiz();
 const participant = useParticipant();
 const stat = stats();
 
-// const score = useScore();
-// const question = useQuestion();
+const score = useScore();
+const question = useQuestion();
+
+const sth = ref([]);
 
 const count = ref(0);
 const scoreList = ref([]);
 const avg = ref();
 const median = ref();
+const mostMissed = ref();
 
 // onMounted(async () => {
 //   if (quiz.id) {
@@ -50,12 +52,16 @@ const median = ref();
 watch(
   () => quiz.id,
   async () => {
+    sth.value = [];
     if (quiz.id) {
       participant.get(quiz.id);
       count.value = await participant.getCount(quiz.id);
       scoreList.value = await participant.getScores(quiz.id);
       avg.value = stat.avg(scoreList.value);
       median.value = stat.median(scoreList.value);
+      await question.get(quiz.id);
+
+      mostMissed.value = await score.mostMissed(quiz.id);
     }
   }
 );

@@ -22,10 +22,14 @@ definePageMeta({
 const id = useRoute().params.id;
 
 const quiz = useQuiz();
+const score = useScore();
 const question = useQuestion();
 const answer = useAnswers();
+const participant = useParticipant();
+
 const selectedAnswer = ref([]);
 const answerAll = ref([]);
+const scores = ref();
 
 const selectAnswer = () => {};
 
@@ -35,10 +39,13 @@ const getAnswers = async () => {
 };
 
 onMounted(async () => {
+  scores.value=[]
   quiz.id = id;
   await question.get(id);
   question.set(question.list[0]);
   await getAnswers();
+  for (let i = 0; i < question.list.length; i++)
+    scores.value.push(await score.get(question.list[i].id, participant.id));
 });
 </script>
 
