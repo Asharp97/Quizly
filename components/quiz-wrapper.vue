@@ -6,21 +6,59 @@
         <div
           v-for="(ans, n) in answer"
           :key="ans.id"
-          :class="{ selected: selectedAnswer.includes(n) }"
+          :class="[
+            { selected: selectedAnswer.includes(n) },
+            {
+              correct:
+                reviewMode && score?.is_correct && selectedAnswer.includes(n),
+            },
+            {
+              incorrect:
+                reviewMode && !score?.is_correct && selectedAnswer.includes(n),
+            },
+          ]"
           class="box"
-          @click="$emit('selectAnswer', n)">
+          @click="$emit('selectAnswer', n)"
+        >
           <h3>{{ ans.text }}</h3>
+          <div
+            v-if="
+              reviewMode &&
+              (selectedAnswer.includes(n) ||
+                (!score?.is_correct && answer[n]?.is_correct))
+            "
+            class="icon-wrapper"
+          >
+            <Icon
+              :name="
+                score?.is_correct || answer[n]?.is_correct
+                  ? 'icon-park-solid:correct'
+                  : 'fluent-emoji-high-contrast:cross-mark'
+              "
+              :class="
+                score?.is_correct || answer[n]?.is_correct ? 'true' : 'false'
+              "
+              class="icon"
+            />
+          </div>
         </div>
       </div>
     </div>
-    <div v-if="showArrows" class="icon-wrapper" @click="$emit('next')">
+    <div v-if="showArrows" class="next-wrapper" @click="$emit('next')">
       <Icon name="material-symbols:chevron-right-rounded" class="icon" />
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps(["question", "selectedAnswer", "answer", "showArrows"]);
+defineProps([
+  "question",
+  "selectedAnswer",
+  "answer",
+  "showArrows",
+  "score",
+  "reviewMode",
+]);
 defineEmits(["next", "selectAnswer"]);
 </script>
 
@@ -33,9 +71,24 @@ defineEmits(["next", "selectAnswer"]);
       padding: 1rem;
       background-color: $lightgrey;
       border-radius: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       cursor: pointer;
       &:hover {
         background-color: $cloudgrey;
+      }
+      .icon-wrapper {
+        background-color: $white;
+        .icon {
+          font-size: 1rem;
+        }
+        .true {
+          color: green;
+        }
+        .false {
+          color: red;
+        }
       }
     }
     .selected {
@@ -45,14 +98,33 @@ defineEmits(["next", "selectAnswer"]);
         background-color: $orange;
       }
     }
+    .correct {
+      background-color: green;
+      color: $white;
+      &:hover {
+        background-color: green;
+      }
+    }
+    .incorrect {
+      background-color: red;
+      color: $white;
+      &:hover {
+        background-color: red;
+      }
+    }
   }
 }
-.icon-wrapper {
+.next-wrapper {
   width: fit-content;
   background-color: $lightgrey;
   color: $blue;
   margin-left: auto;
+  border-radius: 0.5rem;
   margin-top: 1rem;
+  cursor: pointer;
+  .icon {
+    font-size: 3rem;
+  }
   &:hover {
     background-color: $grey;
     box-shadow: $shadow;

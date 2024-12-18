@@ -1,6 +1,6 @@
 <template>
   <div class="results">
-    <participants-table />
+    <participants-table :limit="null" />
   </div>
 </template>
 
@@ -9,7 +9,6 @@ definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
-
 </script>
 
 <style lang="scss" scoped></style>

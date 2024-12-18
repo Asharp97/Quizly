@@ -3,13 +3,14 @@
     <ol class="container">
       <li v-for="(quest, n) in question.list" :key="quest.id" class="review">
         <h2>{{ n + 1 }}</h2>
+        <!-- :selected-answer="scores[n].answer_id" -->
         <quiz-wrapper
-          :selected-answer="selectedAnswer"
           :answer="answerAll[n]"
           :question="quest.text"
           :show-arrows="false"
-          @next="next"
-          @select-answer="selectAnswer" />
+          :score="scores[n]"
+          :review-mode="true"
+        />
       </li>
     </ol>
   </div>
@@ -27,26 +28,39 @@ const question = useQuestion();
 const answer = useAnswers();
 const participant = useParticipant();
 
-const selectedAnswer = ref([]);
 const answerAll = ref([]);
 const scores = ref();
-
-const selectAnswer = () => {};
+const answersIds = ref([]);
 
 const getAnswers = async () => {
   for (let i = 0; i < question.list.length; i++)
     answerAll.value.push(await answer.get(question.list[i].id));
 };
 
+const getScores = async () => {
+  for (let i = 0; i < question.list.length; i++)
+    scores.value.push(await score.get(question.list[i].id, participant.id));
+  answersIds.value = scores.value;
+};
+
 onMounted(async () => {
-  scores.value=[]
+  scores.value = [];
   quiz.id = id;
   await question.get(id);
   question.set(question.list[0]);
   await getAnswers();
-  for (let i = 0; i < question.list.length; i++)
-    scores.value.push(await score.get(question.list[i].id, participant.id));
+  await getScores();
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.icon-wrapper {
+  font-size: 5rem;
+  .true {
+    color: green;
+  }
+  .false {
+    color: red;
+  }
+}
+</style>

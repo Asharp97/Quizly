@@ -27,12 +27,14 @@ export const useScore = defineStore("score", () => {
   }
 
   const get = async (x?: number, y?: number) => {
+    console.log("question_id: ", x, "participant_id: ", y);
     if (x && y) {
       const { data, error } = await supabase
         .from("scores")
         .select()
         .eq("question_id", x)
-        .eq("participant_id", y);
+        .eq("participant_id", y)
+        .single();
       if (data) {
         return data;
       } else log(error);

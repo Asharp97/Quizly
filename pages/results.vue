@@ -1,6 +1,6 @@
 <template>
   <div class="results">
-    <participants-table :limit="3" />
+    <participants-table :data="participant.list" />
     <div class="title">
       <h2>Aggregate Insights</h2>
     </div>
@@ -8,16 +8,18 @@
       <databox
         title="Participants count"
         icon="iconoir:community"
-        :number="count" />
+        :number="count"
+      />
       <databox title="Average Score" icon="ic:round-percentage" :number="avg" />
       <databox
         title="Median Score"
         icon="carbon:chart-median"
-        :number="median" />
-      <databox
+        :number="median"
+      />
+      <!-- <databox
         title="Most Missed Question"
         icon="hugeicons:unavailable"
-        :number="mostMissed" />
+        :number="mostMissed" /> -->
     </div>
   </div>
 </template>
@@ -54,14 +56,14 @@ watch(
   async () => {
     sth.value = [];
     if (quiz.id) {
-      participant.get(quiz.id);
+      // await participant.getLimited(quiz.id);
       count.value = await participant.getCount(quiz.id);
       scoreList.value = await participant.getScores(quiz.id);
       avg.value = stat.avg(scoreList.value);
       median.value = stat.median(scoreList.value);
       await question.get(quiz.id);
 
-      mostMissed.value = await score.mostMissed(quiz.id);
+      // mostMissed.value = await score.mostMissed(quiz.id);
     }
   }
 );

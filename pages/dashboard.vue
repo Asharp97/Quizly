@@ -36,7 +36,8 @@
                   openPanel = true;
                 }
               }
-            ">
+            "
+          >
             <h3>{{ exam.text }}</h3>
             <h4>{{ formatDate(exam.created_at) }}</h4>
             <h4 v-if="exam.type == 'mcq'">Multiple Choice</h4>
@@ -45,11 +46,13 @@
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="question.menu = exam.id" />
+                @click="question.menu = exam.id"
+              />
               <div
                 v-if="question.menu == exam.id"
                 ref="questionMenuRef"
-                class="menu-bg">
+                class="menu-bg"
+              >
                 <div class="menu">
                   <div class="item" @click="question.del(exam.id)">
                     Delete quiz
@@ -60,64 +63,75 @@
           </div>
           <div
             v-if="question.id == exam.id && openPanel == true"
-            class="quiz-content">
+            class="quiz-content"
+          >
             <div class="qa">
               <div class="input-wrapper question">
                 <input
                   v-model="question.name"
                   type="text"
-                  placeholder="Enter Your quesion here" />
+                  placeholder="Enter Your quesion here"
+                />
               </div>
               <div v-if="question.type == 'mcq'" class="answer-list">
                 <div
                   v-for="(reply, n) in answer.list"
                   :key="reply.id"
-                  class="answer-wrapper">
+                  class="answer-wrapper"
+                >
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: reply.is_correct }">
+                    :class="{ correct: reply.is_correct }"
+                  >
                     <input
                       ref="answerInput"
                       v-model="reply.text"
                       type="text"
-                      placeholder="And here is your answer" />
+                      placeholder="And here is your answer"
+                    />
                   </div>
                   <input
                     v-model="reply.is_correct"
                     class="checkbox"
-                    type="checkbox" />
+                    type="checkbox"
+                  />
 
                   <Icon
                     :class="{ disabled: answer.list.length == 2 }"
                     name="material-symbols:delete-outline-rounded"
                     class="icon"
-                    @click="answer.del(reply.id, n)" />
+                    @click="answer.del(reply.id, n)"
+                  />
                 </div>
               </div>
               <div v-if="question.type == 'tf'" class="tf">
                 <div class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: answer.tf.is_correct == true }">
+                    :class="{ correct: answer.tf.is_correct == true }"
+                  >
                     <input disabled value="TRUE" type="text" />
                   </div>
                   <input
                     v-model="answer.tf.is_correct"
                     :value="true"
                     name="tf"
-                    type="radio" />
+                    type="radio"
+                  />
                 </div>
                 <div class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: answer.tf.is_correct == false }">
+                    :class="{ correct: answer.tf.is_correct == false }"
+                  >
                     <input disabled value="FALSE" type="text" />
                   </div>
                   <input
                     v-model="answer.tf.is_correct"
                     :value="false"
                     name="tf"
-                    type="radio" />
+                    type="radio"
+                  />
                 </div>
               </div>
               <div class="button-group">
@@ -126,14 +140,16 @@
                   :orange="true"
                   text="Add Answer"
                   icon="iconify i-material-symbols:add-2-rounded"
-                  @click="addAnswer()" />
+                  @click="addAnswer()"
+                />
                 <Btn
                   :loading="loading"
                   text="Save"
                   :icon="
                     loading ? 'line-md:uploading-loop' : 'line-md:uploading'
                   "
-                  @click="submitQA()" />
+                  @click="submitQA()"
+                />
               </div>
             </div>
             <div class="panel">
@@ -152,26 +168,20 @@
       <div v-else class="view-results">view data</div>
     </div>
     <Teleport to="body">
-      <ModalComponent>
-        <div class="modal-content">
-          <select
-            v-if="modal.show == 'postQuestion'"
-            id=""
-            v-model="question.type"
-            name="">
+      <ModalComponent :condition="modal.show">
+        <div v-if="modal.show == 'postQuestion'" class="modal-content">
+          <select id="" v-model="question.type" name="">
             <option value="mcq">Multiple Choice</option>
             <option value="tf">True Or False</option>
             <option value="text">Open Ended</option>
           </select>
           <input
-            v-show="modal.show == 'postQuestion'"
             ref="questionModalInput"
             v-model="question.name"
             type="text"
-            placeholder="Question" />
-          <Btn v-if="modal.show == 'postQuestion'" @click="question.post()"
-            >Submit Question</Btn
-          >
+            placeholder="Question"
+          />
+          <Btn @click="question.post()">Submit Question</Btn>
         </div>
       </ModalComponent>
     </Teleport>
@@ -204,8 +214,8 @@ const questionModalInput = ref(null);
 const handlePostQuestion = async () => {
   question.name = "Question #" + (question.list.length + 1);
   modal.show = "postQuestion";
-  await nextTick();
-  questionModalInput.value.focus();
+  // await nextTick();
+  // questionModalInput.value.focus();
 };
 
 onClickOutside(questionMenuRef, () => (question.menu = null));

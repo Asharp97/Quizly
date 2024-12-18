@@ -5,6 +5,9 @@ export function stats() {
 
     return arr;
   }
+  function round(x: number) {
+    return Math.round(x * 100) / 100;
+  }
 
   function median(x: Array<object>) {
     let arr = destructure(x);
@@ -13,19 +16,20 @@ export function stats() {
     const middleIndex = Math.floor(arr.length / 2);
 
     if (arr.length % 2 === 0) {
-      return (arr[middleIndex - 1] + arr[middleIndex]) / 2;
+      return round((arr[middleIndex - 1] + arr[middleIndex]) / 2);
     } else {
-      return arr[middleIndex];
+      return round(arr[middleIndex]);
     }
   }
 
   function avg(x: Array<object>) {
     let arr = destructure(x);
-    return arr.reduce((a, b) => a + b) / arr.length;
+    return round(arr.reduce((a, b) => a + b) / arr.length);
   }
 
   return {
     median,
+    round,
     avg,
   };
 }

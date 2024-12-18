@@ -14,7 +14,8 @@
               placeholder="First Name"
               @blur="
                 firstNameErr = notEmpty(participant.firstName, 'First Name')
-              " />
+              "
+            />
             <Transition name="fade">
               <div v-if="firstNameErr" class="errormessage">
                 {{ firstNameErr }}
@@ -30,7 +31,8 @@
               placeholder="Last Name"
               @blur="
                 lasttNameErr = notEmpty(participant.lastName, 'First Name')
-              " />
+              "
+            />
             <Transition name="fade">
               <div v-if="lasttNameErr" class="errormessage">
                 {{ lasttNameErr }}
@@ -45,7 +47,8 @@
           type="Email"
           placeholder="Email address"
           @keyup.enter="startQuiz"
-          @blur="emailCheck" />
+          @blur="emailCheck"
+        />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
             {{ participant.emailError }}
@@ -58,14 +61,17 @@
       <count-down
         v-if="quiz.time"
         :minutes="quiz.time"
-        @timeup="terminateQuiz()" />
+        @timeup="terminateQuiz()"
+      />
       <quiz-wrapper
         :selected-answer="selectedAnswer"
         :answer="answer.list"
         :question="question.name"
         :show-arrows="true"
+        :review-mode="false"
         @next="next"
-        @select-answer="selectAnswer" />
+        @select-answer="selectAnswer"
+      />
     </div>
   </div>
 </template>
@@ -100,7 +106,6 @@ onMounted(async () => {
 const selectedAnswer = ref([]);
 const counter = ref(0);
 const correct = ref(false);
-const showAnswers = ref(false);
 
 const startQuiz = async () => {
   firstNameErr.value = notEmpty(participant.firstName, "First Name");

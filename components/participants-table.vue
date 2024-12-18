@@ -36,20 +36,19 @@
 </template>
 
 <script setup>
-const props = defineProps(["limit"]);
+defineProps(["dataset"]);
 const participant = useParticipant();
 const quiz = useQuiz();
 const question = useQuestion();
-onMounted(async () => {
-  await participant.get(quiz.id);
-});
-watch(
-  () => quiz.id,
-  async () => {
-    await participant.get(quiz.id, props.limit);
-    await question.get(quiz.id);
-  }
-);
+
+// watch(
+//   () => quiz.id,
+//   async () => {
+//     await participant.getLimited(quiz.id);
+//     // else await participant.get(quiz.id)
+//     // await question.get(quiz.id);
+//   }
+// );
 </script>
 
 <style lang="scss" scoped></style>
