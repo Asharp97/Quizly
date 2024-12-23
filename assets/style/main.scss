@@ -135,7 +135,7 @@ nav {
       width: 100%;
       margin-inline: 0;
     }
-    .title {
+    .quiz-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -251,7 +251,7 @@ nav {
         grid-auto-columns: 1fr;
         grid-template-rows: repeat(1, auto);
         padding: 1rem;
-        grid-template-columns: calc(100% - 21rem) 8rem 8rem 2rem;
+        grid-template-columns: calc(100% - 26rem) 12rem 9rem 2rem;
         gap: 1rem;
         display: grid;
         width: calc(100%);
@@ -352,15 +352,16 @@ nav {
               }
             }
           }
-          .panel {
-            min-width: 10rem;
-          }
         }
       }
     }
   }
   .results {
-    gap: 2rem;
+    .results-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
     .table-wrapper {
       box-shadow: $shadow;
       border-radius: 1rem 1rem 0rem 0rem;

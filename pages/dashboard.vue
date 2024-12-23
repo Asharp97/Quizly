@@ -10,20 +10,12 @@
         </btn>
       </div>
 
-      <div v-if="!viewMode" class="quetion-list">
-        <div v-if="question.list.length" class="quiz-titles">
+      <div v-if="question.list.length && !loading" class="quetion-list">
+        <div class="quiz-titles">
           <div />
           <div>Created at</div>
           <div>Question Type</div>
         </div>
-        <Fscreen v-if="!question.list.length">
-          <p class="bg">
-            Looks like you're just getting started! No questions here yet.
-            <br />
-            Click
-            <strong>"Create New Question"</strong> to make your first one. 🚀
-          </p>
-        </Fscreen>
         <div v-for="exam in question.list" :key="exam.id" class="quiz-data">
           <div
             class="quiz-header"
@@ -36,23 +28,21 @@
                   openPanel = true;
                 }
               }
-            "
-          >
+            ">
             <h3>{{ exam.text }}</h3>
             <h4>{{ formatDate(exam.created_at) }}</h4>
             <h4 v-if="exam.type == 'mcq'">Multiple Choice</h4>
             <h4 v-if="exam.type == 'tf'">True Or False</h4>
+            <h4 v-if="exam.type == 'oe'">Open Ended</h4>
             <div class="icon-wrapper dropdown">
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="question.menu = exam.id"
-              />
+                @click="question.menu = exam.id" />
               <div
                 v-if="question.menu == exam.id"
                 ref="questionMenuRef"
-                class="menu-bg"
-              >
+                class="menu-bg">
                 <div class="menu">
                   <div class="item" @click="question.del(exam.id)">
                     Delete quiz
@@ -63,75 +53,71 @@
           </div>
           <div
             v-if="question.id == exam.id && openPanel == true"
-            class="quiz-content"
-          >
+            class="quiz-content">
             <div class="qa">
               <div class="input-wrapper question">
                 <input
                   v-model="question.name"
                   type="text"
-                  placeholder="Enter Your quesion here"
-                />
+                  placeholder="Enter Your quesion here" />
               </div>
               <div v-if="question.type == 'mcq'" class="answer-list">
                 <div
                   v-for="(reply, n) in answer.list"
                   :key="reply.id"
-                  class="answer-wrapper"
-                >
+                  class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: reply.is_correct }"
-                  >
+                    :class="{ correct: reply.is_correct }">
                     <input
                       ref="answerInput"
                       v-model="reply.text"
                       type="text"
-                      placeholder="And here is your answer"
-                    />
+                      placeholder="And here is your answer" />
                   </div>
                   <input
                     v-model="reply.is_correct"
                     class="checkbox"
-                    type="checkbox"
-                  />
+                    type="checkbox" />
 
                   <Icon
                     :class="{ disabled: answer.list.length == 2 }"
                     name="material-symbols:delete-outline-rounded"
                     class="icon"
-                    @click="answer.del(reply.id, n)"
-                  />
+                    @click="answer.del(reply.id, n)" />
                 </div>
               </div>
               <div v-if="question.type == 'tf'" class="tf">
                 <div class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: answer.tf.is_correct == true }"
-                  >
+                    :class="{ correct: answer.tf.is_correct == true }">
                     <input disabled value="TRUE" type="text" />
                   </div>
                   <input
                     v-model="answer.tf.is_correct"
                     :value="true"
                     name="tf"
-                    type="radio"
-                  />
+                    type="radio" />
                 </div>
                 <div class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: answer.tf.is_correct == false }"
-                  >
+                    :class="{ correct: answer.tf.is_correct == false }">
                     <input disabled value="FALSE" type="text" />
                   </div>
                   <input
                     v-model="answer.tf.is_correct"
                     :value="false"
                     name="tf"
-                    type="radio"
-                  />
+                    type="radio" />
+                </div>
+              </div>
+              <div v-if="question.type == 'oe'" class="oe">
+                <div class="answer-wrapper">
+                  <textarea
+                    v-model="answer.oe.text"
+                    placeholder="Your answer goes here" />
                 </div>
               </div>
               <div class="button-group">
@@ -140,47 +126,44 @@
                   :orange="true"
                   text="Add Answer"
                   icon="iconify i-material-symbols:add-2-rounded"
-                  @click="addAnswer()"
-                />
+                  @click="addAnswer()" />
                 <Btn
                   :loading="loading"
                   text="Save"
                   :icon="
                     loading ? 'line-md:uploading-loop' : 'line-md:uploading'
                   "
-                  @click="submitQA()"
-                />
+                  @click="submitQA()" />
               </div>
             </div>
             <div class="panel">
+              <question-type />
               <p v-if="answer.list.length > 7" class="errormessage">
                 woah woah take it easy there isn't that too much
               </p>
-              <select id="" v-model="question.type" name="">
-                <option value="mcq">Multiple Choice</option>
-                <option value="tf">True or False</option>
-                <option value="text">Open Ended</option>
-              </select>
             </div>
           </div>
         </div>
       </div>
-      <div v-else class="view-results">view data</div>
+      <Fscreen v-if="!question.list.length && !loading">
+        <p class="bg">
+          Looks like you're just getting started! No questions here yet.
+          <br />
+          Click
+          <strong>"Create New Question"</strong> to make your first one. 🚀
+        </p>
+      </Fscreen>
+      <Loading v-show="loading" />
     </div>
     <Teleport to="body">
-      <ModalComponent :condition="modal.show">
-        <div v-if="modal.show == 'postQuestion'" class="modal-content">
-          <select id="" v-model="question.type" name="">
-            <option value="mcq">Multiple Choice</option>
-            <option value="tf">True Or False</option>
-            <option value="text">Open Ended</option>
-          </select>
+      <ModalComponent :condition="modal.show == 'postQuestion'">
+        <div class="modal-content">
           <input
             ref="questionModalInput"
             v-model="question.name"
             type="text"
-            placeholder="Question"
-          />
+            placeholder="Question" />
+          <question-type :title="false"/>
           <Btn @click="question.post()">Submit Question</Btn>
         </div>
       </ModalComponent>
@@ -240,14 +223,20 @@ const submitQA = async () => {
   loading.value = false;
 };
 
-onMounted(async () => {
+const getQuestions = async () => {
+  loading.value = true;
   if (quiz.id) await question.get(quiz.id);
+  loading.value = false;
+};
+
+onMounted(async () => {
+  await getQuestions();
 });
 
 watch(
   () => quiz.id,
   async () => {
-    await question.get(quiz.id);
+    await getQuestions();
   }
 );
 watch(
@@ -256,25 +245,12 @@ watch(
     if (question.id) await answer.get(question.id);
   }
 );
-watch(
-  () => question.type,
-  () => {
-    if (question.type == "mcq") answer.tf.is_correct = false;
-    if (question.type == "tf") answer.reset();
-  }
-);
 </script>
 
 <style lang="scss" scoped>
 .qa {
   input {
     margin-bottom: 0;
-  }
-}
-.loading {
-  .icon {
-    font-size: 4rem;
-    color: $blue;
   }
 }
 </style>

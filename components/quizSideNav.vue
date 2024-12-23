@@ -1,7 +1,7 @@
 <template>
   <div class="side-nav">
     <aside class="nav-wrapper">
-      <div class="title">
+      <div class="quiz-title">
         <h3>Quizzes</h3>
         <div class="icon-wrapper">
           <Icon
@@ -50,13 +50,11 @@
     </aside>
     <Teleport to="body">
       <ModalComponent
-        :condition="modal.show"
+        :condition="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
         class="modal"
-        @clear-inputs="quiz.name = ''">
+        @clear-inputs="quiz.clearInputs()">
         <div class="modal-content">
-          <div
-            v-show="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
-            class="quizSettings">
+          <div class="quizSettings">
             <div class="quiz-inputs">
               <input
                 ref="quizModalInput"
@@ -70,16 +68,21 @@
                 placeholder="Description" />
             </div>
             <div class="quiz-panel">
+              <!-- SHOW RESULTS -->
               <checkbox
                 id="result"
                 v-model="quiz.show_result"
                 label="Feedback" />
+
+              <!-- TIME -->
               <checkbox id="time" v-model="quiz.time" label="Time limited" />
               <input
                 v-if="quiz.time"
                 v-model="quiz.time"
                 type="number"
                 placeholder="In Minutes" />
+
+              <!-- DEADLINE -->
               <checkbox
                 id="deadline"
                 v-model="localDeadline"
@@ -92,10 +95,11 @@
                 @change="updateDeadLine" />
             </div>
           </div>
-          <Btn v-if="modal.show == 'postQuiz'" @click="quiz.post">New Quiz</Btn>
+          <!-- <Btn v-if="modal.show == 'postQuiz'" @click="quiz.post">New Quiz</Btn>
           <Btn v-if="modal.show == 'editQuiz'" @click="quiz.edit"
             >Submit Edit</Btn
-          >
+          > -->
+          <Btn @click="handleQuizSubmit()">Submit Edit</Btn>
         </div>
       </ModalComponent>
     </Teleport>
@@ -164,6 +168,11 @@ const handleQuizEditor = async (x) => {
   modal.show = "editQuiz";
   await nextTick();
   quizModalInput.value.focus();
+};
+
+const handleQuizSubmit = async () => {
+  if (modal.show == "postQuiz") quiz.post();
+  else quiz.edit();
 };
 onClickOutside(quizMenuRef, () => (quiz.menu = null));
 </script>

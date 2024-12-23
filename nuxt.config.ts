@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
     "@vueuse/nuxt",
+    "nuxt-echarts",
   ],
   supabase: {
     redirect: false,

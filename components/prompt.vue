@@ -2,7 +2,7 @@
   <div>
     <Transition name="scale-up">
       <div
-        v-if="modal.show == condition"
+        v-show="modal.show == condition"
         class="modal-bg FullScreenModal"
         @click.self="modal.close">
         <div class="card">
@@ -25,6 +25,7 @@
 <script setup>
 import { onKeyStroke } from "@vueuse/core";
 defineProps(["msg", "action-Text", "cancel-text", "icon", "condition"]);
+
 const modal = useModal();
 
 onKeyStroke("Escape", (e) => {

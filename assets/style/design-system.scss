@@ -120,11 +120,6 @@ a {
   display: flex;
   align-items: center;
 }
-.overflow-dots {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .dropdown {
   cursor: pointer;
@@ -256,7 +251,6 @@ input[type="number"] {
 .title {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 2rem;
   .icon {
     font-size: 2rem;
@@ -267,9 +261,10 @@ input[type="number"] {
   color: $blue;
   font-weight: 600;
 }
-.ellipsis {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 
+.loading {
+  .icon {
+    font-size: 4rem;
+    color: $blue;
+  }
+}

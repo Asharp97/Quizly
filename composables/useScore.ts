@@ -41,21 +41,29 @@ export const useScore = defineStore("score", () => {
     }
   };
 
-  const mostMissed = async (quizId: number) => {
-    const { data, error } = await supabase.rpc("get_most_missed", {
-      p_quiz_id: quizId,
-    });
-    if (error) {
-      console.error("Error:", error.message);
-    } else return data;
+  const getCorrectCount = async () => {
+    // .select("*", { count: "exact", head: true })
+    const { count, error } = await supabase
+      .from("scores")
+      .select("*", { count: "exact", head: true })
+      .eq("is_correct", true);
+    if (count) {
+      return count;
+    } else log(error);
+  };
+
+  const getTotaltCount = async () => {
+    // .select("*", { count: "exact", head: true })
+    const { count, error } = await supabase
+      .from("scores")
+      .select("*", { count: "exact", head: true });
+    if (count) {
+      return count;
+    } else log(error);
   };
 
   const post = async (x: Array<number>) => {
-    const { data, error } = await supabase
-      .from("scores")
-      .insert(x)
-      .select()
-      .single();
+    const { data, error } = await supabase.from("scores").insert(x);
     if (error) log(error);
     else await get();
   };
@@ -65,9 +73,10 @@ export const useScore = defineStore("score", () => {
     scores,
     submissions,
     list,
-    mostMissed,
     reset,
     get,
     post,
+    getCorrectCount,
+    getTotaltCount,
   };
 });

@@ -4,36 +4,27 @@
 @keyframes cover-remover {
   0%,
   25% {
-    /* Show "quizzes" */
     transform: translateY(0%);
   }
   25%,
   33.33% {
-    /* Transition to "surveys" */
     transform: translateY(-25%);
-    /* Add blur during the transition */
   }
   33.33%,
   58.33% {
-    /* Show "surveys" */
     transform: translateY(-25%);
   }
   58.33%,
   66.66% {
-    /* Transition to "forms" */
     transform: translateY(-50%);
-    /* Add blur during the transition */
   }
   66.66%,
   91.66% {
-    /* Show "forms" */
     transform: translateY(-50%);
   }
   91.66%,
   100% {
-    /* Transition back to "quizzes" */
     transform: translateY(-75%);
-    /* Add blur during the transition */
   }
 }
 

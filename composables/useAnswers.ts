@@ -24,8 +24,10 @@ export const useAnswers = defineStore("answers", () => {
   };
 
   const tf = ref({
-    question_id: question.id,
     is_correct: false,
+  });
+  const oe = ref({
+    text: "",
   });
 
   const reset = () => {
@@ -93,12 +95,16 @@ export const useAnswers = defineStore("answers", () => {
         const { error } = await query.upsert(list.value[i]);
         if (error) console.log(error);
       }
-      get();
     }
     if (question.type == "tf") {
       tf.value.question_id = question.id;
       const { data, error } = await query.upsert(tf.value).select();
-      tf.value = data[0];
+      if (error) console.log(error);
+    }
+    if (question.type == "oe") {
+      oe.value.question_id = question.id;
+      console.log(oe.value);
+      const { data, error } = await query.upsert(oe.value).select();
       if (error) console.log(error);
     }
   };
@@ -106,6 +112,7 @@ export const useAnswers = defineStore("answers", () => {
   return {
     list,
     tf,
+    oe,
     reset,
     cleanup,
     del,

@@ -94,16 +94,15 @@ export const useParticipant = defineStore(
     };
     const getLimited = async (x: number) => {
       if (x) {
-        const { data, error } = supabase
+        const { data, error } = await supabase
           .from("participants")
           .select()
           .eq("quiz_id", x)
           .limit(3);
-        if (data) {
-          list.value = data;
-          console.log(data);
+        if (data) return data ? data : [];
+        if (error || !data) {
+          console.log(error);
         }
-        if (error) console.log(error);
       }
     };
     const get = async (x: number) => {
@@ -112,7 +111,7 @@ export const useParticipant = defineStore(
           .from("participants")
           .select()
           .eq("quiz_id", x);
-        if (data) list.value = data;
+        if (data) return data;
         if (error) console.log(error);
       }
     };
@@ -124,7 +123,8 @@ export const useParticipant = defineStore(
           .select("score")
           .eq("quiz_id", x);
 
-        if (data) return data;
+        if (data) return data?.map((item) => item.score) || [];
+
         if (error) console.log(error);
       }
     };

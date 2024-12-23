@@ -5,6 +5,7 @@
       <Icon :name="icon" class="icon" />
     </div>
     <h1>{{ number }}</h1>
+    <slot />
   </div>
 </template>
 

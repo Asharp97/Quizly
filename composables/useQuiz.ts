@@ -34,6 +34,14 @@ export const useQuiz = defineStore("quiz", () => {
     description.value = "";
   }
 
+  function clearInputs() {
+    name.value = "";
+    time.value = null;
+    deadLine.value = null;
+    show_result.value = false;
+    description.value = "";
+  }
+
   function set(x: any) {
     id.value = x?.id;
     name.value = x?.text;
@@ -140,6 +148,7 @@ export const useQuiz = defineStore("quiz", () => {
     list,
     reset,
     set,
+    clearInputs,
     get,
     post,
     del,
