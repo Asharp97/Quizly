@@ -42,7 +42,6 @@ export const useScore = defineStore("score", () => {
   };
 
   const getCorrectCount = async () => {
-    // .select("*", { count: "exact", head: true })
     const { count, error } = await supabase
       .from("scores")
       .select("*", { count: "exact", head: true })

@@ -11,31 +11,38 @@
           <databox
             title="Participants count"
             icon="iconoir:community"
-            :number="count" />
+            :number="count"
+          />
           <databox
             title="Average Score"
             icon="ic:round-percentage"
-            :number="avg" />
+            :number="avg"
+          />
           <databox
             title="Min Score"
             icon="carbon:chart-minimum"
-            :number="min" />
+            :number="min"
+          />
           <databox
             title="Max Score"
             icon="icon-park-outline:maximum"
-            :number="max" />
+            :number="max"
+          />
           <databox
             title="Median Score"
             icon="carbon:chart-median"
-            :number="median" />
+            :number="median"
+          />
           <databox
             title="Standard Deviation"
             icon="mdi:sigma-lower"
-            :number="stat.round(sd)" />
+            :number="stat.round(sd)"
+          />
           <databox
             title="Mean"
             icon="carbon:arithmetic-mean"
-            :number="stat.round(mean)" />
+            :number="stat.round(mean)"
+          />
         </div>
       </div>
       <div class="graphs">
@@ -128,7 +135,7 @@ const onPageLoad = async () => {
       min.value = Math.min(...scoreList.value);
       gradeCount.value = stat.gradeWithCounts(scoreList.value);
     }
-    await question.get(quiz.id);
+    await question.getCount(quiz.id);
     correctCount.value = await score.getCorrectCount();
     totalCount.value = await score.getTotaltCount();
   }

@@ -10,25 +10,90 @@
       <table>
         <tr>
           <th>#</th>
-          <th>Name</th>
+          <th :class="{ 'active-order': col == 'name' }" @click="order('name')">
+            <span>
+              Name
+              <div v-if="!limit" class="icon-wrapper">
+                <Icon
+                  class="icon"
+                  :class="{ flip: bool && col == 'name' }"
+                  name="material-symbols-light:arrow-drop-down-rounded"
+                />
+              </div>
+            </span>
+          </th>
           <th>Email</th>
-          <th>Score (%)</th>
+          <th
+            :class="{ 'active-order': col == 'score' }"
+            @click="order('score')"
+          >
+            <span>
+              Score (%)
+              <div v-if="!limit" class="icon-wrapper">
+                <Icon
+                  class="icon"
+                  :class="{ flip: bool && col == 'score' }"
+                  name="material-symbols-light:arrow-drop-down-rounded"
+                />
+              </div>
+            </span>
+          </th>
           <th>Grade</th>
-          <th>Correct/Total</th>
-          <th>Time Spent</th>
-          <th>Submission Time</th>
+          <th
+            :class="{ 'active-order': col == 'correct_count' }"
+            @click="order('correct_count')"
+          >
+            <span>
+              Correct/Total
+              <div v-if="!limit" class="icon-wrapper">
+                <Icon
+                  class="icon"
+                  :class="{ flip: bool && col == 'correct_count' }"
+                  name="material-symbols-light:arrow-drop-down-rounded"
+                />
+              </div>
+            </span>
+          </th>
+          <th
+            :class="{ 'active-order': col == 'time_spent' }"
+            @click="order('time_spent')"
+          >
+            <span>
+              Time Spent
+              <div v-if="!limit" class="icon-wrapper">
+                <Icon
+                  class="icon"
+                  :class="{ flip: bool && col == 'time_spent' }"
+                  name="material-symbols-light:arrow-drop-down-rounded"
+                /></div
+            ></span>
+          </th>
+          <th
+            :class="{ 'active-order': col == 'created_at' }"
+            @click="order('created_at')"
+          >
+            <span>
+              Submission Time
+              <div v-if="!limit" class="icon-wrapper">
+                <Icon
+                  class="icon"
+                  :class="{ flip: bool && col == 'created_at' }"
+                  name="material-symbols-light:arrow-drop-down-rounded"
+                /></div
+            ></span>
+          </th>
         </tr>
         <tr v-for="(part, n) in dataset" :key="part.id">
           <td>{{ n + 1 }}</td>
           <td>{{ part.name }}</td>
-          <td>
+          <td class="email">
             <NuxtLink :to="`mailto:${part.email}`" class="link">
               {{ part.email }}
             </NuxtLink>
           </td>
           <td>{{ part.score }}%</td>
           <td>{{ stat.grade(part.score, score) }}</td>
-          <td>{{ part.correct_count }}/{{ question.list.length }}</td>
+          <td>{{ part.correct_count }}/{{ question.count }}</td>
           <td>{{ clockFormate(part.time_spent) }}</td>
           <td>{{ formatDate(part.created_at) }}</td>
         </tr>
@@ -39,19 +104,20 @@
 
 <script setup>
 const prop = defineProps(["dataset", "limit", "score"]);
+const emit = defineEmits(["order"]);
 const participant = useParticipant();
 const quiz = useQuiz();
 const question = useQuestion();
 const stat = stats();
 
-// watch(
-//   () => quiz.id,
-//   async () => {
-//     await participant.getLimited(quiz.id);
-//     // else await participant.get(quiz.id)
-//     // await question.get(quiz.id);
-//   }
-// );
+const bool = ref(false);
+const col = ref("");
+
+function order(n) {
+  bool.value = !bool.value;
+  col.value = n;
+  emit("order", n, bool.value);
+}
 </script>
 
 <style lang="scss" scoped></style>

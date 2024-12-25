@@ -365,10 +365,15 @@ nav {
     .table-wrapper {
       box-shadow: $shadow;
       border-radius: 1rem 1rem 0rem 0rem;
-      // padding-bottom: 1rem;
       table {
         width: 100%;
         border-collapse: collapse;
+        .email {
+          max-width: 12rem;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
         th,
         td {
           text-align: start;
@@ -381,6 +386,22 @@ nav {
         }
         th {
           border-bottom: 1px solid $grey;
+          span {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            .icon-wrapper {
+              .icon {
+                font-size: 2rem;
+              }
+              .flip {
+                transform: rotate(180deg);
+              }
+            }
+          }
+        }
+        .active-order {
+          background-color: $cloudgrey;
         }
       }
     }
