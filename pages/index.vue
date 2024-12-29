@@ -4,7 +4,7 @@
       <img src="" alt="" />
     </div>
     <div class="action">
-      <div class="title">
+      <div class="quizly-title">
         <h1>Build</h1>
         &nbsp;
         <h1>
@@ -16,19 +16,18 @@
           </ul>
         </h1>
       </div>
-      <h1>with ease</h1>
-      <h1>Quizly just Does It All</h1>
+      <h1 class="orange">Quizly just Does It All</h1>
       <p>
         Build engaging quizzes, insightful surveys, and seamless forms crafted
         for educators, enterprises, and everyone in between.
       </p>
-      <Btn text="START NOW" />
+      <Btn text="START NOW" @click="modal.auth = true" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const modal = useModal();
+</script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

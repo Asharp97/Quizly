@@ -3,7 +3,7 @@
     <nav>
       <div class="nav-content container">
         <NuxtLink to="/" class="logo">
-          <img src="/img/logo.png" alt="quizly logo">
+          <img src="/img/logo.png" alt="quizly logo" />
         </NuxtLink>
 
         <UserMenu v-if="session.user" />
@@ -23,10 +23,6 @@
 <script setup>
 const session = useSession();
 const modal = useModal();
-
-
-
-
 </script>
 
 <style lang="scss" scoped></style>

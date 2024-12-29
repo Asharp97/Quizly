@@ -45,7 +45,7 @@
           @click="showPassword = !showPassword" />
       </div>
 
-      <button @click="session.user = 'ali'">sign me up quick for test</button>
+      <!-- <button @click="session.user = 'ali'">sign me up quick for test</button> -->
       <div class="form-buttons">
         <Transition name="slide-up">
           <btn v-if="signupActive" text="Sign up with email" @click="signUp" />
@@ -123,11 +123,12 @@ const signUp = async () => {
 };
 
 const googleAuth = async () => {
+  const baseURL = window.location.origin;
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:3000/dashboard",
+        redirectTo: `${baseURL}/dashboard`,
       },
     });
 

@@ -176,8 +176,6 @@ import { onClickOutside } from "@vueuse/core";
 import { formatDate } from "~/utils/formatdate";
 import { useAnswers } from "../composables/useAnswers.ts";
 
-const log = console.log;
-
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",

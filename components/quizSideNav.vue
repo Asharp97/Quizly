@@ -95,11 +95,10 @@
                 @change="updateDeadLine" />
             </div>
           </div>
-          <!-- <Btn v-if="modal.show == 'postQuiz'" @click="quiz.post">New Quiz</Btn>
-          <Btn v-if="modal.show == 'editQuiz'" @click="quiz.edit"
-            >Submit Edit</Btn
-          > -->
-          <Btn @click="handleQuizSubmit()">Submit Edit</Btn>
+          <!-- SUBMIT EDIT OR POST -->
+          <Btn @click="handleQuizSubmit()">{{
+            modal.show == "postQuiz" ? "Post Quiz" : "Submit Edit"
+          }}</Btn>
         </div>
       </ModalComponent>
     </Teleport>
@@ -115,7 +114,6 @@ const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
 
 const localDeadline = ref();
-const localTime = ref();
 const updateDeadLine = () => {
   if (localDeadline.value) {
     quiz.deadLine = new Date(localDeadline.value).toISOString();
@@ -146,10 +144,10 @@ onMounted(async () => {
 });
 
 const copyQuiz = async (x) => {
+  const baseURL = window.location.origin;
+
   await quiz.get(x);
-  navigator.clipboard.writeText(
-    "http://localhost:3000/quiz/" + x + "/" + quiz.sharingKey
-  );
+  navigator.clipboard.writeText(`${baseURL}/quiz/${x}/${quiz.sharingKey}`);
 };
 const getQuizes = async () => {
   loading.value = true;
