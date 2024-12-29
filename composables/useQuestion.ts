@@ -11,7 +11,7 @@ export const useQuestion = defineStore("question", () => {
   const type = ref("mcq");
 
   const list = ref([]);
-  const count = ref();
+  const amount = ref();
 
   const menu = ref(null);
 
@@ -44,11 +44,11 @@ export const useQuestion = defineStore("question", () => {
 
   const getCount = async (x?: number) => {
     if (x) {
-      const { data, error } = await supabase
+      const { count, error } = await supabase
         .from("questions")
         .select("*", { count: "exact", head: true })
         .eq("quiz_id", x);
-      if (data) count.value = data;
+      if (count) amount.value = count;
       else console.log(error);
     }
   };
@@ -105,7 +105,7 @@ export const useQuestion = defineStore("question", () => {
     menu,
     type,
     list,
-    count,
+    amount,
     reset,
     set,
     get,

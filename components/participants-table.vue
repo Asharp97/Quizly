@@ -93,7 +93,7 @@
           </td>
           <td>{{ part.score }}%</td>
           <td>{{ stat.grade(part.score, score) }}</td>
-          <td>{{ part.correct_count }}/{{ question.count }}</td>
+          <td>{{ part.correct_count }}/{{ question.amount }}</td>
           <td>{{ clockFormate(part.time_spent) }}</td>
           <td>{{ formatDate(part.created_at) }}</td>
         </tr>

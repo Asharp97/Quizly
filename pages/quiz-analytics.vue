@@ -19,12 +19,12 @@
             :number="avg"
           />
           <databox
-            title="Min Score"
+            title="Minimum Score"
             icon="carbon:chart-minimum"
             :number="min"
           />
           <databox
-            title="Max Score"
+            title="Maximum Score"
             icon="icon-park-outline:maximum"
             :number="max"
           />
