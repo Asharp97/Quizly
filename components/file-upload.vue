@@ -6,7 +6,8 @@
       style="display: none"
       multiple
       accept=".pdf, .doc, .docx, .ppt, .pptx, .txt, image/png, image/jpg, image/jpeg, image/svg, image/webp"
-      @change="selectFiles" />
+      @change="selectFiles"
+    />
 
     <button class="file-upload-area" @click="$refs.fileUploadReference.click()">
       <div v-if="!files.length">
@@ -20,7 +21,8 @@
             <Icon
               name="ic:baseline-delete"
               class="delete-icon"
-              @click.stop="files.splice(n, 1)" />
+              @click.stop="files.splice(n, 1)"
+            />
           </button>
         </div>
       </TransitionGroup>
@@ -29,14 +31,16 @@
     <div v-if="error" class="errormessage">
       {{ error }}
     </div>
+
+    <Btn @click="sendFiles()">Make me a quiz</Btn>
   </TransitionGroup>
 </template>
 
 <script setup>
-import { ref } from "vue";
 const emit = defineEmits(["sendFiles"]);
 const error = ref(null);
 const files = ref([]);
+const supabase = useSupabaseClient();
 
 // Function to handle file selection
 const selectFiles = (event) => {
@@ -55,8 +59,19 @@ const selectFiles = (event) => {
   // Emit the valid files to the parent
   emit("sendFiles", validFiles);
 };
-
 // Helper function to check valid file types
+const sendFiles = async () => {
+  const { data, error } = await supabase.storage
+    .from("notes")
+    .upload("public/" + files.value[0].name + "_" + Date(), files.value, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (data) console.log(data);
+  if (error) console.log(error);
+};
+
 const isValidFileType = (type) => {
   const validTypes = [
     "application/pdf",

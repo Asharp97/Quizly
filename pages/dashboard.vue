@@ -174,7 +174,6 @@
         <div class="modal-content">
           <h4>Upload your notes and leave the rest to us</h4>
           <file-upload />
-          <Btn @click="question.post()">Make me a quiz</Btn>
         </div>
       </ModalComponent>
     </Teleport>
