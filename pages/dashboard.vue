@@ -2,6 +2,9 @@
   <div class="dashboard">
     <div class="quizes-list">
       <div class="top-bar">
+        <button class="icon-wrapper ai-icon" @click="modal.show = 'AI'">
+          <Icon name="hugeicons:artificial-intelligence-04" class="icon" />
+        </button>
         <btn class="newQuizBtn" @click="handlePostQuestion()">
           <div class="icon-wrapper">
             <Icon class="icon" name="material-symbols:add-2-rounded" />
@@ -163,8 +166,15 @@
             v-model="question.name"
             type="text"
             placeholder="Question" />
-          <question-type :title="false"/>
+          <question-type :title="false" />
           <Btn @click="question.post()">Submit Question</Btn>
+        </div>
+      </ModalComponent>
+      <ModalComponent :condition="modal.show == 'AI'">
+        <div class="modal-content">
+          <h4>Upload your notes and leave the rest to us</h4>
+          <file-upload />
+          <Btn @click="question.post()">Make me a quiz</Btn>
         </div>
       </ModalComponent>
     </Teleport>

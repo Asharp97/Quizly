@@ -1,3 +1,8 @@
+a[href="https://tiiny.host?ref=free-site"]
+{
+  display: none !important;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 .body {
   min-height: calc(100dvh - $navHeight);
@@ -231,10 +236,18 @@ nav {
     overflow-y: scroll;
     .top-bar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
+      gap: 1rem;
+      .ai-icon {
+        all: unset;
+        cursor: pointer;
+        color: $orange;
+        .icon {
+          font-size: 2rem;
+        }
+      }
       .newQuizBtn {
         width: fit-content;
-        margin-left: auto;
         .icon-wrapper {
           padding: 0.25rem;
           background-color: $white;
