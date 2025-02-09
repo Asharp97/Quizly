@@ -6,8 +6,7 @@
       style="display: none"
       multiple
       accept=".pdf, .doc, .docx, .ppt, .pptx, .txt, image/png, image/jpg, image/jpeg, image/svg, image/webp"
-      @change="selectFiles"
-    />
+      @change="selectFiles" />
 
     <button class="file-upload-area" @click="$refs.fileUploadReference.click()">
       <div v-if="!files.length">
@@ -21,8 +20,7 @@
             <Icon
               name="ic:baseline-delete"
               class="delete-icon"
-              @click.stop="files.splice(n, 1)"
-            />
+              @click.stop="deleteFile(n, file.name)" />
           </button>
         </div>
       </TransitionGroup>
@@ -37,39 +35,66 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["sendFiles"]);
 const error = ref(null);
 const files = ref([]);
 const supabase = useSupabaseClient();
+const quiz = useQuiz();
+const session = useSession();
+const uuid = session.user.id;
 
 // Function to handle file selection
 const selectFiles = (event) => {
-  files.value = Array.from(event.target.files); // Handle multiple files
+  files.value.push(...Array.from(event.target.files));
 
-  // Validate file types
   const validFiles = files.value.filter((file) => isValidFileType(file.type));
 
   if (validFiles.length === 0) {
     error.value = "Invalid file types. Please upload valid files.";
     return;
   }
-
   error.value = null; // Clear errors if valid files found
-
-  // Emit the valid files to the parent
-  emit("sendFiles", validFiles);
 };
-// Helper function to check valid file types
-const sendFiles = async () => {
+
+onMounted(async () => {
+  await getFiles();
+});
+
+const getFiles = async () => {
   const { data, error } = await supabase.storage
     .from("notes")
-    .upload("public/" + files.value[0].name + "_" + Date(), files.value, {
-      cacheControl: "3600",
-      upsert: false,
+    .list(`${uuid}/${quiz.id}`, {
+      limit: 100,
+      offset: 0,
+      sortBy: { column: "name", order: "asc" },
     });
 
-  if (data) console.log(data);
-  if (error) console.log(error);
+  if (data) files.value = data;
+};
+const deleteFile = async (n, name) => {
+  const { data, error } = await supabase.storage
+    .from("notes")
+    .remove(`${uuid}/${quiz.id}/${name}`);
+
+  files.value.splice(n, 1);
+
+  if (data) {
+    await getFiles();
+    return data;
+  }
+};
+const sendFiles = async () => {
+  const { data, error } = await Promise.all(
+    files.value.map((file) => {
+      return supabase.storage
+        .from("notes")
+        .upload(`${uuid}/${quiz.id}/${file.name}`, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+    })
+  );
+
+  data ? console.log(data) : console.log(error);
 };
 
 const isValidFileType = (type) => {
@@ -116,13 +141,24 @@ const isValidFileType = (type) => {
         align-items: center;
         font-weight: 700;
         font-size: 1rem;
+        span {
+          color: $blue;
+        }
         .delete-file {
           color: black;
           all: unset;
           cursor: pointer;
           padding: 0.5rem;
           color: $blue;
-          transform: translateY(2px);
+          &:hover {
+            span {
+              transform: rotate(15deg);
+              scale: 1.06;
+            }
+          }
+          span {
+            transform: translateY(2px);
+          }
         }
       }
     }
