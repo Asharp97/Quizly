@@ -29,8 +29,10 @@
     <div v-if="error" class="errormessage">
       {{ error }}
     </div>
-
-    <Btn @click="sendFiles()">Make me a quiz</Btn>
+    <div>
+      <Btn @click="sendFiles()">Make me a quiz</Btn>
+      <Btn @click="handleGen()">show me what we did</Btn>
+    </div>
   </TransitionGroup>
 </template>
 
@@ -41,6 +43,14 @@ const supabase = useSupabaseClient();
 const quiz = useQuiz();
 const session = useSession();
 const uuid = session.user.id;
+const ai = useAI();
+
+const handleGen = async () => {
+  const url = await ai.getURL(uuid, quiz.id, files.value[0].name);
+  console.log(url);
+  const data = await useFetch(`/api/extract/name}`);
+  console.log(data.data.value);
+};
 
 // Function to handle file selection
 const selectFiles = (event) => {
@@ -83,7 +93,7 @@ const deleteFile = async (n, name) => {
   }
 };
 const sendFiles = async () => {
-  const { data, error } = await Promise.all(
+  await Promise.all(
     files.value.map((file) => {
       return supabase.storage
         .from("notes")
@@ -93,8 +103,6 @@ const sendFiles = async () => {
         });
     })
   );
-
-  data ? console.log(data) : console.log(error);
 };
 
 const isValidFileType = (type) => {

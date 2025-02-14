@@ -1,0 +1,342 @@
+[
+  {
+    "type": "Image",
+    "element_id": "597a85128f951abe184c94a9865fb8f9",
+    "text": "Welcome to Physics 101!   Lecture 01: Introduction to Forces    “Nervous, physics was not my strong subject in high school.”   “I'm excited to learn about the laws that govern a lot   of daily life.”   “I am dreading this course with every fiber of my being”   I am excited to learn about something other than biology, chemistry,   and raw mathematics.   “Excited! I love math materials. I do not have any fear yet.”   “-Excited about the labs -Fearful of the exams.”                        http://online.physics.uiuc.edu/courses/phys101  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 1,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "307458fd6b878e878e9f16a4de40d53e",
+    "text": "Meet the Lecturer    Prof. Taekjip Ha (most people call me TJ   so can you)      TaekjipHa@physics.illinois.edu    Office Hours      Monday 10-11     236 Loomis; start in two wks    Research   Biophysics – Cancer & infectious diseases    P101 is one of my favorite courses!   •http://online.physics.uiuc.edu/courses/phys101   Physics 101: Lecture 1, Pg 3  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 2,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "68ce4c50c2facfdaa989ba6026cb49f2",
+    "text": "Course Format   (upward) Spiral Learning    Lecture Preflights (can miss up to 3)      25    iClickers  (can miss up to 3)          25    Homework               100    Lab                      150    Discussion                  100   quizzes; drop lowest 1    Hour Exams (3 x 100)           300    Final Exam               300   1000   Physics 101: Lecture 1, Pg 4  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 3,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "6bd8831fe1185df70a81f9765ce47bac",
+    "text": "Grading Scale    950-1000    A+       810-834     C+    920-949     A       780-809     C    900-919     A-       750-779     C-    880-899     B+       720-749     D+    860-879     B    690-719     D    835-859     B-    610-689     D-    <610     F   “My goal is to receive an A…”   ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 4,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "53e43726fe8660fbc90e99834be85e8e",
+    "text": "Reading & Lecture Preflight    Need to complete PreLecture for Preflight     Answer preflights 25/1000 points   Due 6:00 am day of lecture.     1 points for honest attempt at preflight (lose points       for nonsense – and I read these!).   No EX,  28 Lectures can miss three and still get all 25   points.    Everyone gets 1 point for today!  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 5,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "2c9b0e0b36ff00e7f890ec5a8489dd2b",
+    "text": "P101 Lectures   “I’m looking forward to a fun …       Participation is key!      semester”   Come to lecture prepared!   1 point for each lecture using iclicker   » No EX,  28 Lectures can miss three and still get all 25 points.   » Available at bookstore---register using link on our web page.   » Using multiple clickers is an academic integrity violation.    Not everything you need for exams!   Concepts, Connections, Motivation   Comprehensive Text    Calculations       Homework + Discussion   Hands-On  Lab    Taking Notes   Lecture notes available.   Some key pieces for you to fill in.     ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 6,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Title",
+    "element_id": "ff610ff4794cfbcef134ba8f6897dd1c",
+    "text": "L",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 7,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "UncategorizedText",
+    "element_id": "17abaa92120c773838cc4784e1a98267",
+    "text": "1",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 7,
+      "parent_id": "ff610ff4794cfbcef134ba8f6897dd1c",
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "ListItem",
+    "element_id": "58a4dbc6195ea77584503be6ee476418",
+    "text": "",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 7,
+      "parent_id": "ff610ff4794cfbcef134ba8f6897dd1c",
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "156310ee584d1213175b9e732723c27c",
+    "text": "P101 Homework    All web based, immediate feedback    100% if done before 6:00 am deadline    90% credit on unfinished parts until following   Tuesday    0% after that    Always keep 5 significant figures!    First one is due Tues February 1st !    TA office hours are on Mondays, start January   31st.  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 7,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "NarrativeText",
+    "element_id": "c192b23b4701d9c647d3308ccc6bb3f6",
+    "text": "Physics 101: Lecture 1, Pg 8",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 7,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "168ad12edf321c41726caba4e917526c",
+    "text": "P101 Labs   “I'm looking forward to the labs because I   learn better with hands-on activities.”    Director: Professor Paul Selvin          research: biophysics, molecular motors    First Lab is Today!       No “dropped” labs….. Don’t miss one!   Physics 101: Lecture 01, Pg 9  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 8,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "6f647628b1dd155f689f58c0634e7b54",
+    "text": "Discussion Sections    Director: Professor Yoshi Oono        research: statistical mechanics    Start: Yesterday (if you are in Tue   session)    Quiz during last 20 minutes of section    10 minutes late     First section: math      review, dimensional      analysis.   Physics 101: Lecture 1, Pg 10  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 9,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "f5980c948e309ec6d9c544b9bb8900af",
+    "text": "Email policy   1. Read the frequently asked questions on the   course web site before emailing course staffs.   2. Please do not email physics or homework   questions to professors or TAs. Use Office   hours.   3. Send questions on Discussion/Quizzes to Yoshi   Oono.   4. Send questions on Labs/Exams to Paul Selvin.   5. Send questions on Lectures and other materials   to Taekjip Ha.       Physics 101: Lecture 1, Pg 12  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 10,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "eb212eabe8f0269c371e6a1483a2315b",
+    "text": "Rewards for following the   email policy   1. Extra 2 points!   The highest possible overall score is 1002!      To keep extra points   -Do not ask questions already answered in FAQs.   -Do not ask physics or homework questions by email.   -Make sure you send your questions to the right person      Lab/Exams: Paul Selvin     Discussion/Quizzes: Yoshi Oono      Lectures/Others: Taekjip Ha  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 11,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "9fa256ddc7c1d7542cc9932c2d893957",
+    "text": "1.  2.  3.  Newton’s Laws of Motion   If the sum of all external forces on an   object is zero, then its speed and direction   will not change.    Inertia      If a nonzero net force is applied to an   object its motion will change  F= ma      In an interaction between two objects, the   forces that each exerts on the other are   equal in magnitude and opposite in   direction.   Physics 101: Lecture 1, Pg 14  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 12,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "79be7f7aa68f691b029b349d57f6c438",
+    "text": "Forces in P101    Non-Contact ---- Gravity (|F| = G m M/r2 )   G = 6.7x10-11 m3 / (kg s2)   Earth:   Mass = 6x1024 kg,  radius = 6.4 x106 m.       Contact  (fundamentally E+M)   Normal: Perpendicular to surface   Friction: Parallel to surface   Anything touching the object   » Rope: Tension   » Spring F = -kx  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 13,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "NarrativeText",
+    "element_id": "1814f29acb9277364f4da352fa87584d",
+    "text": "Physics 101: Lecture 1, Pg 15",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 13,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "aeaf130bec25bceb96468474b4ccbf94",
+    "text": "Example Weight of Object     Calculate the gravitational force on a 3 kg book   held 1 meter above the surface of the earth.     |F| = G M m / r2         = (6.7x10-11 m3 / (kg s2)) (6x1024 kg) (3 kg)/ (6.4x106 + 1)2 m2           =   29.4 kg m/s2     ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 14,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "cee90410e4a892b6542d5f9870b1c89b",
+    "text": "Gravitational ACT    If the book is raised 10 meters above the   surface of the earth, the gravitational force   on the book will   A)    100 times stronger       B) 10 times stronger                  C)   Nearly the same        D)   10 times weaker           E) 100 times weaker   F = G M m / r2      = (6.7x10-11 m3 / (kg s2)) (6x1024 kg) (3 kg)/ (6.4x106 + 10)2 m2      =   29.4 kg m/s2   Near surface of earth r = 6.4x106 m    |F| = m (G M /r2) = m (9.8 m/s2)  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 15,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "18b60aae9de521be5c7d54801e175dd0",
+    "text": "Contact Forces: Friction    Magnitude of frictional force (parallel to   surfaces) is proportional to the normal force.   fkinetic = mk N        mk coefficient of Kinetic friction    fstatic ≤ ms N          ms coefficient of Static friction        Be Careful!   Static friction ≤, can be any value up to msN   Direction always opposes motion  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 16,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "NarrativeText",
+    "element_id": "c05f0113a420c1566f5dbead335d91b9",
+    "text": "Physics 101: Lecture 1, Pg 18",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 16,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "9050ce0e1566386a13a8be022e1cf693",
+    "text": "Free Body Diagrams    Choose Object (book)    Label coordinate axis    Identify All Forces   Hand (to right)   Gravity (down)   Normal (table, up)   Friction (table, left)   Physics   y   Physics 101: Lecture 1, Pg 19   x  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 17,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "2e65e20676bd841ea1bcb0234f70935d",
+    "text": "Summary    Newton’s Laws of Motion   Inertia   F=ma   Pairs    Forces:   Non-Contact: Gravity   Contact:  Friction and Normal    Free Body Diagrams   Each direction is independent    Friction  opposes motion, parallel to surface   Kinetic f = mk N   Static   f ≤ ms N  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 18,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "NarrativeText",
+    "element_id": "f7abc8acc1a467bc92fa593a0135861a",
+    "text": "Physics 101: Lecture 1, Pg 20",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 18,
+      "filename": "Lecture01-11.pdf"
+    }
+  },
+  {
+    "type": "Image",
+    "element_id": "e26f0179a568c01e4c8a779ebe23bb8d",
+    "text": "To Do    Discussions started yesterday,     Labs start today.       Do lecture preflight before 6:00 am   Monday!       Have a GREAT WEEK!  ",
+    "metadata": {
+      "filetype": "application/pdf",
+      "languages": [
+        "eng"
+      ],
+      "page_number": 19,
+      "filename": "Lecture01-11.pdf"
+    }
+  }
+]

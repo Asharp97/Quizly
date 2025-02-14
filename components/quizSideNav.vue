@@ -24,7 +24,7 @@
           <div class="quiz-name-title">
             <p>
               <span> 0{{ n + 1 }}.</span>
-              {{ ask.text }}
+              {{ ask.text }} 
             </p>
             <div v-if="deadLine(ask.deadLine) < now" class="expired">
               expired
@@ -144,8 +144,8 @@ onMounted(async () => {
 });
 
 const copyQuiz = async (x) => {
-  const baseURL = "https://quizly-app.tiiny.site/";
-  // const baseURL = "http://localhost:3000/";
+  // const baseURL = "https://quizly-app.tiiny.site";
+  const baseURL = "http://localhost:3000";
 
   await quiz.get(x);
   navigator.clipboard.writeText(`${baseURL}/quiz/${x}/${quiz.sharingKey}`);

@@ -61,7 +61,7 @@ export const useScore = defineStore("score", () => {
     } else log(error);
   };
 
-  const post = async (x: Array<number>) => {
+  const post = async (x) => {
     const { data, error } = await supabase.from("scores").insert(x);
     if (error) log(error);
     else await get();

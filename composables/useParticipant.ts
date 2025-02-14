@@ -85,7 +85,7 @@ export const useParticipant = defineStore(
         .select()
         .single();
       if (data) {
-        set(data);
+        set(data)
         await question.get(quiz.id);
         question.set(question.list[0]);
         await answer.get(question.id);

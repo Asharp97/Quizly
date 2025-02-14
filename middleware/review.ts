@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // participant.reset();
 
   if (!id || !participant.id) {
-    console.log(1);
     return navigateTo("/error");
   }
 
