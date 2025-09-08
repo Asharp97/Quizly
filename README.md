@@ -1,174 +1,100 @@
-## 📚 Supabase Notes Upload & Processing API
+# Quizly
 
-This project is a **Python FastAPI backend** integrated with **Supabase Storage**, designed to allow authenticated users to upload and manage their own quiz-related documents (PDFs, Word files, etc.). It features:
+Quizly is a modern, full-stack quiz platform built with Nuxt 3, Supabase, and Pinia. It allows users to create, manage, and participate in quizzes with real-time analytics and AI-powered features.
 
-* Secure, user-specific file uploads to Supabase Storage.
-* Triggered storage event processing via PostgreSQL functions.
-* Auto-extraction of file metadata (e.g., file name, user ID).
-* Integration with Supabase Edge Functions for document processing.
+## Features
 
----
+- **Quiz Creation & Management**: Create quizzes with multiple question types (MCQ, True/False, Open-Ended).
+- **User Authentication**: Secure login and session management using Supabase.
+- **Participant Tracking**: Track quiz participants, their scores, and time spent.
+- **Real-Time Analytics**: Visualize quiz analytics with ECharts.
+- **AI Integration**: Leverage AI for document processing and quiz generation (via OpenAI and Unstructured APIs).
+- **Responsive UI**: Built with Vue 3 and Nuxt 3 for a seamless user experience.
+- **Admin Dashboard**: Manage quizzes, participants, and view analytics.
 
-## 🚀 Features
+## Tech Stack
 
-* 🔐 **User-Specific Storage Access**
+- **Frontend**: Nuxt 3, Vue 3, Pinia, SCSS
+- **Backend**: Supabase (Database, Auth, Storage)
+- **AI/ML**: OpenAI, LangChain, Unstructured
+- **Visualization**: ECharts
 
-  * Only authenticated users can upload, view, and manage their own files.
-  * Supabase RLS (Row-Level Security) policies enforced at the bucket level.
+## Getting Started
 
-* 📂 **Organized File Paths**
+### Prerequisites
 
-  * Files are stored under:
+- Node.js (v18+ recommended)
+- pnpm (or npm/yarn)
 
-    ```
-    /notes/{user_id}/{quiz_id}/{file_name}
-    ```
+### Installation
 
-* 🧠 **Smart Triggers**
+1. Clone the repository:
+   ```sh
+   git clone <your-repo-url>
+   cd quizly
+   ```
+2. Install dependencies:
+   ```sh
+   pnpm install
+   # or
+   npm install
+   ```
+3. Configure environment variables:
 
-  * A PostgreSQL trigger listens to new file uploads and inserts metadata into a `documents` table.
-  * Automatically calls a Supabase Edge Function (`/functions/v1/process`) to handle the uploaded document.
+   - Copy `.env.example` to `.env` and fill in your Supabase and API keys.
 
-* 🔄 **TypeScript-Compatible Frontend**
+4. Run the development server:
 
-  * Works seamlessly with a frontend built in Vue, Nuxt, or any TypeScript framework.
+   ```sh
+   pnpm dev
+   # or
+   npm run dev
+   ```
 
----
+5. Access the app at `http://localhost:3000`
 
-## ⚙️ Tech Stack
+### Build for Production
 
-| Layer      | Tool / Service                     |
-| ---------- | ---------------------------------- |
-| Backend    | Supabase                           |
-| Storage    | Supabase Storage                   |
-| DB Trigger | PostgreSQL Trigger with PL/pgSQL   |
-| Auth       | Supabase Auth                      |
-| Frontend   | (Optional) Vue 3 / Nuxt 3          |
-| Processing | Supabase Edge Functions (optional) |
-
----
-
-## 🛠️ Supabase Policies (Security)
-
-To restrict all file access to the file owner, the following **RLS policies** are added to `storage.objects`:
-
-```sql
--- SELECT
-CREATE POLICY "Users can view their own files"
-ON storage.objects
-FOR SELECT
-USING (user_id = auth.uid());
-
--- INSERT
-CREATE POLICY "Users can insert files with their UID"
-ON storage.objects
-FOR INSERT
-WITH CHECK (user_id = auth.uid());
-
--- UPDATE
-CREATE POLICY "Users can update their own files"
-ON storage.objects
-FOR UPDATE
-USING (user_id = auth.uid());
-
--- DELETE
-CREATE POLICY "Users can delete their own files"
-ON storage.objects
-FOR DELETE
-USING (user_id = auth.uid());
+```sh
+pnpm build
+pnpm preview
 ```
 
----
+## Project Structure
 
-## ⚡ Database Trigger Logic
+- `components/` — Vue components (UI, quiz, admin, etc.)
+- `composables/` — Pinia stores and composable logic
+- `layouts/` — Nuxt layouts
+- `middleware/` — Route guards and middleware
+- `pages/` — Nuxt pages (routing)
+- `public/` — Static assets
+- `server/` — API routes and server logic
+- `supabase/` — Supabase Edge Functions and config
+- `assets/style/` — SCSS styles
+- `utils/` — Utility functions
 
-```sql
--- Trigger Function
-CREATE FUNCTION private.handle_storage_update()
-RETURNS trigger AS $$
-DECLARE
-  document_id bigint;
-  result int;
-BEGIN
-  INSERT INTO documents (name, storage_object_id, created_by)
-    VALUES (new.path_tokens[3], new.id, new.owner)
-    RETURNING id INTO document_id;
+## Supabase Setup
 
-  SELECT net.http_post(
-    url := supabase_url() || '/functions/v1/process',
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', current_setting('request.headers')::json->>'authorization'
-    ),
-    body := jsonb_build_object('document_id', document_id)
-  )
-  INTO result;
+- Create a Supabase project and configure tables for quizzes, questions, answers, participants, and scores.
+- Set up storage buckets (e.g., `notes`) for file uploads.
+- Configure Edge Functions in the `supabase/functions/` directory.
 
-  RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+## AI & Document Processing
 
--- Trigger Binding
-CREATE TRIGGER on_file_upload
-AFTER INSERT ON storage.objects
-FOR EACH ROW
-EXECUTE FUNCTION private.handle_storage_update();
-```
+- Integrates with OpenAI and Unstructured for AI-powered quiz generation and document parsing.
+- Configure API keys in your environment variables.
+
+## Scripts
+
+- `pnpm dev` — Start development server
+- `pnpm build` — Build for production
+- `pnpm generate` — Generate static site
+- `pnpm preview` — Preview production build
+
+## License
+
+MIT
 
 ---
 
-## 📦 Upload API Example
-
-**Python Backend Endpoint:**
-
-```python
-@app.get("/{uuid}/{quizId}")
-def ai(uuid: str, quizId: int):
-    names = getNames(uuid, quizId)
-    names = [item["name"] for item in names]
-    files = [getFiles(uuid, quizId, name) for name in names]
-    return {"files": files}
-```
-
----
-
-## 🧪 Testing Upload (in JS/TS)
-
-```ts
-const { data, error } = await supabase.storage
-  .from("notes")
-  .upload(`${userId}/${quizId}/${file.name}`, file, {
-    cacheControl: "3600",
-    upsert: true,
-  });
-```
-
----
-
-## 📁 Folder Structure (Storage)
-
-```
-/notes/
-  └── {user_id}/
-        └── {quiz_id}/
-              ├── notes1.pdf
-              ├── lecture2.docx
-              └── summary.txt
-```
-
----
-
-## ✅ To-Do / Next Steps
-
-* [ ] Add OCR or NLP to process uploaded content
-* [ ] Display file previews in frontend
-* [ ] Add download endpoint with signed URLs
-* [ ] Rate-limit or size-limit uploads per user
-
----
-
-## 🧠 Author
-
-**Ali Elsayed**
-Turkiye, Istanbul | [LinkedIn]([https://linkedin.com/in/nurettin-kartal](https://github.com/Asharp97)) | [GitHub](https://github.com/asharp97)
-
+**Quizly** — Effortless quiz creation, analytics, and AI-powered features.
