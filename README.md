@@ -1,75 +1,100 @@
-# Nuxt Minimal Starter
+# Quizly
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Quizly is a modern, full-stack quiz platform built with Nuxt 3, Supabase, and Pinia. It allows users to create, manage, and participate in quizzes with real-time analytics and AI-powered features.
 
-## Setup
+## Features
 
-Make sure to install dependencies:
+- **Quiz Creation & Management**: Create quizzes with multiple question types (MCQ, True/False, Open-Ended).
+- **User Authentication**: Secure login and session management using Supabase.
+- **Participant Tracking**: Track quiz participants, their scores, and time spent.
+- **Real-Time Analytics**: Visualize quiz analytics with ECharts.
+- **AI Integration**: Leverage AI for document processing and quiz generation (via OpenAI and Unstructured APIs).
+- **Responsive UI**: Built with Vue 3 and Nuxt 3 for a seamless user experience.
+- **Admin Dashboard**: Manage quizzes, participants, and view analytics.
 
-```bash
-# npm
-npm install
+## Tech Stack
 
-# pnpm
-pnpm install
+- **Frontend**: Nuxt 3, Vue 3, Pinia, SCSS
+- **Backend**: Supabase (Database, Auth, Storage)
+- **AI/ML**: OpenAI, LangChain, Unstructured
+- **Visualization**: ECharts
 
-# yarn
-yarn install
+## Getting Started
 
-# bun
-bun install
-```
+### Prerequisites
 
-## Development Server
+- Node.js (v18+ recommended)
+- pnpm (or npm/yarn)
 
-Start the development server on `http://localhost:3000`:
+### Installation
 
-```bash
-# npm
-npm run dev
+1. Clone the repository:
+   ```sh
+   git clone <your-repo-url>
+   cd quizly
+   ```
+2. Install dependencies:
+   ```sh
+   pnpm install
+   # or
+   npm install
+   ```
+3. Configure environment variables:
 
-# pnpm
-pnpm dev
+   - Copy `.env.example` to `.env` and fill in your Supabase and API keys.
 
-# yarn
-yarn dev
+4. Run the development server:
 
-# bun
-bun run dev
-```
+   ```sh
+   pnpm dev
+   # or
+   npm run dev
+   ```
 
-## Production
+5. Access the app at `http://localhost:3000`
 
-Build the application for production:
+### Build for Production
 
-```bash
-# npm
-npm run build
-
-# pnpm
+```sh
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Project Structure
+
+- `components/` — Vue components (UI, quiz, admin, etc.)
+- `composables/` — Pinia stores and composable logic
+- `layouts/` — Nuxt layouts
+- `middleware/` — Route guards and middleware
+- `pages/` — Nuxt pages (routing)
+- `public/` — Static assets
+- `server/` — API routes and server logic
+- `supabase/` — Supabase Edge Functions and config
+- `assets/style/` — SCSS styles
+- `utils/` — Utility functions
+
+## Supabase Setup
+
+- Create a Supabase project and configure tables for quizzes, questions, answers, participants, and scores.
+- Set up storage buckets (e.g., `notes`) for file uploads.
+- Configure Edge Functions in the `supabase/functions/` directory.
+
+## AI & Document Processing
+
+- Integrates with OpenAI and Unstructured for AI-powered quiz generation and document parsing.
+- Configure API keys in your environment variables.
+
+## Scripts
+
+- `pnpm dev` — Start development server
+- `pnpm build` — Build for production
+- `pnpm generate` — Generate static site
+- `pnpm preview` — Preview production build
+
+## License
+
+MIT
+
+---
+
+**Quizly** — Effortless quiz creation, analytics, and AI-powered features.
