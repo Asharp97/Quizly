@@ -3,16 +3,23 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   modules: [
-    "@nuxtjs/supabase",
     "@nuxt/icon",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
     "@vueuse/nuxt",
     "nuxt-echarts",
+    "nuxt-graphql-client",
   ],
-  supabase: {
-    redirect: false,
+  "graphql-client": {
+    tokenStorage: {
+      mode: "localStorage",
+    },
+    clients: {
+      default: {
+        host: process.env.GQL_HOST,
+      },
+    },
   },
   css: [
     "./assets/style/main.scss",

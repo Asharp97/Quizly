@@ -70,10 +70,12 @@
 
 <script setup>
 import { validateEmail, validatePassword } from "@/utils/validations";
-const supabase = useSupabaseClient();
+
 const session = useSession();
+const { isLoggedIn } = storeToRefs(session);
 const modal = useModal();
 const router = useRouter();
+const auth = useAuth();
 const showPassword = ref(false);
 const signupActive = ref(false);
 
@@ -96,57 +98,48 @@ const passCheck = () => {
 };
 
 const login = async () => {
-  if (passCheck() && emailCheck()) {
-    const { data } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value,
-    });
-    if (data) {
-      session.set(data);
-      modal.close();
-      // router.push('/dashboard')
-    }
+  await auth.login(email.value, password.value);
+  if (isLoggedIn.value) {
+    await router.push("/dashboard");
+    modal.close();
+  } else {
+    passwordError.value = "Invalid email or password";
   }
 };
 
 const signUp = async () => {
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value,
-    password: password.value,
-  });
-  if (data) {
-    await session.set(data);
+  await auth.signUp(email.value, password.value);
+  if (isLoggedIn.value) {
+    await router.push("/dashboard");
     modal.close();
-    router.push("/dashboard");
-    router.replace("/dashboard");
-  } else console.log(error);
+  } else {
+    passwordError.value = "Oh no! Something went wrong.";
+  }
 };
 
 const googleAuth = async () => {
-  const baseURL = window.location.origin;
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${baseURL}/dashboard`,
-      },
-    });
-
-    if (error) {
-      console.error("Authentication error:", error.message);
-      return;
-    }
-
-    if (data) {
-      console.log("Google Auth Data:", data);
-      // await router.push('/dashboard');
-      session.set(data);
-      // modal.close();
-      console.log(session);
-    }
-  } catch (err) {
-    console.error("Error during Google authentication:", err);
-  }
+  // const baseURL = window.location.origin;
+  // try {
+  //   const { data, error } = await supabase.auth.signInWithOAuth({
+  //     provider: "google",
+  //     options: {
+  //       redirectTo: `${baseURL}/dashboard`,
+  //     },
+  //   });
+  //   if (error) {
+  //     console.error("Authentication error:", error.message);
+  //     return;
+  //   }
+  //   if (data) {
+  //     console.log("Google Auth Data:", data);
+  //     // await router.push('/dashboard');
+  //     session.set(data);
+  //     // modal.close();
+  //     console.log(session);
+  //   }
+  // } catch (err) {
+  //   console.error("Error during Google authentication:", err);
+  // }
 };
 </script>
 

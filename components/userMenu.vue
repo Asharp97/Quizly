@@ -11,7 +11,7 @@
           <NuxtLink to="/participants" class="item">
             Participants Table</NuxtLink
           >
-          <div class="item" @click="modal.show = 'confirm'">Logout</div>
+          <div class="item" @click="modal.show = 'confirm_logout'">Logout</div>
         </div>
       </div>
     </div>
@@ -21,11 +21,11 @@
         action-text="Log me out"
         cancel-text="Nevermind"
         icon="material-symbols:logout"
-        condition="confirm"
+        condition="confirm_logout"
         @confirm="logout" />
       <prompt
         msg="Your Quiz has been successfully Published"
-        condition="quizDone"
+        condition="quiz_submission"
         cancel-text="Okay"
         icon="line-md:confirm-circle" />
     </Teleport>
@@ -33,19 +33,14 @@
 </template>
 
 <script setup>
-const supabase = useSupabaseClient();
 const router = useRouter();
-const session = useSession();
 const modal = useModal();
+const auth = useAuth();
 
 const logout = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) console.log(error);
-  else {
-    session.clear();
-    modal.close();
-    router.push("/");
-  }
+  await auth.logout();
+  modal.close();
+  router.push("/");
 };
 </script>
 

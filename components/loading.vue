@@ -1,5 +1,5 @@
 <template>
-  <Fscreen v-show="loading">
+  <Fscreen>
     <div class="loading">
       <h2><Icon name="line-md:loading-loop" class="icon" /></h2>
     </div>

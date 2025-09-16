@@ -14,8 +14,7 @@
               placeholder="First Name"
               @blur="
                 firstNameErr = notEmpty(participant.firstName, 'First Name')
-              "
-            />
+              " />
             <Transition name="fade">
               <div v-if="firstNameErr" class="errormessage">
                 {{ firstNameErr }}
@@ -31,8 +30,7 @@
               placeholder="Last Name"
               @blur="
                 lasttNameErr = notEmpty(participant.lastName, 'First Name')
-              "
-            />
+              " />
             <Transition name="fade">
               <div v-if="lasttNameErr" class="errormessage">
                 {{ lasttNameErr }}
@@ -47,8 +45,7 @@
           type="Email"
           placeholder="Email address"
           @keyup.enter="startQuiz"
-          @blur="emailCheck"
-        />
+          @blur="emailCheck" />
         <Transition name="fade">
           <div v-if="participant.emailError" class="errormessage">
             {{ participant.emailError }}
@@ -61,8 +58,7 @@
       <count-down
         v-if="quiz.time"
         :minutes="quiz.time"
-        @timeup="terminateQuiz()"
-      />
+        @timeup="terminateQuiz()" />
       <quiz-wrapper
         :selected-answer="selectedAnswer"
         :answer="answer.list"
@@ -70,8 +66,7 @@
         :show-arrows="true"
         :review-mode="false"
         @next="next"
-        @select-answer="selectAnswer"
-      />
+        @select-answer="selectAnswer" />
     </div>
   </div>
 </template>
@@ -172,7 +167,7 @@ const terminateQuiz = async () => {
   score.reset();
 
   if (!quiz.show_result) {
-    modal.show = "quizDone";
+    modal.show = "quiz_submission";
     router.push("/");
   } else router.push(`/quiz/${id}/review`);
 };

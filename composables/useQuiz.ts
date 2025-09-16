@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
-import { nanoid } from "nanoid";
 
 export const useQuiz = defineStore("quiz", () => {
-  const supabase = useSupabaseClient();
   const session = useSession();
   const modal = useModal();
   const log = console.log;
@@ -57,83 +55,26 @@ export const useQuiz = defineStore("quiz", () => {
   }
 
   const get = async (x?: number) => {
-    if (x) {
-      const { data, error } = await supabase
-        .from("quizes")
-        .select()
-        .eq("id", x)
-        .single();
-      if (data) set(data);
-      else log(error);
-    } else {
-      const { data, error } = await supabase
-        .from("quizes")
-        .select()
-        .order("created_at", {
-          ascending: true,
-        });
-      if (data) {
-        if (!id.value) set(data[0]);
-        list.value = data;
-      } else log(error);
-    }
   };
 
   const post = async () => {
-    boolCheck();
-    sharingKey.value = nanoid(10);
-    const { data, error } = await supabase
-      .from("quizes")
-      .insert({
-        text: name.value,
-        sharing_key: sharingKey.value,
-        description: description.value,
-        show_result: show_result.value,
-        time: time.value,
-        deadLine: deadLine.value,
-        user_id: session.user.id,
-      })
-      .select()
-      .single();
-    if (error) log(error);
-    else {
-      await get();
-      modal.close();
-      set(data);
-    }
+    return true; //todo
   };
   const del = async (x: number) => {
-    const response = await supabase.from("quizes").delete().eq("id", x);
-    if (response.status == 204) {
-      await get();
-      modal.close();
-    }
+    return true; //todo
   };
 
   const boolCheck = () => {
-    if (deadLine.value == true || deadLine.value == false)
+    if (deadLine.value == true || deadLine.value == false) {
       deadLine.value = null;
-    if (time.value == true || time.value == false || time.value == 0)
+    }
+    if (time.value == true || time.value == false || time.value == 0) {
       time.value = null;
+    }
   };
 
   const edit = async () => {
-    boolCheck();
-    const { error } = await supabase
-      .from("quizes")
-      .update({
-        text: name.value,
-        description: description.value,
-        show_result: show_result.value,
-        time: time.value,
-        deadLine: deadLine.value,
-      })
-      .eq("id", id.value);
-    if (error) log(error);
-    else {
-      await get();
-      modal.close();
-    }
+    return true; //todo
   };
 
   return {

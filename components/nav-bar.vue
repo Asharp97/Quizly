@@ -6,7 +6,7 @@
           <img src="/img/logo.png" alt="quizly logo" />
         </NuxtLink>
 
-        <UserMenu v-if="session.user" />
+        <UserMenu v-if="isLoggedIn" />
 
         <div v-else class="auth-buttons">
           <Btn text="Sign Up" @click="modal.auth = true" />
@@ -21,8 +21,9 @@
 </template>
 
 <script setup>
-const session = useSession();
 const modal = useModal();
+const session = useSession();
+const { isLoggedIn } = storeToRefs(session);
 </script>
 
 <style lang="scss" scoped></style>

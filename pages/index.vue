@@ -21,13 +21,20 @@
         Build engaging quizzes, insightful surveys, and seamless forms crafted
         for educators, enterprises, and everyone in between.
       </p>
-      <Btn text="START NOW" @click="modal.auth = true" />
+      <Btn text="START NOW" @click="handleStartNowClick" />
     </div>
   </div>
 </template>
 
 <script setup>
+const { user } = useSession();
 const modal = useModal();
+const router = useRouter();
+
+const handleStartNowClick = () => {
+  if (user) router.push("/dashboard");
+  else modal.auth = true;
+};
 </script>
 
 <style lang="scss" scoped></style>

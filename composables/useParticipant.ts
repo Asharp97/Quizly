@@ -3,7 +3,6 @@ import { defineStore } from "pinia";
 export const useParticipant = defineStore(
   "participant",
   () => {
-    const supabase = useSupabaseClient();
     const question = useQuestion();
     const quiz = useQuiz();
     const answer = useAnswers();
@@ -25,18 +24,7 @@ export const useParticipant = defineStore(
       emailError.value = "";
     };
     const hasTakenQuiz = async () => {
-      const { data, error } = await supabase
-        .from("participants")
-        .select()
-        .eq("quiz_id", quiz.id)
-        .eq("email", email.value);
-      if (data?.length) {
-        emailError.value = "Seems like you already took this quiz dude";
-        return false;
-      } else {
-        resetError();
-        return true;
-      }
+      return true; //todo
     };
 
     function reset() {
@@ -56,77 +44,25 @@ export const useParticipant = defineStore(
     }
 
     const incrementResponses = async () => {
-      const { error } = await supabase.rpc("increment", { row_id: quiz.id });
-      if (error) console.log(error);
+      return true; //todo
     };
 
     const getCount = async (x: number) => {
-      if (x) {
-        const { count, error } = await supabase
-          .from("participants")
-          .select("*", { count: "exact", head: true })
-          .eq("quiz_id", x);
-        if (count) return count;
-        if (error) console.log(error);
-      }
+      return true; //todo
     };
 
     const post = async () => {
-      const { data, error } = await supabase
-        .from("participants")
-        .insert({
-          name: firstName.value.concat(" ", lastName.value),
-          email: email.value,
-          correct_count: correctCount.value,
-          time_spent: timeSpent.value,
-          score: score.value,
-          quiz_id: quiz.id,
-        })
-        .select()
-        .single();
-      if (data) {
-        set(data);
-        await question.get(quiz.id);
-        question.set(question.list[0]);
-        await answer.get(question.id);
-      }
-      if (error) console.log(error);
+      return true; //todo
     };
     const getLimited = async (x: number) => {
-      if (x) {
-        const { data, error } = await supabase
-          .from("participants")
-          .select()
-          .eq("quiz_id", x)
-          .limit(3);
-        if (data) return data ? data : [];
-        if (error || !data) {
-          console.log(error);
-        }
-      }
+      return true; //todo
     };
     const get = async (x: number) => {
-      if (x) {
-        const { data, error } = await supabase
-          .from("participants")
-          .select()
-          .eq("quiz_id", x);
-        if (data) return data;
-        if (error) console.log(error);
-      }
+      return true; //todo
     };
 
     const getScores = async (x: number) => {
-      if (x) {
-        const { data, error } = await supabase
-          .from("participants")
-          .select("score")
-          .eq("quiz_id", x);
-
-        if (data) return data?.map((item) => item.score) || [];
-
-        if (error) console.log(error);
-      }
+      return true; //todo
     };
 
     return {
@@ -155,5 +91,5 @@ export const useParticipant = defineStore(
   },
   {
     persist: true,
-  }
+  },
 );

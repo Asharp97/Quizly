@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
-import { nanoid } from "nanoid";
 
 export const useScore = defineStore("score", () => {
-  const supabase = useSupabaseClient();
   const session = useSession();
   const modal = useModal();
   const question = useQuestion();
@@ -27,44 +25,19 @@ export const useScore = defineStore("score", () => {
   }
 
   const get = async (x?: number, y?: number) => {
-    console.log("question_id: ", x, "participant_id: ", y);
-    if (x && y) {
-      const { data, error } = await supabase
-        .from("scores")
-        .select()
-        .eq("question_id", x)
-        .eq("participant_id", y)
-        .single();
-      if (data) {
-        return data;
-      } else log(error);
-    }
+    return true; //todo
   };
 
   const getCorrectCount = async () => {
-    const { count, error } = await supabase
-      .from("scores")
-      .select("*", { count: "exact", head: true })
-      .eq("is_correct", true);
-    if (count) {
-      return count;
-    } else log(error);
+    return true; //todo
   };
 
   const getTotaltCount = async () => {
-    // .select("*", { count: "exact", head: true })
-    const { count, error } = await supabase
-      .from("scores")
-      .select("*", { count: "exact", head: true });
-    if (count) {
-      return count;
-    } else log(error);
+    return true; //todo
   };
 
   const post = async (x: Array<number>) => {
-    const { data, error } = await supabase.from("scores").insert(x);
-    if (error) log(error);
-    else await get();
+    return true; //todo
   };
 
   return {

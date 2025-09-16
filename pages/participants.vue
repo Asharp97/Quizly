@@ -44,15 +44,15 @@ watch(
     await getList();
   }
 );
-const supabase = useSupabaseClient();
-const order = async (n, bool) => {
-  const { data, error } = await supabase
-    .from("participants")
-    .select()
-    .order(n, { ascending: bool });
-  if (data) list.value = data;
-  else console.log(error);
-};
+// const supabase = useSupabaseClient();
+// const order = async (n, bool) => {
+//   const { data, error } = await supabase
+//     .from("participants")
+//     .select()
+//     .order(n, { ascending: bool });
+//   if (data) list.value = data;
+//   else console.log(error);
+// };
 </script>
 
 <style lang="scss" scoped></style>

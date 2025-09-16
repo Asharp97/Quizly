@@ -1,0 +1,73 @@
+mutation Login($email: String!, $password: String!) {
+  Login(email: $email, password: $password) {
+    accessToken
+    refreshToken
+    user {
+      id
+      email
+      role
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+
+mutation SignUp($email: String!, $password: String!) {
+  SignUp(data: { email: $email, password: $password }) {
+    accessToken
+    refreshToken
+    user {
+      id
+      email
+      role
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+
+query GetUser($id: String!) {
+  GetUser(id: $id) {
+    id
+    email
+    role
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation Logout {
+  Logout {
+    success
+    message
+  }
+}
+
+mutation RefreshToken($refreshToken: String!) {
+  RefreshToken(refreshToken: $refreshToken) {
+    accessToken
+    refreshToken
+    user {
+      id
+      email
+      role
+      createdAt
+      updatedAt
+      deletedAt
+    }
+  }
+}
+
+query Me {
+  Me {
+    id
+    email
+    role
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
