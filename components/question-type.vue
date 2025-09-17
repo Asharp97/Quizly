@@ -3,21 +3,33 @@
     <h3 v-if="title">Question Type</h3>
     <br />
     <span>
-      <input id="mcq" v-model="question.type" type="radio" value="mcq" />
+      <input id="mcq" v-model="computedQuestionType" type="radio" value="mcq" />
       <label for="mcq">Multiple Choice</label> </span
     ><span>
-      <input id="tf" v-model="question.type" type="radio" value="tf" />
+      <input id="tf" v-model="computedQuestionType" type="radio" value="tf" />
       <label for="tf">True Or False</label> </span
     ><span>
-      <input id="text" v-model="question.type" type="radio" value="oe" />
+      <input id="text" v-model="computedQuestionType" type="radio" value="oe" />
       <label for="text">Open Ended</label>
     </span>
   </div>
 </template>
 
 <script setup>
-defineProps(["title"]);
-const question = useQuestion();
+const props = defineProps(["title", "questionType"]);
+const emit = defineEmits(["update:questionType"]);
+
+// 2. Create a writable computed property
+const computedQuestionType = computed({
+  // The getter returns the current value of the prop
+  get() {
+    return props.questionType;
+  },
+  // The setter emits an event to the parent when the value changes
+  set(newValue) {
+    emit("update:questionType", newValue);
+  },
+});
 </script>
 
 <style lang="scss" scoped>

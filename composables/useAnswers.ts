@@ -1,79 +1,66 @@
-import { defineStore } from "pinia";
+import type {
+  AnswerUncheckedCreateInput,
+  AnswerUpdateInput,
+} from "#gql/default";
 
-export const useAnswers = defineStore("answers", () => {
-  const question = useQuestion();
-
-  const list = ref([
-    {
-      text: "",
-      is_correct: false,
-    },
-    {
-      text: "",
-      is_correct: false,
-    },
-    {
-      text: "",
-      is_correct: false,
-    },
-  ]);
-
-  const set = (x: any) => {
-    list.value = x;
+export const useAnswer = () => {
+  const get = async (x: string) => {
+    const { data, error } = await useAsyncGql("GetAnswer", {
+      id: x,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.GetAnswer;
   };
 
-  const tf = ref({
-    is_correct: false,
-  });
-  const oe = ref({
-    text: "",
-  });
-
-  const reset = () => {
-    list.value = [
-      {
-        text: "",
-        is_correct: false,
-      },
-      {
-        text: "",
-        is_correct: false,
-      },
-      {
-        text: "",
-        is_correct: false,
-      },
-    ];
+  const getAll = async (question_id: string) => {
+    if (!question_id) return [];
+    const { data, error } = await useAsyncGql("GetAnswers", {
+      where: { questionId: { equals: question_id } },
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.GetAnswers;
   };
 
-  const get = async (x: number) => {
-    return []; //todo
+  const post = async (payload: AnswerUncheckedCreateInput) => {
+    const { data, error } = await useAsyncGql("CreateAnswer", {
+      data: payload,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.CreateAnswer;
   };
 
-  const remove = (n: number) => {
-    list.value.splice(n, 1);
+  const del = async (x: string) => {
+    const { data, error } = await useAsyncGql("DeleteAnswer", {
+      id: x,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.DeleteAnswer;
   };
 
-  const del = async (x: number, n: number) => {
-    return true; //todo
-  };
-
-  const cleanup = async () => {
-    return true; //todo
-  };
-
-  const post = async () => {
-    return true; //todo
+  const edit = async (id: string, info: AnswerUpdateInput) => {
+    const { data, error } = await useAsyncGql("UpdateAnswer", {
+      id,
+      data: info,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.UpdateAnswer;
   };
 
   return {
-    list,
-    tf,
-    oe,
-    reset,
-    cleanup,
-    del,
+    getAll,
     get,
     post,
+    del,
+    edit,
   };
-});
+};

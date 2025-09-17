@@ -1,0 +1,64 @@
+query GetQuestions(
+  $skip: Float
+  $take: Float
+  $where: QuestionWhereInput
+  $orderBy: QuestionOrderByWithRelationInput
+) {
+  GetQuestions(skip: $skip, take: $take, where: $where, orderBy: $orderBy) {
+    id
+    quizId
+    text
+    type
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+query GetQuestion($id: String!) {
+  GetQuestion(id: $id) {
+    id
+    quizId
+    text
+    type
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation DeleteQuestion($id: String!) {
+  DeleteQuestion(id: $id) {
+    id
+    quizId
+    text
+    type
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation UpdateQuestion($id: String!, $data: QuestionUpdateInput!) {
+  UpdateQuestion(id: $id, data: $data) {
+    id
+    quizId
+    text
+    type
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation CreateQuestion($data: QuestionUncheckedCreateInput!) {
+  CreateQuestion(data: $data) {
+    id
+    quizId
+    text
+    type
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}

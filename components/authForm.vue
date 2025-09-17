@@ -45,7 +45,9 @@
           @click="showPassword = !showPassword" />
       </div>
 
-      <!-- <button @click="session.user = 'ali'">sign me up quick for test</button> -->
+      <button @click="auth.login('ali-h@hotmail.com', 'ali123')">
+        sign me up quick for test
+      </button>
       <div class="form-buttons">
         <Transition name="slide-up">
           <btn v-if="signupActive" text="Sign up with email" @click="signUp" />
@@ -98,12 +100,14 @@ const passCheck = () => {
 };
 
 const login = async () => {
-  await auth.login(email.value, password.value);
+  if (!emailCheck() || !passCheck()) return;
+  const { error } = await auth.login(email.value, password.value);
   if (isLoggedIn.value) {
     await router.push("/dashboard");
     modal.close();
-  } else {
+  } else if (error) {
     passwordError.value = "Invalid email or password";
+    console.log(error);
   }
 };
 

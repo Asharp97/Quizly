@@ -10,60 +10,61 @@
         </btn>
       </div>
 
-      <div v-if="question.list.length && !loading" class="quetion-list">
+      <div v-if="quizList.length && !loading" class="quetion-list">
         <div class="quiz-titles">
           <div />
           <div>Created at</div>
           <div>Question Type</div>
         </div>
-        <div v-for="exam in question.list" :key="exam.id" class="quiz-data">
+        <div v-for="quest in questionList" :key="quest.id" class="quiz-data">
           <div
             class="quiz-header"
-            :class="{ active: question.id == exam.id }"
+            :class="{ active: activeQuestion == quest.id }"
             @click="
               () => {
-                if (question.id == exam.id) openPanel = !openPanel;
+                if (activeQuestion.value.id == quest.id)
+                  openPanel.value = !openPanel.value;
                 else {
-                  question.set(exam);
-                  openPanel = true;
+                  activeQuestion.value.id = quest.id;
+                  openPanel.value = true;
                 }
               }
             ">
-            <h3>{{ exam.text }}</h3>
-            <h4>{{ formatDate(exam.created_at) }}</h4>
-            <h4 v-if="exam.type == 'mcq'">Multiple Choice</h4>
-            <h4 v-if="exam.type == 'tf'">True Or False</h4>
-            <h4 v-if="exam.type == 'oe'">Open Ended</h4>
+            <h3>{{ quest.text }}</h3>
+            <h4>{{ formatDate(quest.created_at) }}</h4>
+            <h4 v-if="quest.type == Question_Type.MULTIPLE_CHOICE">
+              Multiple Choice
+            </h4>
+            <h4 v-if="quest.type == Question_Type.TRUE_FALSE">True Or False</h4>
+            <h4 v-if="quest.type == Question_Type.OPEN_ENDED">Open Ended</h4>
             <div class="icon-wrapper dropdown">
               <Icon
                 class="icon"
                 name="mi:options-horizontal"
-                @click="question.menu = exam.id" />
+                @click="questionMenu = quest.id" />
               <div
-                v-if="question.menu == exam.id"
+                v-if="questionMenu == quest.id"
                 ref="questionMenuRef"
                 class="menu-bg">
                 <div class="menu">
-                  <div class="item" @click="question.del(exam.id)">
-                    Delete quiz
-                  </div>
+                  <div class="item">Delete quiz</div>
                 </div>
               </div>
             </div>
           </div>
           <div
-            v-if="question.id == exam.id && openPanel == true"
+            v-if="activeQuestion.id == quest.id && openPanel == true"
             class="quiz-content">
             <div class="qa">
               <div class="input-wrapper question">
                 <input
-                  v-model="question.name"
+                  v-model="activeQuestion.text"
                   type="text"
                   placeholder="Enter Your quesion here" />
               </div>
-              <div v-if="question.type == 'mcq'" class="answer-list">
+              <!-- <div v-if="activeQuestion.type == questionType.MULTIPLE_CHOICE" class="answer-list">
                 <div
-                  v-for="(reply, n) in answer.list"
+                  v-for="(reply, n) in answerList"
                   :key="reply.id"
                   class="answer-wrapper">
                   <div
@@ -87,7 +88,7 @@
                     @click="answer.del(reply.id, n)" />
                 </div>
               </div>
-              <div v-if="question.type == 'tf'" class="tf">
+              <div v-if="activeQuestion.type == questionType.TRUE_FALSE" class="tf">
                 <div class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
@@ -113,16 +114,19 @@
                     type="radio" />
                 </div>
               </div>
-              <div v-if="question.type == 'oe'" class="oe">
+              <div v-if="activeQuestion.type == questionType.SHORT_ANSWER" class="oe">
                 <div class="answer-wrapper">
                   <textarea
                     v-model="answer.oe.text"
                     placeholder="Your answer goes here" />
                 </div>
-              </div>
+              </div> -->
               <div class="button-group">
                 <Btn
-                  :disabled="answer.list.length > 7 || question.type != 'mcq'"
+                  :disabled="
+                    answerList.length > maxAnswers ||
+                    activeQuestion.type !== questionType.MULTIPLE_CHOICE
+                  "
                   :orange="true"
                   text="Add Answer"
                   icon="iconify i-material-symbols:add-2-rounded"
@@ -137,15 +141,15 @@
               </div>
             </div>
             <div class="panel">
-              <question-type />
-              <p v-if="answer.list.length > 7" class="errormessage">
+              <question-type v-model:questionType="activeQuestion.type" />
+              <p v-if="answerList.length > maxAnswers" class="errormessage">
                 woah woah take it easy there isn't that too much
               </p>
             </div>
           </div>
         </div>
       </div>
-      <Fscreen v-if="!question.list.length && !loading">
+      <Fscreen v-if="questionList.length === 0 && !loading">
         <p class="bg">
           Looks like you're just getting started! No questions here yet.
           <br />
@@ -156,93 +160,97 @@
       <Loading v-show="loading" />
     </div>
     <Teleport to="body">
-      <ModalComponent :condition="modal.show == 'postQuestion'">
-        <div class="modal-content">
-          <input
-            ref="questionModalInput"
-            v-model="question.name"
-            type="text"
-            placeholder="Question" />
-          <question-type :title="false"/>
-          <Btn @click="question.post()">Submit Question</Btn>
-        </div>
-      </ModalComponent>
+      <ClientOnly>
+        <ModalComponent :condition="modal.show == ModalTypes.POST_QUESTION">
+          <div class="modal-content">
+            <input
+              ref="questionModalInput"
+              v-model="activeQuestion.text"
+              type="text"
+              placeholder="Question" />
+            <question-type
+              :title="false"
+              v-model:questionType="activeQuestion.type" />
+            <Btn @click="">Submit Question</Btn>
+          </div>
+        </ModalComponent>
+      </ClientOnly>
     </Teleport>
   </div>
 </template>
 
 <script setup>
+import { Question_Type } from "#gql/default";
 import { onClickOutside } from "@vueuse/core";
 import { formatDate } from "~/utils/formatdate";
-import { useAnswers } from "../composables/useAnswers.ts";
-
 definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
 
+const Quiz = useQuiz();
+const Question = useQuestion();
+const Answer = useAnswer();
+
+const session = useSession();
+const { isLoggedIn } = storeToRefs(session);
 const modal = useModal();
-const quiz = useQuiz();
+
+// --- STATE MANAGEMENT ---
+const activeQuiz = ref({ id: 0 });
+const activeQuestion = ref({ id: 0 });
+
+const { data: quizList } = await useAsyncData("getQuizzes", () =>
+  Quiz.getAll()
+);
+
+const questionList = ref([]);
+const answerList = ref([]);
+
+const loadingQuestions = ref(false);
+const loadingAnswers = ref(false);
+watch(activeQuiz, async (newQuiz) => {
+  if (!newQuiz?.id) {
+    questionList.value = [];
+    return;
+  }
+  loadingQuestions.value = true;
+
+  const { data } = await Question.getAll(newQuiz.id);
+  questionList.value = data?.GetQuestions || [];
+
+  loadingQuestions.value = false;
+
+  activeQuestion.value = questionList.value[0] || null;
+});
+
+watch(activeQuestion, async (newQuestion) => {
+  if (!newQuestion?.id) {
+    answerList.value = [];
+    return;
+  }
+  loadingAnswers.value = true;
+  const { data } = await Answer.getAll(newQuestion.id);
+  answerList.value = data?.GetAnswers || [];
+  loadingAnswers.value = false;
+});
 
 const loading = ref(false);
 const openPanel = ref(true);
 
 //QUESTIONS FUNCTIONS
-const question = useQuestion();
+const questionMenu = ref(null);
 const questionMenuRef = ref(null);
 const questionModalInput = ref(null);
 
 const handlePostQuestion = async () => {
-  question.name = "Question #" + (question.list.length + 1);
-  modal.show = "postQuestion";
+  // Question.name = "Question #" + (Question.list.length + 1);
+  // modal.show = ModalTypes.POST_QUESTION;
   // await nextTick();
   // questionModalInput.value.focus();
 };
 
-onClickOutside(questionMenuRef, () => (question.menu = null));
-
-// ANSWERS
-const answer = useAnswers();
-const answerInput = ref(null);
-
-const addAnswer = async () => {
-  answer.list.push({ text: "", is_correct: false });
-  await nextTick();
-  answerInput.value[answerInput.value.length - 1].focus();
-};
-
-//BOTH
-const submitQA = async () => {
-  loading.value = true;
-  await question.update();
-  await answer.post(question.id);
-  await answer.cleanup();
-  await question.get(quiz.id);
-  loading.value = false;
-};
-
-const getQuestions = async () => {
-  loading.value = true;
-  if (quiz.id) await question.get(quiz.id);
-  loading.value = false;
-};
-
-onMounted(async () => {
-  await getQuestions();
-});
-
-watch(
-  () => quiz.id,
-  async () => {
-    await getQuestions();
-  }
-);
-watch(
-  () => question.id,
-  async () => {
-    if (question.id) await answer.get(question.id);
-  }
-);
+onClickOutside(questionMenuRef, () => (questionMenu = null));
 </script>
 
 <style lang="scss" scoped>

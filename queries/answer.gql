@@ -1,0 +1,64 @@
+query GetAnswers(
+  $skip: Float
+  $take: Float
+  $where: AnswerWhereInput
+  $orderBy: AnswerOrderByWithRelationInput
+) {
+  GetAnswers(skip: $skip, take: $take, where: $where, orderBy: $orderBy) {
+    id
+    questionId
+    text
+    isCorrect
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+query GetAnswer($id: String!) {
+  GetAnswer(id: $id) {
+    id
+    questionId
+    text
+    isCorrect
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation DeleteAnswer($id: String!) {
+  DeleteAnswer(id: $id) {
+    id
+    questionId
+    text
+    isCorrect
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation UpdateAnswer($id: String!, $data: AnswerUpdateInput!) {
+  UpdateAnswer(id: $id, data: $data) {
+    id
+    questionId
+    text
+    isCorrect
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation CreateAnswer($data: AnswerUncheckedCreateInput!) {
+  CreateAnswer(data: $data) {
+    id
+    questionId
+    text
+    isCorrect
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}

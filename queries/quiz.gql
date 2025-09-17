@@ -1,0 +1,89 @@
+query GetQuizzes(
+  $skip: Float
+  $take: Float
+  $where: QuizWhereInput
+  $orderBy: QuizOrderByWithRelationInput
+) {
+  GetQuizzes(skip: $skip, take: $take, where: $where, orderBy: $orderBy) {
+    id
+    title
+    userId
+    description
+    timeLimit
+    isPublished
+    link
+    createdAt
+    updatedAt
+    deletedAt
+
+    # Question {
+    #   id
+    #   quizId
+    #   text
+    #   type
+    #   createdAt
+    #   updatedAt
+    #   deletedAt
+    # }
+  }
+}
+
+query GetQuiz($id: String!) {
+  GetQuiz(id: $id) {
+    id
+    title
+    userId
+    description
+    timeLimit
+    isPublished
+    link
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation DeleteQuiz($id: String!) {
+  DeleteQuiz(id: $id) {
+    id
+    title
+    userId
+    description
+    timeLimit
+    isPublished
+    link
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation UpdateQuiz($id: String!, $data: QuizUpdateInput!) {
+  UpdateQuiz(id: $id, data: $data) {
+    id
+    title
+    userId
+    description
+    timeLimit
+    isPublished
+    link
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation CreateQuiz($data: QuizUncheckedCreateInput!) {
+  CreateQuiz(data: $data) {
+    id
+    title
+    userId
+    description
+    timeLimit
+    isPublished
+    link
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}

@@ -4,10 +4,8 @@ export const useAuth = () => {
 
   const login = async (email: string, password: string) => {
     const { data, error } = await useAsyncGql("Login", {
-      email: "ali-hisham@Hotmail.com",
-      password: "ali123",
-      // email
-      // password
+      email,
+      password,
     });
 
     if (error.value) {
@@ -17,8 +15,10 @@ export const useAuth = () => {
 
     if (data.value?.Login) {
       setSession(data.value.Login);
+      useGqlToken(data.value.Login.accessToken);
     } else {
       resetSession();
+      return error.value;
       throw new Error("Login failed: No user data returned.");
     }
   };
@@ -33,6 +33,7 @@ export const useAuth = () => {
 
     if (data.value?.SignUp) {
       setSession(data.value.SignUp);
+      useGqlToken(data.value.SignUp.accessToken);
     } else {
       resetSession();
       throw new Error("SignUp failed: No user data returned.");
@@ -45,6 +46,7 @@ export const useAuth = () => {
       throw error.value;
     }
     resetSession();
+    useGqlToken(null);
   };
 
   const refreshToken = async () => {

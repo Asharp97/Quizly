@@ -7,16 +7,17 @@
           <Icon
             class="icon"
             name="material-symbols:add-2-rounded"
-            @click="handlPostQuiz()" />
+            @click="handlePostQuiz()" />
         </div>
       </div>
       <div class="hr" />
-      <div v-if="quiz.list.length == 0">
+      <!-- todo -->
+      <div>
         <p>no Quizzes yet</p>
       </div>
       <ol class="list">
         <li
-          v-for="(ask, n) in quiz.list"
+          v-for="(ask, n) in quizList"
           :key="ask.id"
           class="list-item"
           :class="{ active: quiz.id == ask.id }"
@@ -50,7 +51,7 @@
     </aside>
     <Teleport to="body">
       <ModalComponent
-        :condition="modal.show == 'postQuiz' || modal.show == 'editQuiz'"
+        :condition="modal.show == ModalTypes.POST_QUIZ || modal.show == ModalTypes.EDIT_QUIZ"
         class="modal"
         @clear-inputs="quiz.clearInputs()">
         <div class="modal-content">
@@ -97,7 +98,7 @@
           </div>
           <!-- SUBMIT EDIT OR POST -->
           <Btn @click="handleQuizSubmit()">{{
-            modal.show == "postQuiz" ? "Post Quiz" : "Submit Edit"
+            modal.show == ModalTypes.EDIT_QUIZ ? "Post Quiz" : "Submit Edit"
           }}</Btn>
         </div>
       </ModalComponent>
@@ -109,7 +110,10 @@
 import { onClickOutside } from "@vueuse/core";
 const modal = useModal();
 const loading = ref(false);
-const quiz = useQuiz();
+
+const Quiz = useQuiz();
+const quizList = ref([]);
+
 const quizMenuRef = ref(null);
 const quizModalInput = ref(null);
 
@@ -140,14 +144,14 @@ const deadLine = (x) => {
 };
 
 onMounted(async () => {
-  await getQuizes();
+  const quizList = await Quiz.getAll();
 });
 
 const copyQuiz = async (x) => {
   const baseURL = window.location.origin;
-
-  await quiz.get(x);
-  navigator.clipboard.writeText(`${baseURL}/quiz/${x}/${quiz.sharingKey}`);
+  //todo
+  // await quiz.get(x);
+  // navigator.clipboard.writeText(`${baseURL}/quiz/${x}/${quiz.sharingKey}`);
 };
 const getQuizes = async () => {
   loading.value = true;
@@ -155,21 +159,21 @@ const getQuizes = async () => {
   loading.value = false;
 };
 
-const handlPostQuiz = async () => {
-  quiz.name = "Quiz #" + (quiz.list.length + 1);
-  modal.show = "postQuiz";
+const handlePostQuiz = async () => {
+  quiz.name = "Quiz #" + (quizList.value.length + 1);
+  modal.show = ModalTypes.POST_QUIZ;
   await nextTick();
   quizModalInput.value.focus();
 };
 const handleQuizEditor = async (x) => {
   await quiz.get(x);
-  modal.show = "editQuiz";
+  modal.show = ModalTypes.EDIT_QUIZ;
   await nextTick();
   quizModalInput.value.focus();
 };
 
 const handleQuizSubmit = async () => {
-  if (modal.show == "postQuiz") quiz.post();
+  if (modal.show == ModalTypes.POST_QUIZ) quiz.post();
   else quiz.edit();
 };
 onClickOutside(quizMenuRef, () => (quiz.menu = null));

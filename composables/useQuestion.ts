@@ -1,65 +1,66 @@
-import { defineStore } from "pinia";
+import type {
+  QuestionUncheckedCreateInput,
+  QuestionUpdateInput,
+} from "#gql/default";
 
-export const useQuestion = defineStore("question", () => {
-  const modal = useModal();
-  const quiz = useQuiz();
-
-  const id = ref(null);
-  const name = ref("");
-  const type = ref("mcq");
-
-  const list = ref([]);
-  const amount = ref();
-
-  const menu = ref(null);
-
-  function reset() {
-    id.value = null;
-    name.value = "";
-    type.value = "mcq";
-
-    menu.value = null;
-  }
-
-  function set(x: any) {
-    id.value = x?.id;
-    name.value = x?.text;
-    type.value = x?.type;
-  }
-
-  const get = async (x?: number) => {
-    return true; //todo
+export const useQuestion = () => {
+  const get = async (x: string) => {
+    const { data, error } = await useAsyncGql("GetQuestion", {
+      id: x,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.GetQuestion;
   };
 
-  const getCount = async (x?: number) => {
-    return true; //todo
+  const getAll = async (quiz_id: string) => {
+    if (!quiz_id) return [];
+    const { data, error } = await useAsyncGql("GetQuestions", {
+      where: { quizId: { equals: quiz_id } },
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.GetQuestions;
   };
 
-  const post = async () => {
-    return true; //todo
+  const post = async (payload: QuestionUncheckedCreateInput) => {
+    const { data, error } = await useAsyncGql("CreateQuestion", {
+      data: payload,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.CreateQuestion;
   };
 
-  const update = async () => {
-    return true; //todo
+  const del = async (x: string) => {
+    const { data, error } = await useAsyncGql("DeleteQuestion", {
+      id: x,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.DeleteQuestion;
   };
 
-  const del = async (x: number) => {
-    return true; //todo
+  const edit = async (id: string, info: QuestionUpdateInput) => {
+    const { data, error } = await useAsyncGql("UpdateQuestion", {
+      id,
+      data: info,
+    });
+    if (error.value) {
+      throw error.value;
+    }
+    return data.value.UpdateQuestion;
   };
 
   return {
-    id,
-    name,
-    menu,
-    type,
-    list,
-    amount,
-    reset,
-    set,
+    getAll,
     get,
-    getCount,
     post,
-    update,
     del,
+    edit,
   };
-});
+};

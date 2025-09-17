@@ -11,24 +11,26 @@
           <NuxtLink to="/participants" class="item">
             Participants Table</NuxtLink
           >
-          <div class="item" @click="modal.show = 'confirm_logout'">Logout</div>
+          <div class="item" @click="modal.show = ModalTypes.LOGOUT_CONFIRM">Logout</div>
         </div>
       </div>
     </div>
-    <Teleport to="body">
-      <prompt
-        msg="Are you sure you want to logout?"
-        action-text="Log me out"
-        cancel-text="Nevermind"
-        icon="material-symbols:logout"
-        condition="confirm_logout"
-        @confirm="logout" />
-      <prompt
-        msg="Your Quiz has been successfully Published"
-        condition="quiz_submission"
-        cancel-text="Okay"
-        icon="line-md:confirm-circle" />
-    </Teleport>
+    <ClientOnly>
+      <Teleport to="body">
+        <prompt
+          msg="Are you sure you want to logout?"
+          action-text="Log me out"
+          cancel-text="Nevermind"
+          icon="material-symbols:logout"
+          condition="confirm_logout"
+          @confirm="logout" />
+        <prompt
+          msg="Your Quiz has been successfully Published"
+          condition="quiz_submission"
+          cancel-text="Okay"
+          icon="line-md:confirm-circle" />
+      </Teleport>
+    </ClientOnly>
   </div>
 </template>
 

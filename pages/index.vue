@@ -27,12 +27,14 @@
 </template>
 
 <script setup>
-const { user } = useSession();
+const session = useSession();
+const { isLoggedIn } = storeToRefs(session);
+
 const modal = useModal();
 const router = useRouter();
 
 const handleStartNowClick = () => {
-  if (user) router.push("/dashboard");
+  if (isLoggedIn) router.push("/dashboard");
   else modal.auth = true;
 };
 </script>

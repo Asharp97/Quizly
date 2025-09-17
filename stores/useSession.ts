@@ -12,6 +12,9 @@ type user = {
 export const useSession = defineStore("session", () => {
   const user = ref<user | null>(null);
 
+  const accessToken = useCookie("accessToken");
+  const refreshToken = useCookie("refreshToken");
+
   const setSession = (session: {
     user?: user | null;
     accessToken: string | null;
@@ -33,15 +36,11 @@ export const useSession = defineStore("session", () => {
 
   const resetSession = () => {
     user.value = null;
-    useCookie("accessToken").value = null;
-    useCookie("refreshToken").value = null;
+    accessToken.value = null;
+    refreshToken.value = null;
   };
 
-  const isLoggedIn = computed(() => !!user.value);
-
-  const setUser = (newUser: user) => {
-    user.value = newUser;
-  };
+  const isLoggedIn = computed(() => !!accessToken.value);
 
   const fetchCurrentUser = async () => {
     const token = useCookie("accessToken");
@@ -50,9 +49,11 @@ export const useSession = defineStore("session", () => {
       return;
     }
 
+    // useGqlToken(token.value);
     const { data } = await useAsyncGql("Me");
 
-    if (data.value?.Me) setUser(data.value.Me);
+    if (data.value?.Me) user.value = data.value.Me;
+    else console.log("No user data returned from Me query");
   };
 
   return {
