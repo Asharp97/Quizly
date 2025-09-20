@@ -160,7 +160,7 @@
     </div>
     <Teleport to="body">
       <ClientOnly>
-        <ModalComponent :condition="modal.show === ModalTypes.POST_QUESTION">
+        <ModalComponent :condition="modal.show === ModalType.POST_QUESTION">
           <div class="modal-content">
             <input
               ref="questionModalInput"
@@ -170,8 +170,7 @@
             <question-type
               :title="false"
               v-model:questionType="questionForm.type" />
-            <!-- todo add more options like question type -->
-            <Btn @click="">Submit Question</Btn>
+            <Btn @click="createQuestion()">Submit Question</Btn>
           </div>
         </ModalComponent>
       </ClientOnly>
@@ -201,6 +200,7 @@ definePageMeta({
 });
 
 const modal = useModal();
+const Question = useQuestion();
 
 const loading = ref(false);
 const openPanel = ref(true);
@@ -213,13 +213,26 @@ const questionModalInput = ref(null);
 const questionForm = ref({
   type: Question_Type.MULTIPLE_CHOICE,
   text: "",
+  quizId: activeQuiz.value ? activeQuiz.value.id : null,
 });
 
 const handlePostQuestion = async () => {
-  questionForm.value.text = "Question #" + (questionList.length + 1);
-  modal.show = ModalTypes.POST_QUESTION;
+  questionForm.value.text =
+    "Question #" +
+    (questionList.value.length !== 0 ? questionList.value.length + 1 : 1);
+  modal.show = ModalType.POST_QUESTION;
   await nextTick();
   questionModalInput.value.focus();
+};
+const createQuestion = async () => {
+  if (!questionForm.value.text || !questionForm.value.quizId) return;
+  loading.value = true;
+  const cat = await Question.post(questionForm.value);
+  console.log(cat);
+  questionForm.value.text = "";
+  questionForm.value.type = Question_Type.MULTIPLE_CHOICE;
+  loading.value = false;
+  modal.close();
 };
 const maxAnswers = 6;
 onClickOutside(questionMenuRef, () => (questionMenu = null));

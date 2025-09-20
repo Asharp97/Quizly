@@ -11,7 +11,7 @@
           <NuxtLink to="/participants" class="item">
             Participants Table</NuxtLink
           >
-          <div class="item" @click="modal.show = ModalTypes.LOGOUT_CONFIRM">
+          <div class="item" @click="modal.show = ModalType.LOGOUT_CONFIRM">
             Logout
           </div>
         </div>
@@ -24,11 +24,11 @@
           action-text="Log me out"
           cancel-text="Nevermind"
           icon="material-symbols:logout"
-          :condition="ModalTypes.LOGOUT_CONFIRM"
+          :condition="ModalType.LOGOUT_CONFIRM"
           @confirm="logout" />
         <prompt
           msg="Your Quiz has been successfully Published"
-          :condition="ModalTypes.QUIZ_PUBLISHED"
+          :condition="ModalType.QUIZ_PUBLISHED"
           cancel-text="Okay"
           icon="line-md:confirm-circle" />
       </Teleport>

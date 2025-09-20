@@ -1,4 +1,5 @@
 import type { CreateQuizInput, QuizUpdateInput } from "#gql";
+import { SortOrder } from "#gql/default";
 
 export const useQuiz = () => {
   const session = useSession();
@@ -18,6 +19,7 @@ export const useQuiz = () => {
     const user_Id: string = session.user?.id;
     const { GetQuizzes } = await GqlGetQuizzes({
       where: { userId: { equals: user_Id }, deletedAt: { equals: null } },
+      orderBy: { createdAt: SortOrder.Asc },
     });
     return GetQuizzes;
   };
@@ -36,9 +38,25 @@ export const useQuiz = () => {
   };
 
   const edit = async (id: string, data: QuizUpdateInput) => {
+    const allowedFields = [
+      "title",
+      "description",
+      "timeLimit",
+      "deadline",
+      "publishedAt",
+      "enableFeedback",
+    ];
+    const updateData: Record<string, any> = {};
+
+    allowedFields.forEach((key) => {
+      if (key in data) {
+        updateData[key] = { set: data[key] };
+      }
+    });
+
     const { UpdateQuiz } = await GqlUpdateQuiz({
       id,
-      data,
+      data: updateData,
     });
     return UpdateQuiz;
   };

@@ -7,7 +7,7 @@
           <Icon
             class="icon"
             name="material-symbols:add-2-rounded"
-            @click="handlePostQuiz()" />
+            @click="postQuizHandler()" />
         </div>
       </div>
       <div class="hr" />
@@ -39,7 +39,7 @@
                 class="menu-bg">
                 <div class="menu">
                   <div class="item" @click="copyQuiz(ask.link)">Copy link</div>
-                  <div class="item" @click="handleQuizEditor(ask.id)">
+                  <div class="item" @click="editQuizHandler(ask.id)">
                     Edit Quiz
                   </div>
                   <div class="item" @click="deleteHandler(ask.id)">
@@ -50,19 +50,17 @@
             </div>
           </div>
         </li>
+        <pre></pre>
       </ul>
     </aside>
     <Teleport to="body">
+      <!-- @clear-inputs="clearForm()"> -->
       <ModalComponent
         :condition="
-          modal.show == ModalTypes.POST_QUIZ ||
-          modal.show == ModalTypes.EDIT_QUIZ
+          modal.show == ModalType.POST_QUIZ || modal.show == ModalType.EDIT_QUIZ
         "
-        class="modal"
-        @clear-inputs="clearForm()">
-        <pre>
-          {{ quizForm }}
-        </pre>
+        class="modal">
+        <pre>{{ quizForm }}</pre>
         <div class="modal-content">
           <div class="quizSettings">
             <div class="quiz-inputs">
@@ -71,6 +69,9 @@
                 ref="quizModalInput"
                 type="text"
                 placeholder="Quiz Title" />
+              <div class="errormessage" v-if="quizOptions.titleError">
+                {{ quizOptions.titleError }}
+              </div>
               <textarea
                 v-model="quizForm.description"
                 id="description"
@@ -78,7 +79,6 @@
                 placeholder="Description" />
             </div>
             <div class="quiz-panel">
-              <!-- SHOW RESULTS -->
               <checkbox
                 id="result"
                 v-model="quizForm.enableFeedback"
@@ -120,13 +120,13 @@
                 v-model="quizOptions.deadlined" />
               <input
                 v-if="quizOptions.deadlined"
+                v-model="quizForm.deadline"
                 id="deadline"
                 type="datetime-local" />
             </div>
           </div>
-          <!-- SUBMIT EDIT OR POST -->
-          <Btn @click="handleQuizSubmit()">{{
-            modal.show == ModalTypes.POST_QUIZ ? "Submit Quiz" : "Submit Edit"
+          <Btn @click="submitQuizHandler()">{{
+            modal.show == ModalType.POST_QUIZ ? "Submit Quiz" : "Submit Edit"
           }}</Btn>
         </div>
       </ModalComponent>
@@ -161,6 +161,7 @@ const quizOptions = ref({
   timeLimited: false,
   deadlined: false,
   publishLater: false,
+  titleError: "",
 });
 const Quiz = useQuiz();
 
@@ -179,75 +180,77 @@ const copyQuiz = async (link: string | undefined) => {
   closeMenu();
 };
 
-const handlePostQuiz = async () => {
-  quizForm.value.title = "Quiz #" + ((quizList.value ?? []).length + 1);
-  modal.show = ModalTypes.POST_QUIZ;
-  await nextTick();
-  quizModalInput.value?.focus();
-};
-const checkStates = () => {
+const updateQuizForm = () => {
   if (!activeQuiz.value) return;
   quizForm.value = {
     ...activeQuiz.value,
+    enableFeedback: !!quizForm.value.enableFeedback,
     timeLimit: quizOptions.value.timeLimited
-      ? activeQuiz.value.timeLimit
+      ? quizForm.value.timeLimit
       : null,
-    deadline: activeQuiz.value.deadline
-      ? new Date(activeQuiz.value.deadline)
-      : "",
-    publishedAt: activeQuiz.value.publishedAt
-      ? new Date(activeQuiz.value.publishedAt)
-      : "",
+    deadline: quizOptions.value.deadlined && quizForm.value.deadline
+      ? toDatetimeLocal(quizForm.value.deadline)
+      : null,
+    publishedAt: quizOptions.value.publishLater
+      ? toDatetimeLocal(quizForm.value.publishedAt)
+      : new Date().toISOString(),
   };
 };
-const handleQuizEditor = async (x: string) => {
-  await Quiz.get(x);
-  checkStates();
-  modal.show = ModalTypes.EDIT_QUIZ;
+
+const postQuizHandler = async () => {
+  quizForm.value.title = "Quiz #" + ((quizList.value ?? []).length + 1);
+  modal.show = ModalType.POST_QUIZ;
   await nextTick();
   quizModalInput.value?.focus();
 };
 
-const handleQuizSubmit = async () => {
-  if (modal.show == ModalTypes.POST_QUIZ) {
+const editQuizHandler = async (x: string) => {
+  quizForm.value = await Quiz.get(x);
+  quizOptions.value.timeLimited = !!quizForm.value.timeLimit;
+  quizOptions.value.deadlined = !!quizForm.value.deadline;
+  quizOptions.value.publishLater =
+    quizForm.value.publishedAt > new Date().toISOString();
+
+  if (quizForm.value.deadline)
+    quizForm.value.deadline = toDatetimeLocal(quizForm.value.deadline);
+  if (quizForm.value.publishedAt)
+    quizForm.value.publishedAt = toDatetimeLocal(quizForm.value.publishedAt);
+
+  modal.show = ModalType.EDIT_QUIZ;
+  await nextTick();
+  quizModalInput.value?.focus();
+};
+
+const submitQuizHandler = async () => {
+  if (!quizForm.value.title) {
+    quizOptions.value.titleError = "Title is required";
+    return;
+  } else {
+    quizOptions.value.titleError = "";
+  }
+
+  if (modal.show == ModalType.POST_QUIZ) {
     const postQuizForm = {
       ...quizForm.value,
       timeLimit: quizOptions.value.timeLimited
         ? quizForm.value.timeLimit
         : null,
       deadline: quizOptions.value.deadlined
-        ? new Date(quizForm.value.deadline)
+        ? new Date(quizForm.value.deadline).toISOString()
         : null,
       publishedAt: quizOptions.value.publishLater
-        ? new Date(quizForm.value.publishedAt)
-        : new Date(),
+        ? new Date(quizForm.value.publishedAt).toISOString()
+        : new Date().toISOString(),
     };
     const createdQuiz = await Quiz.post(postQuizForm);
     if (createdQuiz) quizList.value?.push(createdQuiz);
     setActiveQuiz(createdQuiz);
   }
-  if (modal.show == ModalTypes.EDIT_QUIZ) {
-    if (!activeQuiz.value || !quizForm.value) return;
-    checkStates();
+  if (modal.show == ModalType.EDIT_QUIZ && activeQuiz.value) {
+    updateQuizForm();
     await Quiz.edit(activeQuiz.value.id, quizForm.value);
   }
-  closeMenu();
-};
-
-const clearForm = () => {
-  quizForm.value = {
-    title: "",
-    description: "",
-    timeLimit: 30,
-    deadline: "",
-    publishedAt: "",
-    enableFeedback: false,
-  };
-  quizOptions.value = {
-    timeLimited: false,
-    deadlined: false,
-    publishLater: false,
-  };
+  modal.close();
 };
 
 const deleteHandler = async (id: string) => {

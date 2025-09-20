@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export enum ModalTypes {
+export enum ModalType {
   POST_QUESTION = "postQuestion",
   EDIT_QUESTION = "editQuestion",
   DELETE_QUESTION = "deleteQuestion",

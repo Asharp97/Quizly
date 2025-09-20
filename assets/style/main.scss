@@ -127,7 +127,6 @@ nav {
     border-left: 1px solid $white;
     width: 100%;
     flex-shrink: 0;
-    overflow: hidden;
     .back-icon-wrapper {
       background-color: $white;
       font-size: 2rem;
@@ -157,8 +156,7 @@ nav {
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
-      margin-left: 1rem;
-      overflow-y: auto;
+      // overflow-x: visible;
       max-height: calc(100dvh - $navHeight - 10rem);
       min-height: calc(100dvh - $navHeight - 7rem);
       li {

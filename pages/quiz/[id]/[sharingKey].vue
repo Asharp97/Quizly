@@ -167,7 +167,7 @@ const terminateQuiz = async () => {
   score.reset();
 
   if (!quiz.show_result) {
-    modal.show = ModalTypes.END_QUIZ;
+    modal.show = ModalType.END_QUIZ;
     router.push("/");
   } else router.push(`/quiz/${id}/review`);
 };
