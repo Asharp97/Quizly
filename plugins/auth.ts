@@ -1,15 +1,14 @@
 export default defineNuxtPlugin(async (nuxtApp) => {
+  nuxtApp.hook("gql:auth:init", ({ token }) => {
+    const tokenCookie = useCookie("accessToken");
+    token.value = tokenCookie.value || undefined;
+  });
 
-    const sessionStore = useSession();
+  // 2. Now that authentication is configured, fetch the current user.
+  // When fetchCurrentUser calls useAsyncGql, the hook above will be triggered,
+  // and the request will be properly authenticated.
+  const sessionStore = useSession();
+  if (useCookie("accessToken").value) {
     await sessionStore.fetchCurrentUser();
-
-  // access cookie for auth
-  const tokenCookie = useCookie('accessToken')
-
-  nuxtApp.hook('gql:auth:init', ({ client, token }) => {
-    // `client` can be used to differentiate logic on a per client basis.
-
-    // apply client token
-    token.value = tokenCookie.value || null
-  })
-})
+  }
+});

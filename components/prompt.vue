@@ -2,7 +2,7 @@
   <div>
     <Transition name="scale-up">
       <div
-        v-show="modal.show == condition"
+        v-show="modal.show === condition"
         class="modal-bg FullScreenModal"
         @click.self="modal.close">
         <div class="card">

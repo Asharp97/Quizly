@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@nuxt/icon": "^1.15.0",
+    "@vueuse/components": "^13.9.0",
     "graphql": "^16.11.0",
     "nuxt": "^3.19.2",
     "nuxt-echarts": "^0.2.6",

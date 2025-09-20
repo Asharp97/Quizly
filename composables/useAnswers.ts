@@ -4,56 +4,44 @@ import type {
 } from "#gql/default";
 
 export const useAnswer = () => {
-  const get = async (x: string) => {
-    const { data, error } = await useAsyncGql("GetAnswer", {
-      id: x,
+  const get = async (id: string) => {
+    const { GetAnswer } = await GqlGetAnswer({
+      id,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.GetAnswer;
+    return GetAnswer;
   };
 
   const getAll = async (question_id: string) => {
     if (!question_id) return [];
-    const { data, error } = await useAsyncGql("GetAnswers", {
-      where: { questionId: { equals: question_id } },
+    const { GetAnswers } = await GqlGetAnswers({
+      where: {
+        questionId: { equals: question_id },
+        deletedAt: { equals: null },
+      },
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.GetAnswers;
+    return GetAnswers;
   };
 
-  const post = async (payload: AnswerUncheckedCreateInput) => {
-    const { data, error } = await useAsyncGql("CreateAnswer", {
-      data: payload,
+  const post = async (data: AnswerUncheckedCreateInput) => {
+    const { CreateAnswer } = await GqlCreateAnswer({
+      data,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.CreateAnswer;
+    return CreateAnswer;
   };
 
-  const del = async (x: string) => {
-    const { data, error } = await useAsyncGql("DeleteAnswer", {
-      id: x,
-    });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.DeleteAnswer;
-  };
-
-  const edit = async (id: string, info: AnswerUpdateInput) => {
-    const { data, error } = await useAsyncGql("UpdateAnswer", {
+  const del = async (id: string) => {
+    const { DeleteAnswer } = await GqlDeleteAnswer({
       id,
-      data: info,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.UpdateAnswer;
+    return DeleteAnswer;
+  };
+
+  const edit = async (id: string, data: AnswerUpdateInput) => {
+    const { UpdateAnswer } = await GqlUpdateAnswer({
+      id,
+      data,
+    });
+    return UpdateAnswer;
   };
 
   return {

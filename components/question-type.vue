@@ -3,19 +3,33 @@
     <h3 v-if="title">Question Type</h3>
     <br />
     <span>
-      <input id="mcq" v-model="computedQuestionType" type="radio" value="mcq" />
+      <input
+        id="mcq"
+        v-model="computedQuestionType"
+        type="radio"
+        :value="Question_Type.MULTIPLE_CHOICE" />
       <label for="mcq">Multiple Choice</label> </span
     ><span>
-      <input id="tf" v-model="computedQuestionType" type="radio" value="tf" />
+      <input
+        id="tf"
+        v-model="computedQuestionType"
+        type="radio"
+        :value="Question_Type.TRUE_FALSE" />
       <label for="tf">True Or False</label> </span
     ><span>
-      <input id="text" v-model="computedQuestionType" type="radio" value="oe" />
+      <input
+        id="text"
+        v-model="computedQuestionType"
+        type="radio"
+        :value="Question_Type.SHORT_ANSWER" />
       <label for="text">Open Ended</label>
     </span>
   </div>
 </template>
 
 <script setup>
+import { Question_Type } from "#gql/default";
+
 const props = defineProps(["title", "questionType"]);
 const emit = defineEmits(["update:questionType"]);
 

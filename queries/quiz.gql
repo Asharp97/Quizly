@@ -7,24 +7,17 @@ query GetQuizzes(
   GetQuizzes(skip: $skip, take: $take, where: $where, orderBy: $orderBy) {
     id
     title
+    link
     userId
     description
     timeLimit
-    isPublished
-    link
+    deadline
+    publishedAt
+    enableFeedback
+
     createdAt
     updatedAt
     deletedAt
-
-    # Question {
-    #   id
-    #   quizId
-    #   text
-    #   type
-    #   createdAt
-    #   updatedAt
-    #   deletedAt
-    # }
   }
 }
 
@@ -32,11 +25,14 @@ query GetQuiz($id: String!) {
   GetQuiz(id: $id) {
     id
     title
+    link
     userId
     description
     timeLimit
-    isPublished
-    link
+    deadline
+    publishedAt
+    enableFeedback
+
     createdAt
     updatedAt
     deletedAt
@@ -47,11 +43,14 @@ mutation DeleteQuiz($id: String!) {
   DeleteQuiz(id: $id) {
     id
     title
+    link
     userId
     description
     timeLimit
-    isPublished
-    link
+    deadline
+    publishedAt
+    enableFeedback
+
     createdAt
     updatedAt
     deletedAt
@@ -62,26 +61,32 @@ mutation UpdateQuiz($id: String!, $data: QuizUpdateInput!) {
   UpdateQuiz(id: $id, data: $data) {
     id
     title
+    link
     userId
     description
     timeLimit
-    isPublished
-    link
+    deadline
+    publishedAt
+    enableFeedback
+
     createdAt
     updatedAt
     deletedAt
   }
 }
 
-mutation CreateQuiz($data: QuizUncheckedCreateInput!) {
+mutation CreateQuiz($data: CreateQuizInput!) {
   CreateQuiz(data: $data) {
     id
     title
+    link
     userId
     description
     timeLimit
-    isPublished
-    link
+    deadline
+    publishedAt
+    enableFeedback
+
     createdAt
     updatedAt
     deletedAt

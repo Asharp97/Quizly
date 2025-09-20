@@ -36,6 +36,7 @@ function updateValue(value) {
 
 .checkbox-wrapper label {
   $size: 3rem;
+  border-radius: 2rem;
 
   cursor: pointer;
   width: $size;
@@ -56,6 +57,7 @@ function updateValue(value) {
   background: #fff;
   // border-radius: 90px;
   transition: 0.3s;
+  border-radius: 2rem;
 }
 
 .checkbox-wrapper input:checked + label {

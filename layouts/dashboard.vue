@@ -1,8 +1,8 @@
 <template>
   <div>
-    <!-- <admin-top-nav /> -->
+    <admin-top-nav />
     <div class="row">
-      <!-- <quiz-side-nav /> -->
+      <quiz-side-nav />
       <div class="dashboard">
         <slot />
       </div>

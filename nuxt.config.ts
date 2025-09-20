@@ -11,13 +11,17 @@ export default defineNuxtConfig({
     "nuxt-echarts",
     "nuxt-graphql-client",
   ],
-  "graphql-client": {
-    tokenStorage: {
-      mode: "localStorage",
-    },
-    clients: {
-      default: {
-        host: process.env.GQL_HOST,
+  runtimeConfig: {
+    public: {
+      "graphql-client": {
+        tokenStorage: {
+          mode: "localStorage",
+        },
+        clients: {
+          default: {
+            host: process.env.GQL_HOST,
+          },
+        },
       },
     },
   },

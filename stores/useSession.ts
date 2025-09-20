@@ -1,13 +1,5 @@
 import { defineStore } from "pinia";
-
-type user = {
-  id: string;
-  email: string;
-  role: string;
-  createdAt: any;
-  updatedAt: any;
-  deletedAt?: any | null;
-};
+import type { authResponseDTO, user } from "~/utils/types";
 
 export const useSession = defineStore("session", () => {
   const user = ref<user | null>(null);
@@ -15,11 +7,7 @@ export const useSession = defineStore("session", () => {
   const accessToken = useCookie("accessToken");
   const refreshToken = useCookie("refreshToken");
 
-  const setSession = (session: {
-    user?: user | null;
-    accessToken: string | null;
-    refreshToken: string | null;
-  }) => {
+  const setSession = (session: authResponseDTO) => {
     if (!session || !session.user) return;
     user.value = session.user;
 
@@ -49,7 +37,6 @@ export const useSession = defineStore("session", () => {
       return;
     }
 
-    // useGqlToken(token.value);
     const { data } = await useAsyncGql("Me");
 
     if (data.value?.Me) user.value = data.value.Me;

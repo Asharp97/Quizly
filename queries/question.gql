@@ -9,6 +9,9 @@ query GetQuestions(
     quizId
     text
     type
+    points 
+    trueFalseAnswer
+    
     createdAt
     updatedAt
     deletedAt
@@ -21,6 +24,9 @@ query GetQuestion($id: String!) {
     quizId
     text
     type
+    points 
+    trueFalseAnswer
+    
     createdAt
     updatedAt
     deletedAt
@@ -33,6 +39,9 @@ mutation DeleteQuestion($id: String!) {
     quizId
     text
     type
+    points 
+    trueFalseAnswer
+    
     createdAt
     updatedAt
     deletedAt
@@ -45,6 +54,9 @@ mutation UpdateQuestion($id: String!, $data: QuestionUpdateInput!) {
     quizId
     text
     type
+    points 
+    trueFalseAnswer
+    
     createdAt
     updatedAt
     deletedAt
@@ -57,6 +69,9 @@ mutation CreateQuestion($data: QuestionUncheckedCreateInput!) {
     quizId
     text
     type
+    points 
+    trueFalseAnswer
+    
     createdAt
     updatedAt
     deletedAt

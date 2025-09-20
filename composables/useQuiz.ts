@@ -1,61 +1,46 @@
-import type { QuizUncheckedCreateInput, QuizUpdateInput } from "#gql";
+import type { CreateQuizInput, QuizUpdateInput } from "#gql";
 
 export const useQuiz = () => {
   const session = useSession();
 
-  const get = async (x: string) => {
-    const { data, error } = await useAsyncGql("GetQuiz", {
-      id: x,
+  const get = async (id: string) => {
+    const { GetQuiz } = await GqlGetQuiz({
+      id,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.GetQuiz;
+    return GetQuiz;
   };
 
   const getAll = async () => {
     if (!session.user) {
-      return navigateTo("/");
+      navigateTo("/", { replace: true });
       throw new Error("No user in session");
     }
     const user_Id: string = session.user?.id;
-    const { data, error } = await useAsyncGql("GetQuizzes", {
-      where: { userId: { equals: user_Id } },
+    const { GetQuizzes } = await GqlGetQuizzes({
+      where: { userId: { equals: user_Id }, deletedAt: { equals: null } },
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.GetQuizzes;
+    return GetQuizzes;
   };
 
-  const post = async (payload: QuizUncheckedCreateInput) => {
-    const { data, error } = await useAsyncGql("CreateQuiz", {
-      data: payload,
+  const post = async (data: CreateQuizInput) => {
+    const { CreateQuiz } = await GqlCreateQuiz({
+      data,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.CreateQuiz;
+    return CreateQuiz;
   };
-  const del = async (x: string) => {
-    const { data, error } = await useAsyncGql("DeleteQuiz", {
-      id: x,
-    });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.DeleteQuiz;
-  };
-
-  const edit = async (id: string, info: QuizUpdateInput) => {
-    const { data, error } = await useAsyncGql("UpdateQuiz", {
+  const del = async (id: string) => {
+    const { DeleteQuiz } = await GqlDeleteQuiz({
       id,
-      data: info,
     });
-    if (error.value) {
-      throw error.value;
-    }
-    return data.value.UpdateQuiz;
+    return DeleteQuiz;
+  };
+
+  const edit = async (id: string, data: QuizUpdateInput) => {
+    const { UpdateQuiz } = await GqlUpdateQuiz({
+      id,
+      data,
+    });
+    return UpdateQuiz;
   };
 
   return {

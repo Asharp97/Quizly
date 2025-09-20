@@ -1,7 +1,7 @@
 <template>
   <div class="container body hero">
     <div class="media">
-      <img src="" alt="" />
+      <!-- <img src="" alt="" /> -->
     </div>
     <div class="action">
       <div class="quizly-title">
@@ -16,12 +16,15 @@
           </ul>
         </h1>
       </div>
-      <h1 class="orange">Quizly just Does It All</h1>
+      <h1>
+        <span class="orange">Quizly </span> just Does It
+        <span class="blue"> All </span>
+      </h1>
       <p>
         Build engaging quizzes, insightful surveys, and seamless forms crafted
         for educators, enterprises, and everyone in between.
       </p>
-      <Btn text="START NOW" @click="handleStartNowClick" />
+      <Btn text="START NOW" @click="handleStartNowClick()" />
     </div>
   </div>
 </template>
@@ -29,14 +32,17 @@
 <script setup>
 const session = useSession();
 const { isLoggedIn } = storeToRefs(session);
-
 const modal = useModal();
 const router = useRouter();
 
 const handleStartNowClick = () => {
-  if (isLoggedIn) router.push("/dashboard");
+  if (isLoggedIn.value) router.push("/dashboard");
   else modal.auth = true;
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+h1 {
+  display: inline !important;
+}
+</style>
