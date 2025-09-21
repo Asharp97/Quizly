@@ -1,6 +1,7 @@
 <template>
   <div>
     <Transition name="scale-up">
+      <!-- v-show="condition.includes(modal.show)" -->
       <div
         v-if="condition"
         class="modal-bg FullScreenModal"

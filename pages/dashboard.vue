@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div class="quizes-list">
       <div class="top-bar">
-        <btn class="newQuizBtn" @click="handlePostQuestion()">
+        <btn class="newQuizBtn" @click="postQuestionHandler()">
           <div class="icon-wrapper">
             <Icon class="icon" name="material-symbols:add-2-rounded" />
           </div>
@@ -33,17 +33,9 @@
             <h4 v-if="quest.type == Question_Type.SHORT_ANSWER">Open Ended</h4>
             <div class="icon-wrapper dropdown">
               <Icon
+                name="material-symbols:delete-outline-rounded"
                 class="icon"
-                name="mi:options-horizontal"
-                @click="questionMenu = quest.id" />
-              <div
-                v-if="questionMenu == quest.id"
-                ref="questionMenuRef"
-                class="menu-bg">
-                <div class="menu">
-                  <div class="item">Delete quiz</div>
-                </div>
-              </div>
+                @click="modal.show = ModalType.DELETE_QUESTION" />
             </div>
           </div>
           <div
@@ -158,9 +150,10 @@
       </Fscreen>
       <Loading v-show="loadingQuizzes" />
     </div>
-    <Teleport to="body">
-      <ClientOnly>
+    <ClientOnly>
+      <Teleport to="body">
         <ModalComponent :condition="modal.show === ModalType.POST_QUESTION">
+          <pre>{{ questionForm }}</pre>
           <div class="modal-content">
             <input
               ref="questionModalInput"
@@ -173,8 +166,14 @@
             <Btn @click="createQuestion()">Submit Question</Btn>
           </div>
         </ModalComponent>
-      </ClientOnly>
-    </Teleport>
+        <!-- :condition="ModalType.DELETE_QUESTION" -->
+        <!-- @confirm="deleteQuestionHandler()" -->
+        <!-- msg="Are you sure you want to delete this question?" -->
+        <!-- action-text="Delete" -->
+        <!-- <prompt
+          cancel-text="Cancel" /> -->
+      </Teleport>
+    </ClientOnly>
   </div>
 </template>
 
@@ -192,7 +191,7 @@ const {
 } = storeToRefs(dashboard);
 const { setActiveQuestion } = dashboard;
 import { Question_Type } from "#gql/default";
-import { onClickOutside, set } from "@vueuse/core";
+import ModalComponent from "~/components/modal-component.vue";
 import { formatDate } from "~/utils/formatdate";
 definePageMeta({
   middleware: "auth",
@@ -206,8 +205,15 @@ const loading = ref(false);
 const openPanel = ref(true);
 
 //QUESTIONS FUNCTIONS
-const questionMenu = ref(null);
-const questionMenuRef = ref(null);
+const deleteQuestionHandler = async () => {
+  if (!activeQuestion.id) return;
+  await Question.del(activeQuestion.id);
+  const index = questionList.value.findIndex((q) => q.id === activeQuestion.id);
+  if (index > -1) questionList.value.splice(index, 1);
+  if (questionList.value.length) setActiveQuestion(questionList.value[0]);
+  else setActiveQuestion(null);
+  modal.close();
+};
 const questionModalInput = ref(null);
 
 const questionForm = ref({
@@ -216,26 +222,27 @@ const questionForm = ref({
   quizId: activeQuiz.value ? activeQuiz.value.id : null,
 });
 
-const handlePostQuestion = async () => {
+const postQuestionHandler = async () => {
   questionForm.value.text =
     "Question #" +
     (questionList.value.length !== 0 ? questionList.value.length + 1 : 1);
+  questionForm.value.quizId = activeQuiz.value ? activeQuiz.value.id : null;
   modal.show = ModalType.POST_QUESTION;
   await nextTick();
   questionModalInput.value.focus();
 };
 const createQuestion = async () => {
-  if (!questionForm.value.text || !questionForm.value.quizId) return;
+  if (!questionForm.value.text || !questionForm.value.quizId) {
+    console.log("No question text or quiz ID");
+    return;
+  }
   loading.value = true;
-  const cat = await Question.post(questionForm.value);
-  console.log(cat);
-  questionForm.value.text = "";
-  questionForm.value.type = Question_Type.MULTIPLE_CHOICE;
+  await Question.post(questionForm.value);
+  questionList.value.push(questionForm.value);
   loading.value = false;
   modal.close();
 };
 const maxAnswers = 6;
-onClickOutside(questionMenuRef, () => (questionMenu = null));
 </script>
 
 <style lang="scss" scoped>

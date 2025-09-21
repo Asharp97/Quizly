@@ -12,3 +12,5 @@ export type Answer = GetAnswersQuery["GetAnswers"][0];
 export type authResponseDTO = RefreshTokenMutation["RefreshToken"];
 
 export type user = authResponseDTO["user"];
+
+

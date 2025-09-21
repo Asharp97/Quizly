@@ -42,7 +42,7 @@
                   <div class="item" @click="editQuizHandler(ask.id)">
                     Edit Quiz
                   </div>
-                  <div class="item" @click="deleteHandler(ask.id)">
+                  <div class="item" @click="deleteQuizHandler(ask.id)">
                     Delete Quiz
                   </div>
                 </div>
@@ -60,7 +60,6 @@
           modal.show == ModalType.POST_QUIZ || modal.show == ModalType.EDIT_QUIZ
         "
         class="modal">
-        <pre>{{ quizForm }}</pre>
         <div class="modal-content">
           <div class="quizSettings">
             <div class="quiz-inputs">
@@ -185,12 +184,11 @@ const updateQuizForm = () => {
   quizForm.value = {
     ...activeQuiz.value,
     enableFeedback: !!quizForm.value.enableFeedback,
-    timeLimit: quizOptions.value.timeLimited
-      ? quizForm.value.timeLimit
-      : null,
-    deadline: quizOptions.value.deadlined && quizForm.value.deadline
-      ? toDatetimeLocal(quizForm.value.deadline)
-      : null,
+    timeLimit: quizOptions.value.timeLimited ? quizForm.value.timeLimit : null,
+    deadline:
+      quizOptions.value.deadlined && quizForm.value.deadline
+        ? toDatetimeLocal(quizForm.value.deadline)
+        : null,
     publishedAt: quizOptions.value.publishLater
       ? toDatetimeLocal(quizForm.value.publishedAt)
       : new Date().toISOString(),
@@ -253,7 +251,7 @@ const submitQuizHandler = async () => {
   modal.close();
 };
 
-const deleteHandler = async (id: string) => {
+const deleteQuizHandler = async (id: string) => {
   await Quiz.del(id);
   if (!quizList.value) return;
   const index = quizList.value.findIndex((q) => q.id === id);
