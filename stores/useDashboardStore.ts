@@ -1,3 +1,4 @@
+import { Question_Type } from "#gql/default";
 import { defineStore } from "pinia";
 export const useDashboardStore = defineStore("dashboard", () => {
   // COMPOSABLES
@@ -7,7 +8,7 @@ export const useDashboardStore = defineStore("dashboard", () => {
   // --- STATE --- LISTS
   const quizList = ref<Quiz[] | null>([]);
   const questionList = ref<Question[] | null>([]);
-  const answerList = ref<Answer[] | null>([]);
+  const answerList = ref<Partial<Answer>[] | null>([]);
 
   //ACTIVES
   const activeQuiz = ref<Quiz | null>(null);
@@ -33,14 +34,28 @@ export const useDashboardStore = defineStore("dashboard", () => {
     questionList.value = await Question.getAll(quizId);
     loadingQuestions.value = false;
   };
-  const fetchAnswers = async (questionId: string) => {
-    if (!questionId) {
+  const fetchAnswers = async (question: Question) => {
+    if (!question?.id) {
       answerList.value = [];
       return;
     }
     loadingAnswers.value = true;
-    answerList.value = await Answer.getAll(questionId);
+    answerList.value = await Answer.getAll(question.id);
+    if (
+      answerList.value.length === 0 &&
+      question.type === Question_Type.MULTIPLE_CHOICE
+    )
+      setMCQAnswers(question.id);
     loadingAnswers.value = false;
+  };
+  const setMCQAnswers = (questionId: string) => {
+    answerList.value = [
+      ...Array.from({ length: 3 }, (_, i) => ({
+        text: `Answer ${i + 1}`,
+        questionId: questionId,
+        isCorrect: i === 0 ? true : false,
+      })),
+    ];
   };
 
   // SETTERS
@@ -52,7 +67,6 @@ export const useDashboardStore = defineStore("dashboard", () => {
       return;
     }
     activeQuiz.value = quiz;
-
 
     loadingQuestions.value = true;
     questionList.value = await Question.getAll(quiz.id);
@@ -69,7 +83,7 @@ export const useDashboardStore = defineStore("dashboard", () => {
     activeQuestion.value = question;
 
     loadingAnswers.value = true;
-    answerList.value = await Answer.getAll(question.id);
+    await fetchAnswers(question);
     loadingAnswers.value = false;
   };
 
@@ -93,5 +107,6 @@ export const useDashboardStore = defineStore("dashboard", () => {
     setActiveQuestion,
 
     fetchAnswers,
+    setMCQAnswers
   };
 });

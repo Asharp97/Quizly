@@ -9,7 +9,6 @@
           Create New Question
         </btn>
       </div>
-
       <div v-if="quizList.length && !loadingQuizzes" class="quetion-list">
         <div v-if="questionList.length" class="quiz-titles">
           <div />
@@ -20,10 +19,8 @@
           <div
             class="quiz-header"
             :class="{ active: activeQuestion.id == quest.id }"
-            @click="
-              setActiveQuestion(quest);
-              openPanel = !openPanel;
-            ">
+            @click="openAnswerHandler(quest)"
+          >
             <h3>{{ quest.text }}</h3>
             <h4>{{ formatDate(quest.createdAt) }}</h4>
             <h4 v-if="quest.type == Question_Type.MULTIPLE_CHOICE">
@@ -35,78 +32,94 @@
               <Icon
                 name="material-symbols:delete-outline-rounded"
                 class="icon"
-                @click="modal.show = ModalType.DELETE_QUESTION" />
+                @click="modal.show = ModalType.DELETE_QUESTION"
+              />
             </div>
           </div>
           <div
             v-if="activeQuestion.id == quest.id && openPanel == true"
-            class="quiz-content">
+            class="quiz-content"
+          >
             <div class="qa">
               <div class="input-wrapper question">
                 <input
                   v-model="activeQuestion.text"
                   type="text"
-                  placeholder="Enter Your quesion here" />
+                  placeholder="Enter Your quesion here"
+                />
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.MULTIPLE_CHOICE"
-                class="answer-list">
+                class="answer-list"
+              >
+                <!-- ----ANSWER LIST------ -->
                 <div
                   v-for="(ans, n) in answerList"
                   :key="ans.id"
-                  class="answer-wrapper">
+                  class="answer-wrapper"
+                >
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: ans.isCorrect }">
+                    :class="{ correct: ans.isCorrect }"
+                  >
                     <input
                       ref="answerInput"
                       v-model="ans.text"
                       type="text"
-                      placeholder="And here is your answer" />
+                      placeholder="And here is your answer"
+                    />
                   </div>
                   <input
                     v-model="ans.isCorrect"
                     class="checkbox"
-                    type="checkbox" />
+                    type="checkbox"
+                  />
 
                   <Icon
                     :class="{ disabled: answerList.length == 2 }"
                     name="material-symbols:delete-outline-rounded"
                     class="icon"
-                    @click="Answer.del(ans.id, n)" />
+                    @click="Answer.del(ans.id, n)"
+                  />
                 </div>
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.TRUE_FALSE"
-                class="tf">
+                class="tf"
+              >
                 <div class="answer-wrapper">
                   <div
                     :class="{ correct: quest.trueFalseAnswer }"
-                    class="input-wrapper answer">
+                    class="input-wrapper answer"
+                  >
                     <input disabled value="TRUE" type="text" />
                   </div>
                   <input
                     v-model="quest.trueFalseAnswer"
                     :value="true"
                     name="tf"
-                    type="radio" />
+                    type="radio"
+                  />
                 </div>
                 <div class="answer-wrapper">
                   <div
                     :class="{ correct: !quest.trueFalseAnswer }"
-                    class="input-wrapper answer">
+                    class="input-wrapper answer"
+                  >
                     <input disabled value="FALSE" type="text" />
                   </div>
                   <input
                     v-model="quest.trueFalseAnswer"
                     :value="false"
                     name="tf"
-                    type="radio" />
+                    type="radio"
+                  />
                 </div>
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.SHORT_ANSWER"
-                class="oe">
+                class="oe"
+              >
                 <div class="answer-wrapper">
                   <!-- todo vmodel textarea -->
                   <textarea placeholder="Your answer goes here" />
@@ -121,14 +134,16 @@
                   :orange="true"
                   text="Add Answer"
                   icon="iconify i-material-symbols:add-2-rounded"
-                  @click="addAnswer()" />
+                  @click="addAnswer()"
+                />
                 <Btn
                   :loading="loading"
                   text="Save"
                   :icon="
                     loading ? 'line-md:uploading-loop' : 'line-md:uploading'
                   "
-                  @click="submitQA()" />
+                  @click="save()"
+                />
               </div>
             </div>
             <div class="panel">
@@ -159,19 +174,23 @@
               ref="questionModalInput"
               v-model="questionForm.text"
               type="text"
-              placeholder="Question" />
+              placeholder="Question"
+            />
             <question-type
               :title="false"
-              v-model:questionType="questionForm.type" />
+              v-model:questionType="questionForm.type"
+            />
             <Btn @click="createQuestion()">Submit Question</Btn>
           </div>
         </ModalComponent>
-        <!-- :condition="ModalType.DELETE_QUESTION" -->
-        <!-- @confirm="deleteQuestionHandler()" -->
-        <!-- msg="Are you sure you want to delete this question?" -->
-        <!-- action-text="Delete" -->
-        <!-- <prompt
-          cancel-text="Cancel" /> -->
+        <prompt
+          msg="Are you sure you want to delete this question?"
+          action-text="Delete Question"
+          cancel-text="Nevermind"
+          icon="material-symbols:delete-outline-rounded"
+          :condition="ModalType.DELETE_QUESTION"
+          @confirm="deleteQuestionHandler"
+        />
       </Teleport>
     </ClientOnly>
   </div>
@@ -189,9 +208,10 @@ const {
   loadingQuestions,
   loadingAnswers,
 } = storeToRefs(dashboard);
-const { setActiveQuestion } = dashboard;
+const { setActiveQuestion, setMCQAnswers } = dashboard;
 import { Question_Type } from "#gql/default";
 import ModalComponent from "~/components/modal-component.vue";
+import QuestionType from "~/components/question-type.vue";
 import { formatDate } from "~/utils/formatdate";
 definePageMeta({
   middleware: "auth",
@@ -203,12 +223,22 @@ const Question = useQuestion();
 
 const loading = ref(false);
 const openPanel = ref(true);
+const openAnswerHandler = (question) => {
+  if (activeQuestion.value.id === question.id)
+    openPanel.value = !openPanel.value;
+  else {
+    setActiveQuestion(question);
+    openPanel.value = true;
+  }
+};
 
 //QUESTIONS FUNCTIONS
 const deleteQuestionHandler = async () => {
-  if (!activeQuestion.id) return;
-  await Question.del(activeQuestion.id);
-  const index = questionList.value.findIndex((q) => q.id === activeQuestion.id);
+  if (!activeQuestion.value.id) return;
+  await Question.del(activeQuestion.value.id);
+  const index = questionList.value.findIndex(
+    (q) => q.id === activeQuestion.value.id
+  );
   if (index > -1) questionList.value.splice(index, 1);
   if (questionList.value.length) setActiveQuestion(questionList.value[0]);
   else setActiveQuestion(null);
@@ -237,12 +267,36 @@ const createQuestion = async () => {
     return;
   }
   loading.value = true;
-  await Question.post(questionForm.value);
-  questionList.value.push(questionForm.value);
+  const createdQuestion = await Question.post(questionForm.value);
+  questionList.value.push(createdQuestion);
   loading.value = false;
   modal.close();
+  if (createdQuestion.type === Question_Type.MULTIPLE_CHOICE)
+    setMCQAnswers(createdQuestion.id);
+  openAnswerHandler(createdQuestion);
 };
 const maxAnswers = 6;
+const addAnswer = async () => {
+  if (answerList.value.length >= maxAnswers) return;
+  answerList.value.push({
+    text: `Answer ${answerList.value.length + 1}`,
+    isCorrect: false,
+  });
+  await nextTick();
+  const answerInputs = document.querySelectorAll(
+    ".answer-list .answer-wrapper .answer input"
+  );
+  if (answerInputs.length) answerInputs[answerInputs.length - 1].focus();
+};
+const save = async () => {
+  if (!activeQuestion.value.id) return;
+  loading.value = true;
+  await Question.edit(answerList.value, activeQuestion.value);
+  if (activeQuestion.value.type === Question_Type.MULTIPLE_CHOICE)
+    await Question.updateAnswers(activeQuestion.value.id, answerList.value);
+  //todo if short answer 
+  loading.value = false;
+};
 </script>
 
 <style lang="scss" scoped>
