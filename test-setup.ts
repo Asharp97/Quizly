@@ -1,0 +1,1 @@
+export const SortOrder = { Asc: "asc", Desc: "desc" };

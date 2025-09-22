@@ -120,30 +120,10 @@ const signUp = async () => {
     passwordError.value = "Oh no! Something went wrong.";
   }
 };
-
-const googleAuth = async () => {
-  // const baseURL = window.location.origin;
-  // try {
-  //   const { data, error } = await supabase.auth.signInWithOAuth({
-  //     provider: "google",
-  //     options: {
-  //       redirectTo: `${baseURL}/dashboard`,
-  //     },
-  //   });
-  //   if (error) {
-  //     console.error("Authentication error:", error.message);
-  //     return;
-  //   }
-  //   if (data) {
-  //     console.log("Google Auth Data:", data);
-  //     // await router.push('/dashboard');
-  //     session.set(data);
-  //     // modal.close();
-  //     console.log(session);
-  //   }
-  // } catch (err) {
-  //   console.error("Error during Google authentication:", err);
-  // }
+const googleAuth = (event) => {
+  event.preventDefault();
+  const config = useRuntimeConfig();
+  window.location.href = config.public.apiUrl + "/auth/google";
 };
 </script>
 

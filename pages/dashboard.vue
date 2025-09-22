@@ -19,8 +19,7 @@
           <div
             class="quiz-header"
             :class="{ active: activeQuestion.id == quest.id }"
-            @click="openAnswerHandler(quest)"
-          >
+            @click="openAnswerHandler(quest)">
             <h3>{{ quest.text }}</h3>
             <h4>{{ formatDate(quest.createdAt) }}</h4>
             <h4 v-if="quest.type == Question_Type.MULTIPLE_CHOICE">
@@ -32,97 +31,85 @@
               <Icon
                 name="material-symbols:delete-outline-rounded"
                 class="icon"
-                @click="modal.show = ModalType.DELETE_QUESTION"
-              />
+                @click="modal.show = ModalType.DELETE_QUESTION" />
             </div>
           </div>
           <div
             v-if="activeQuestion.id == quest.id && openPanel == true"
-            class="quiz-content"
-          >
+            class="quiz-content">
             <div class="qa">
               <div class="input-wrapper question">
                 <input
                   v-model="activeQuestion.text"
                   type="text"
-                  placeholder="Enter Your quesion here"
-                />
+                  placeholder="Enter Your quesion here" />
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.MULTIPLE_CHOICE"
-                class="answer-list"
-              >
+                class="answer-list">
                 <!-- ----ANSWER LIST------ -->
+
                 <div
                   v-for="(ans, n) in answerList"
                   :key="ans.id"
-                  class="answer-wrapper"
-                >
+                  class="answer-wrapper">
                   <div
                     class="input-wrapper answer"
-                    :class="{ correct: ans.isCorrect }"
-                  >
+                    :class="{ correct: ans.isCorrect }">
                     <input
                       ref="answerInput"
                       v-model="ans.text"
                       type="text"
-                      placeholder="And here is your answer"
-                    />
+                      placeholder="And here is your answer" />
                   </div>
                   <input
                     v-model="ans.isCorrect"
                     class="checkbox"
-                    type="checkbox"
-                  />
+                    type="checkbox" />
 
                   <Icon
                     :class="{ disabled: answerList.length == 2 }"
                     name="material-symbols:delete-outline-rounded"
                     class="icon"
-                    @click="Answer.del(ans.id, n)"
-                  />
+                    @click="Answer.del(ans.id, n)" />
                 </div>
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.TRUE_FALSE"
-                class="tf"
-              >
+                class="tf">
                 <div class="answer-wrapper">
                   <div
                     :class="{ correct: quest.trueFalseAnswer }"
-                    class="input-wrapper answer"
-                  >
+                    class="input-wrapper answer">
                     <input disabled value="TRUE" type="text" />
                   </div>
                   <input
                     v-model="quest.trueFalseAnswer"
                     :value="true"
                     name="tf"
-                    type="radio"
-                  />
+                    type="radio" />
                 </div>
                 <div class="answer-wrapper">
                   <div
                     :class="{ correct: !quest.trueFalseAnswer }"
-                    class="input-wrapper answer"
-                  >
+                    class="input-wrapper answer">
                     <input disabled value="FALSE" type="text" />
                   </div>
                   <input
                     v-model="quest.trueFalseAnswer"
                     :value="false"
                     name="tf"
-                    type="radio"
-                  />
+                    type="radio" />
                 </div>
               </div>
               <div
                 v-if="activeQuestion.type == Question_Type.SHORT_ANSWER"
-                class="oe"
-              >
+                class="oe">
                 <div class="answer-wrapper">
                   <!-- todo vmodel textarea -->
-                  <textarea placeholder="Your answer goes here" />
+                  <textarea
+                    v-model="activeQuestion.shortAnswer"
+                    placeholder="Your answer goes here" />
                 </div>
               </div>
               <div class="button-group">
@@ -134,16 +121,16 @@
                   :orange="true"
                   text="Add Answer"
                   icon="iconify i-material-symbols:add-2-rounded"
-                  @click="addAnswer()"
-                />
+                  @click="addAnswer()" />
                 <Btn
-                  :loading="loading"
+                  :loading="loadingAnswers"
                   text="Save"
                   :icon="
-                    loading ? 'line-md:uploading-loop' : 'line-md:uploading'
+                    loadingAnswers
+                      ? 'line-md:uploading'
+                      : 'line-md:uploading-loop'
                   "
-                  @click="save()"
-                />
+                  @click="save()" />
               </div>
             </div>
             <div class="panel">
@@ -168,18 +155,15 @@
     <ClientOnly>
       <Teleport to="body">
         <ModalComponent :condition="modal.show === ModalType.POST_QUESTION">
-          <pre>{{ questionForm }}</pre>
           <div class="modal-content">
             <input
               ref="questionModalInput"
               v-model="questionForm.text"
               type="text"
-              placeholder="Question"
-            />
+              placeholder="Question" />
             <question-type
               :title="false"
-              v-model:questionType="questionForm.type"
-            />
+              v-model:questionType="questionForm.type" />
             <Btn @click="createQuestion()">Submit Question</Btn>
           </div>
         </ModalComponent>
@@ -189,8 +173,7 @@
           cancel-text="Nevermind"
           icon="material-symbols:delete-outline-rounded"
           :condition="ModalType.DELETE_QUESTION"
-          @confirm="deleteQuestionHandler"
-        />
+          @confirm="deleteQuestionHandler" />
       </Teleport>
     </ClientOnly>
   </div>
@@ -209,6 +192,7 @@ const {
   loadingAnswers,
 } = storeToRefs(dashboard);
 const { setActiveQuestion, setMCQAnswers } = dashboard;
+const { setTokensFromOAuth } = useSession();
 import { Question_Type } from "#gql/default";
 import ModalComponent from "~/components/modal-component.vue";
 import QuestionType from "~/components/question-type.vue";
@@ -289,13 +273,9 @@ const addAnswer = async () => {
   if (answerInputs.length) answerInputs[answerInputs.length - 1].focus();
 };
 const save = async () => {
-  if (!activeQuestion.value.id) return;
-  loading.value = true;
-  await Question.edit(answerList.value, activeQuestion.value);
-  if (activeQuestion.value.type === Question_Type.MULTIPLE_CHOICE)
-    await Question.updateAnswers(activeQuestion.value.id, answerList.value);
-  //todo if short answer 
-  loading.value = false;
+  loadingAnswers.value = true;
+  await Question.save(activeQuestion.value, answerList.value);
+  loadingAnswers.value = false;
 };
 </script>
 

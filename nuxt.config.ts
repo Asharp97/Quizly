@@ -5,11 +5,11 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/icon",
     "@pinia/nuxt",
-    "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
     "@vueuse/nuxt",
     "nuxt-echarts",
     "nuxt-graphql-client",
+    "@nuxt/test-utils",
   ],
   runtimeConfig: {
     public: {
@@ -23,6 +23,7 @@ export default defineNuxtConfig({
           },
         },
       },
+      apiUrl: process.env.API_URL,
     },
   },
   css: [

@@ -203,7 +203,7 @@ const postQuizHandler = async () => {
 };
 
 const editQuizHandler = async (x: string) => {
-  quizForm.value = await Quiz.get(x);
+  quizForm.value = await Quiz.get({ id: x });
   quizOptions.value.timeLimited = !!quizForm.value.timeLimit;
   quizOptions.value.deadlined = !!quizForm.value.deadline;
   quizOptions.value.publishLater =

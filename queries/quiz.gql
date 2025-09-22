@@ -21,8 +21,8 @@ query GetQuizzes(
   }
 }
 
-query GetQuiz($id: String!) {
-  GetQuiz(id: $id) {
+query GetQuiz($where: QuizWhereUniqueInput!) {
+  GetQuiz(where: $where) {
     id
     title
     link
@@ -90,5 +90,23 @@ mutation CreateQuiz($data: CreateQuizInput!) {
     createdAt
     updatedAt
     deletedAt
+  }
+}
+
+query VerifyQuizLink($link: String!) {
+  VerifyQuizLink(link: $link) {
+    id
+    # title
+    # link
+    # userId
+    # description
+    # timeLimit
+    # deadline
+    # publishedAt
+    # enableFeedback
+
+    # createdAt
+    # updatedAt
+    # deletedAt
   }
 }

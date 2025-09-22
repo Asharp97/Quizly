@@ -1,12 +1,17 @@
-import type { CreateQuizInput, QuizUpdateInput } from "#gql";
+import type {
+  CreateQuizInput,
+  QuizUpdateInput,
+  QuizWhereUniqueInput,
+} from "#gql";
 import { SortOrder } from "#gql/default";
+import verifyQuiz from "~/middleware/verify-quiz";
 
 export const useQuiz = () => {
   const session = useSession();
 
-  const get = async (id: string) => {
+  const get = async (where: QuizWhereUniqueInput) => {
     const { GetQuiz } = await GqlGetQuiz({
-      id,
+      where,
     });
     return GetQuiz;
   };
@@ -50,7 +55,7 @@ export const useQuiz = () => {
 
     allowedFields.forEach((key) => {
       if (key in data) {
-        updateData[key] = { set: data[key] };
+        updateData[key] = { set: (data as Record<string, any>)[key] };
       }
     });
 
@@ -60,6 +65,12 @@ export const useQuiz = () => {
     });
     return UpdateQuiz;
   };
+  const verifyQuiz = async (link: string) => {
+    const { VerifyQuizLink } = await GqlVerifyQuizLink({
+      link,
+    });
+    return VerifyQuizLink ? VerifyQuizLink : null;
+  };
 
   return {
     getAll,
@@ -67,5 +78,6 @@ export const useQuiz = () => {
     post,
     del,
     edit,
+    verifyQuiz,
   };
 };
