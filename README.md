@@ -1,11 +1,11 @@
 # Quizly
 
-Quizly is a modern, full-stack quiz platform built with Nuxt 3, Supabase, and Pinia. It allows users to create, manage, and participate in quizzes with real-time analytics and AI-powered features.
+Quizly is a modern, full-stack quiz platform built with Nuxt 3, Pinia, and a custom GraphQL backend. It allows users to create, manage, and participate in quizzes with real-time analytics and AI-powered features.
 
 ## Features
 
 - **Quiz Creation & Management**: Create quizzes with multiple question types (MCQ, True/False, Open-Ended).
-- **User Authentication**: Secure login and session management using Supabase.
+- **User Authentication**: Secure login and session management.
 - **Participant Tracking**: Track quiz participants, their scores, and time spent.
 - **Real-Time Analytics**: Visualize quiz analytics with ECharts.
 - **AI Integration**: Leverage AI for document processing and quiz generation (via OpenAI and Unstructured APIs).
@@ -15,7 +15,7 @@ Quizly is a modern, full-stack quiz platform built with Nuxt 3, Supabase, and Pi
 ## Tech Stack
 
 - **Frontend**: Nuxt 3, Vue 3, Pinia, SCSS
-- **Backend**: Supabase (Database, Auth, Storage)
+- **Backend**: NestJS, GraphQL, Prisma ORM, PostgreSQL
 - **AI/ML**: OpenAI, LangChain, Unstructured
 - **Visualization**: ECharts
 
@@ -41,7 +41,7 @@ Quizly is a modern, full-stack quiz platform built with Nuxt 3, Supabase, and Pi
    ```
 3. Configure environment variables:
 
-   - Copy `.env.example` to `.env` and fill in your Supabase and API keys.
+   - Copy `.env.example` to `.env` and fill in your API keys.
 
 4. Run the development server:
 
@@ -69,15 +69,41 @@ pnpm preview
 - `pages/` — Nuxt pages (routing)
 - `public/` — Static assets
 - `server/` — API routes and server logic
-- `supabase/` — Supabase Edge Functions and config
 - `assets/style/` — SCSS styles
 - `utils/` — Utility functions
 
-## Supabase Setup
+## Backend Overview
 
-- Create a Supabase project and configure tables for quizzes, questions, answers, participants, and scores.
-- Set up storage buckets (e.g., `notes`) for file uploads.
-- Configure Edge Functions in the `supabase/functions/` directory.
+Quizly's backend is built with NestJS, Prisma, GraphQL, and PostgreSQL.
+
+- **NestJS**: Modular architecture for maintainable code.
+- **GraphQL API**: Flexible queries and mutations for quizzes, questions, answers, and users.
+- **Prisma ORM**: Type-safe database access for PostgreSQL.
+- **Authentication**: JWT-based auth with Redis session management.
+- **Google OAuth**: Login/signup via Google.
+- **Seeding**: Populate the database with sample users, quizzes, questions, and answers.
+- **Environment Config**: Easily configurable via `.env`.
+
+### Backend Setup
+
+1. Clone the backend repo and install dependencies:
+   ```sh
+   pnpm install
+   ```
+2. Configure your `.env` file with database and API credentials.
+3. Generate Prisma client and push schema:
+   ```sh
+   pnpm run gen
+   pnpm run push
+   ```
+4. Seed the database:
+   ```sh
+   pnpm run seed
+   ```
+5. Run the server:
+   ```sh
+   pnpm run dev
+   ```
 
 ## AI & Document Processing
 
