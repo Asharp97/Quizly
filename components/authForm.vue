@@ -45,9 +45,7 @@
           @click="showPassword = !showPassword" />
       </div>
 
-      <button @click="auth.login('ali-h@hotmail.com', 'ali123')">
-        sign me up quick for test
-      </button>
+      <button @click="fillform">fill form for dev</button>
       <div class="form-buttons">
         <Transition name="slide-up">
           <btn v-if="signupActive" text="Sign up with email" @click="signUp" />
@@ -73,6 +71,7 @@
 <script setup>
 import { validateEmail, validatePassword } from "@/utils/validations";
 
+const config = useRuntimeConfig();
 const session = useSession();
 const { isLoggedIn } = storeToRefs(session);
 const modal = useModal();
@@ -87,6 +86,11 @@ const password = ref("");
 const emailError = ref(null);
 const passwordError = ref(null);
 
+let currentUrl = "";
+onMounted(() => {
+  currentUrl = window.location.href;
+});
+
 const emailCheck = () => {
   const { isValid, error } = validateEmail(email.value);
   emailError.value = error;
@@ -98,32 +102,39 @@ const passCheck = () => {
   passwordError.value = error;
   return isValid;
 };
+const handleRedirect = () => {
+  if (
+    isLoggedIn.value &&
+    currentUrl.startsWith(config.public.frontendUrl + "quiz/")
+  ) {
+    modal.close();
+  } else if (isLoggedIn.value && currentUrl === config.public.frontendUrl) {
+    router.push("/dashboard");
+    modal.close();
+  }
+};
 
 const login = async () => {
   if (!emailCheck() || !passCheck()) return;
   const { error } = await auth.login(email.value, password.value);
-  if (isLoggedIn.value) {
-    await router.push("/dashboard");
-    modal.close();
-  } else if (error) {
-    passwordError.value = "Invalid email or password";
-    console.log(error);
-  }
+  handleRedirect();
+  if (error) passwordError.value = "Invalid email or password";
 };
 
 const signUp = async () => {
-  await auth.signUp(email.value, password.value);
-  if (isLoggedIn.value) {
-    await router.push("/dashboard");
-    modal.close();
-  } else {
-    passwordError.value = "Oh no! Something went wrong.";
-  }
+  const { error } = await auth.signUp(email.value, password.value);
+  handleRedirect();
+  if (error) passwordError.value = "Oh no! Something went wrong.";
 };
 const googleAuth = (event) => {
   event.preventDefault();
-  const config = useRuntimeConfig();
   window.location.href = config.public.apiUrl + "/auth/google";
+};
+
+const fillform = (event) => {
+  event.preventDefault();
+  email.value = "ali-h@hotmail.com";
+  password.value = "ali123";
 };
 </script>
 

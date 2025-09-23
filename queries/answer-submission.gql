@@ -1,0 +1,82 @@
+query GetAnswerSubmissions(
+  $skip: Float
+  $take: Float
+  $where: AnswerSubmissionWhereInput
+  $orderBy: AnswerSubmissionOrderByWithRelationInput
+) {
+  GetAnswerSubmissions(
+    skip: $skip
+    take: $take
+    where: $where
+    orderBy: $orderBy
+  ) {
+    id
+    submittedQuizId
+    questionId
+    answerId
+    text
+
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+query GetAnswerSubmission($id: String!) {
+  GetAnswerSubmission(id: $id) {
+    id
+    submittedQuizId
+    questionId
+    answerId
+    text
+
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation DeleteAnswerSubmission($id: String!) {
+  DeleteAnswerSubmission(id: $id) {
+    id
+    submittedQuizId
+    questionId
+    answerId
+    text
+
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation UpdateAnswerSubmission(
+  $id: String!
+  $data: AnswerSubmissionUpdateInput!
+) {
+  UpdateAnswerSubmission(id: $id, data: $data) {
+    id
+    submittedQuizId
+    questionId
+    answerId
+    text
+
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}
+
+mutation CreateAnswerSubmission($data: AnswerSubmissionCreateInput!) {
+  CreateAnswerSubmission(data: $data) {
+    id
+    submittedQuizId
+    questionId
+    answerId
+    text
+
+    createdAt
+    updatedAt
+    deletedAt
+  }
+}

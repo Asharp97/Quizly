@@ -4,7 +4,7 @@
       <div
         v-show="modal.show === condition"
         class="modal-bg FullScreenModal"
-        @click.self="modal.close">
+        @click.self="handleClose()">
         <div class="card">
           <Icon :name="icon" class="icon" />
           <h3>{{ msg }}</h3>
@@ -25,13 +25,19 @@
 <script setup>
 import { onKeyStroke } from "@vueuse/core";
 defineProps(["msg", "action-Text", "cancel-text", "icon", "condition"]);
+const emit = defineEmits(["close", "confirm"]);
 
 const modal = useModal();
 
 onKeyStroke("Escape", (e) => {
   e.preventDefault();
-  modal.close();
+  handleClose();
 });
+
+const handleClose = () => {
+  emit("close");
+  modal.close();
+};
 </script>
 
 <style lang="scss" scoped></style>

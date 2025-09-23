@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         },
       },
       apiUrl: process.env.API_URL,
+      frontendUrl: process.env.FRONTEND_URL,
     },
   },
   css: [

@@ -6,6 +6,8 @@ mutation Login($email: String!, $password: String!) {
       id
       email
       role
+      name
+      
       createdAt
       updatedAt
       deletedAt
@@ -21,6 +23,8 @@ mutation SignUp($email: String!, $password: String!) {
       id
       email
       role
+      name
+      
       createdAt
       updatedAt
       deletedAt
@@ -54,6 +58,8 @@ mutation RefreshToken($refreshToken: String!) {
       id
       email
       role
+      name
+      
       createdAt
       updatedAt
       deletedAt

@@ -7,7 +7,7 @@
           v-for="(ans, n) in answer"
           :key="ans.id"
           :class="[
-            { selected: selectedAnswer.includes(n) },
+            { selected: selectedAnswer.includes(ans.id) },
             {
               correct:
                 reviewMode && score?.is_correct && selectedAnswer.includes(n),
@@ -18,8 +18,7 @@
             },
           ]"
           class="box"
-          @click="$emit('selectAnswer', n)"
-        >
+          @click="$emit('selectAnswer', ans.id)">
           <h3>{{ ans.text }}</h3>
           <div
             v-if="
@@ -27,8 +26,7 @@
               (selectedAnswer.includes(n) ||
                 (!score?.is_correct && answer[n]?.is_correct))
             "
-            class="icon-wrapper"
-          >
+            class="icon-wrapper">
             <Icon
               :name="
                 score?.is_correct || answer[n]?.is_correct
@@ -38,8 +36,7 @@
               :class="
                 score?.is_correct || answer[n]?.is_correct ? 'true' : 'false'
               "
-              class="icon"
-            />
+              class="icon" />
           </div>
         </div>
       </div>

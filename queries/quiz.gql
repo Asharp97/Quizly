@@ -96,10 +96,10 @@ mutation CreateQuiz($data: CreateQuizInput!) {
 query VerifyQuizLink($link: String!) {
   VerifyQuizLink(link: $link) {
     id
-    # title
+    title
     # link
     # userId
-    # description
+    description
     # timeLimit
     # deadline
     # publishedAt

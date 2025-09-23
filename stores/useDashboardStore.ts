@@ -87,6 +87,18 @@ export const useDashboardStore = defineStore("dashboard", () => {
     loadingAnswers.value = false;
   };
 
+  const next = async () => {
+    if (!activeQuestion.value || !questionList.value) return;
+
+    const currentIndex = questionList.value.findIndex(
+      (q) => q.id === activeQuestion.value?.id
+    );
+    if (currentIndex === questionList.value.length - 1) return;
+    const nextQuestion = questionList.value[currentIndex + 1] || null;
+    await setActiveQuestion(nextQuestion);
+    return nextQuestion;
+  };
+
   // --- RETURN ---
   return {
     quizList,
@@ -107,6 +119,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
     setActiveQuestion,
 
     fetchAnswers,
-    setMCQAnswers
+    setMCQAnswers,
+
+    next,
   };
 });
