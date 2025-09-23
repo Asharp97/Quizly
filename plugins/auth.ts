@@ -1,10 +1,12 @@
+// Nuxt plugin to initialize authentication for GraphQL requests
 export default defineNuxtPlugin(async (nuxtApp) => {
+  // Hook to set the GraphQL auth token from cookie
   nuxtApp.hook("gql:auth:init", ({ token }) => {
     const tokenCookie = useCookie("accessToken");
     token.value = tokenCookie.value || undefined;
   });
 
-  // 2. Now that authentication is configured, fetch the current user.
+  // After authentication is configured, fetch the current user if token exists
   // When fetchCurrentUser calls useAsyncGql, the hook above will be triggered,
   // and the request will be properly authenticated.
   const sessionStore = useSession();

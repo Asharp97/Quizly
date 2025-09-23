@@ -1,3 +1,4 @@
+// Formats a date string to 'D MMM YYYY HH:MM AM/PM' format
 export function formatDate(dateString: string): string {
   // Parse the input date string into a Date object
   const date = new Date(dateString);
@@ -26,11 +27,13 @@ export function formatDate(dateString: string): string {
   const rawHours = date.getHours();
   const minute = date.getMinutes();
 
+  // Pads single digit numbers with leading zero
   function pad(number: number) {
     // add a leading zero if the number is less than 10
     return (number < 10 ? "0" : "") + number;
   }
 
+  // Convert to 12-hour format and determine AM/PM
   const isPM = rawHours >= 12;
   const hour = rawHours % 12 === 0 ? 12 : rawHours % 12; // Convert to 12-hour format
   const amPm = isPM ? "PM" : "AM";

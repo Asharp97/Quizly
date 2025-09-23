@@ -1,11 +1,11 @@
 import type {
-  CreateQuizInput,
-  QuestionCreateInput,
   QuestionUncheckedCreateInput,
   QuestionUpdateInput,
 } from "#gql/default";
 
+// Composable for managing questions via GraphQL API
 export const useQuestion = () => {
+  // Fetches a single question by ID
   const get = async (id: string) => {
     const { GetQuestion } = await GqlGetQuestion({
       id,
@@ -13,6 +13,7 @@ export const useQuestion = () => {
     return GetQuestion;
   };
 
+  // Fetches all questions for a given quiz
   const getAll = async (quiz_id: string) => {
     if (!quiz_id) return [];
     const { GetQuestions } = await GqlGetQuestions({
@@ -21,6 +22,7 @@ export const useQuestion = () => {
     return GetQuestions;
   };
 
+  // Creates a new question
   const post = async (data: QuestionUncheckedCreateInput) => {
     const { CreateQuestion } = await GqlCreateQuestion({
       data,
@@ -28,6 +30,7 @@ export const useQuestion = () => {
     return CreateQuestion;
   };
 
+  // Deletes a question by ID
   const del = async (id: string) => {
     const { DeleteQuestion } = await GqlDeleteQuestion({
       id,
@@ -35,6 +38,7 @@ export const useQuestion = () => {
     return DeleteQuestion;
   };
 
+  // Updates a question by ID
   const edit = async (id: string, data: QuestionUpdateInput) => {
     const { UpdateQuestion } = await GqlUpdateQuestion({
       id,
@@ -43,7 +47,11 @@ export const useQuestion = () => {
     return UpdateQuestion;
   };
 
-  const save = async (question: CreateQuizInput, answers: Answer[]) => {
+  // Saves a question and its answers (used for MCQ)
+  const save = async (
+    question: QuestionUncheckedCreateInput,
+    answers: Answer[]
+  ) => {
     const questionId = question.id;
     if (!questionId) throw new Error("Question ID is required for updating");
 
@@ -61,6 +69,7 @@ export const useQuestion = () => {
     return UpdateQuestionWithAnswers;
   };
 
+  // Expose question management functions
   return {
     getAll,
     get,

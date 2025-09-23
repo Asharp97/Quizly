@@ -1,18 +1,20 @@
 import type {
   QuizSubmissionUpdateInput,
-  QuizSubmissionWhereUniqueInput,
-  QuizSubmissionCreateInput,
+  CreateQuizSubmissionInput,
 } from "#gql";
 import { SortOrder } from "#gql/default";
 
+// Composable for managing quiz submissions via GraphQL API
 export const useQuizSubmission = () => {
-  const session = useSession();
+  const session = useSession(); // Access user session
 
+  // Fetches a single quiz submission by ID
   const get = async (id: string) => {
     const { GetQuizSubmission } = await GqlGetQuizSubmission({ id });
     return GetQuizSubmission;
   };
 
+  // Fetches all quiz submissions for the current user
   const getAll = async () => {
     if (!session.user) {
       navigateTo("/", { replace: true });
@@ -26,12 +28,15 @@ export const useQuizSubmission = () => {
     return GetQuizSubmissions;
   };
 
-  const post = async (data: QuizSubmissionCreateInput) => {
+  // Creates a new quiz submission
+  const post = async (data: CreateQuizSubmissionInput) => {
     const { CreateQuizSubmission } = await GqlCreateQuizSubmission({
       data,
     });
     return CreateQuizSubmission;
   };
+
+  // Deletes a quiz submission by ID
   const del = async (id: string) => {
     const { DeleteQuizSubmission } = await GqlDeleteQuizSubmission({
       id,
@@ -39,6 +44,7 @@ export const useQuizSubmission = () => {
     return DeleteQuizSubmission;
   };
 
+  // Updates a quiz submission by ID, only allowed fields
   const edit = async (id: string, data: QuizSubmissionUpdateInput) => {
     const allowedFields = [
       "title",
@@ -63,6 +69,7 @@ export const useQuizSubmission = () => {
     return UpdateQuizSubmission;
   };
 
+  // Expose quiz submission management functions
   return {
     getAll,
     get,

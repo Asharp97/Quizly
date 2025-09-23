@@ -6,9 +6,11 @@ import type {
 import { SortOrder } from "#gql/default";
 import verifyQuiz from "~/middleware/verify-quiz";
 
+// Composable for managing quizzes via GraphQL API
 export const useQuiz = () => {
-  const session = useSession();
+  const session = useSession(); // Access user session
 
+  // Fetches a single quiz by unique identifier
   const get = async (where: QuizWhereUniqueInput) => {
     const { GetQuiz } = await GqlGetQuiz({
       where,
@@ -16,6 +18,7 @@ export const useQuiz = () => {
     return GetQuiz;
   };
 
+  // Fetches all quizzes for the current user
   const getAll = async () => {
     if (!session.user) {
       navigateTo("/", { replace: true });
@@ -29,12 +32,15 @@ export const useQuiz = () => {
     return GetQuizzes;
   };
 
+  // Creates a new quiz
   const post = async (data: CreateQuizInput) => {
     const { CreateQuiz } = await GqlCreateQuiz({
       data,
     });
     return CreateQuiz;
   };
+
+  // Deletes a quiz by ID
   const del = async (id: string) => {
     const { DeleteQuiz } = await GqlDeleteQuiz({
       id,
@@ -42,6 +48,7 @@ export const useQuiz = () => {
     return DeleteQuiz;
   };
 
+  // Updates a quiz by ID, only allowed fields
   const edit = async (id: string, data: QuizUpdateInput) => {
     const allowedFields = [
       "title",
@@ -65,6 +72,8 @@ export const useQuiz = () => {
     });
     return UpdateQuiz;
   };
+
+  // Verifies a quiz link and returns quiz if valid
   const verifyQuiz = async (link: string) => {
     const { VerifyQuizLink } = await GqlVerifyQuizLink({
       link,
@@ -72,6 +81,7 @@ export const useQuiz = () => {
     return VerifyQuizLink ? VerifyQuizLink : null;
   };
 
+  // Expose quiz management functions
   return {
     getAll,
     get,

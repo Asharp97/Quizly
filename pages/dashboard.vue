@@ -1,6 +1,8 @@
 <template>
+  <!-- Dashboard page for managing quizzes and questions -->
   <div class="dashboard">
     <div class="quizes-list">
+      <!-- Top bar with button to create a new question -->
       <div class="top-bar">
         <btn class="newQuizBtn" @click="postQuestionHandler()">
           <div class="icon-wrapper">
@@ -10,12 +12,14 @@
         </btn>
       </div>
       <div v-if="quizList.length && !loadingQuizzes" class="quetion-list">
+        <!-- Table headers for questions -->
         <div v-if="questionList.length" class="quiz-titles">
           <div />
           <div>Created at</div>
           <div>Question Type</div>
         </div>
         <div v-for="quest in questionList" :key="quest.id" class="quiz-data">
+          <!-- Question header, shows question text and type, allows selection -->
           <div
             class="quiz-header"
             :class="{ active: activeQuestion.id == quest.id }"
@@ -37,18 +41,20 @@
           <div
             v-if="activeQuestion.id == quest.id && openPanel == true"
             class="quiz-content">
+            <!-- Quiz content panel for editing question and answers -->
             <div class="qa">
+              <!-- Edit question text -->
               <div class="input-wrapper question">
                 <input
                   v-model="activeQuestion.text"
                   type="text"
                   placeholder="Enter Your quesion here" />
               </div>
+              <!-- Multiple choice answers -->
               <div
                 v-if="activeQuestion.type == Question_Type.MULTIPLE_CHOICE"
                 class="answer-list">
-                <!-- ----ANSWER LIST------ -->
-
+                <!-- List of answers for multiple choice -->
                 <div
                   v-for="(ans, n) in answerList"
                   :key="ans.id"
@@ -74,6 +80,7 @@
                     @click="Answer.del(ans.id, n)" />
                 </div>
               </div>
+              <!-- True/False answer selection -->
               <div
                 v-if="activeQuestion.type == Question_Type.TRUE_FALSE"
                 class="tf">
@@ -102,16 +109,18 @@
                     type="radio" />
                 </div>
               </div>
+              <!-- Short answer input -->
               <div
                 v-if="activeQuestion.type == Question_Type.SHORT_ANSWER"
                 class="oe">
                 <div class="answer-wrapper">
-                  <!-- todo vmodel textarea -->
+                  <!-- Textarea for open-ended answer -->
                   <textarea
                     v-model="activeQuestion.shortAnswer"
                     placeholder="Your answer goes here" />
                 </div>
               </div>
+              <!-- Action buttons for adding answers and saving -->
               <div class="button-group">
                 <Btn
                   :disabled="
@@ -133,6 +142,7 @@
                   @click="save()" />
               </div>
             </div>
+            <!-- Panel for selecting question type and showing errors -->
             <div class="panel">
               <question-type v-model:questionType="activeQuestion.type" />
               <p v-if="answerList.length > maxAnswers" class="errormessage">
@@ -143,6 +153,7 @@
         </div>
       </div>
       <Fscreen v-if="questionList.length === 0 && !loadingQuestions">
+        <!-- Empty state for new users -->
         <p class="bg">
           Looks like you're just getting started! No questions here yet.
           <br />
@@ -151,8 +162,10 @@
         </p>
       </Fscreen>
       <Loading v-show="loadingQuizzes" />
+      <!-- Loading spinner for quizzes -->
     </div>
     <ClientOnly>
+      <!-- Modals for creating and deleting questions -->
       <Teleport to="body">
         <ModalComponent :condition="modal.show === ModalType.POST_QUESTION">
           <div class="modal-content">
@@ -180,6 +193,7 @@
 </template>
 
 <script setup>
+// Dashboard logic for managing quizzes and questions
 const dashboard = useDashboardStore();
 const {
   quizList,
@@ -190,23 +204,24 @@ const {
   loadingQuizzes,
   loadingQuestions,
   loadingAnswers,
-} = storeToRefs(dashboard);
-const { setActiveQuestion, setMCQAnswers } = dashboard;
-const { setTokensFromOAuth } = useSession();
+} = storeToRefs(dashboard); // Reactive references to dashboard state
+const { setActiveQuestion, setMCQAnswers } = dashboard; // Methods for question management
+const { setTokensFromOAuth } = useSession(); // Session management
 import { Question_Type } from "#gql/default";
 import ModalComponent from "~/components/modal-component.vue";
 import QuestionType from "~/components/question-type.vue";
 import { formatDate } from "~/utils/formatdate";
 definePageMeta({
-  middleware: "auth",
-  layout: "dashboard",
+  middleware: "auth", // Protects page with auth middleware
+  layout: "dashboard", // Uses dashboard layout
 });
 
-const modal = useModal();
-const Question = useQuestion();
+const modal = useModal(); // Modal state
+const Question = useQuestion(); // Question API
 
-const loading = ref(false);
-const openPanel = ref(true);
+const loading = ref(false); // Loading state for question creation
+const openPanel = ref(true); // Controls open/close of question panel
+// Handles opening/closing answer panel for a question
 const openAnswerHandler = (question) => {
   if (activeQuestion.value.id === question.id)
     openPanel.value = !openPanel.value;
@@ -216,7 +231,7 @@ const openAnswerHandler = (question) => {
   }
 };
 
-//QUESTIONS FUNCTIONS
+// Delete the currently active question
 const deleteQuestionHandler = async () => {
   if (!activeQuestion.value.id) return;
   await Question.del(activeQuestion.value.id);
@@ -228,14 +243,16 @@ const deleteQuestionHandler = async () => {
   else setActiveQuestion(null);
   modal.close();
 };
-const questionModalInput = ref(null);
+const questionModalInput = ref(null); // Ref for modal input focus
 
+// Form state for creating a new question
 const questionForm = ref({
   type: Question_Type.MULTIPLE_CHOICE,
   text: "",
   quizId: activeQuiz.value ? activeQuiz.value.id : null,
 });
 
+// Opens modal to create a new question
 const postQuestionHandler = async () => {
   questionForm.value.text =
     "Question #" +
@@ -245,6 +262,8 @@ const postQuestionHandler = async () => {
   await nextTick();
   questionModalInput.value.focus();
 };
+
+// Creates a new question and adds it to the list
 const createQuestion = async () => {
   if (!questionForm.value.text || !questionForm.value.quizId) {
     console.log("No question text or quiz ID");
@@ -259,7 +278,8 @@ const createQuestion = async () => {
     setMCQAnswers(createdQuestion.id);
   openAnswerHandler(createdQuestion);
 };
-const maxAnswers = 6;
+const maxAnswers = 6; // Maximum allowed answers for MCQ
+// Adds a new answer to the current question
 const addAnswer = async () => {
   if (answerList.value.length >= maxAnswers) return;
   answerList.value.push({
@@ -272,6 +292,7 @@ const addAnswer = async () => {
   );
   if (answerInputs.length) answerInputs[answerInputs.length - 1].focus();
 };
+// Saves the current question and its answers
 const save = async () => {
   loadingAnswers.value = true;
   await Question.save(activeQuestion.value, answerList.value);
@@ -280,6 +301,7 @@ const save = async () => {
 </script>
 
 <style lang="scss" scoped>
+// Styles for question/answer panel
 .qa {
   input {
     margin-bottom: 0;

@@ -1,8 +1,10 @@
 import { useSession } from "../stores/useSession";
 
+// Composable for handling authentication logic
 export const useAuth = () => {
-  const { setSession, resetSession } = useSession();
+  const { setSession, resetSession } = useSession(); // Access session store
 
+  // Logs in a user and sets session
   const login = async (email: string, password: string) => {
     const { Login } = await GqlLogin({ email, password });
     if (Login) setSession(Login);
@@ -10,6 +12,7 @@ export const useAuth = () => {
     return Login;
   };
 
+  // Signs up a new user and sets session
   const signUp = async (email: string, password: string) => {
     const { SignUp } = await GqlSignUp({ email, password });
     if (SignUp) {
@@ -21,6 +24,7 @@ export const useAuth = () => {
     }
   };
 
+  // Logs out the user and resets session
   const logout = async () => {
     const { Logout } = await GqlLogout();
     resetSession();
@@ -28,6 +32,7 @@ export const useAuth = () => {
     return Logout;
   };
 
+  // Refreshes authentication token and updates session
   const refreshToken = async () => {
     const token = useCookie("refreshToken").value;
     if (!token) {
@@ -44,6 +49,7 @@ export const useAuth = () => {
     }
   };
 
+  // Expose authentication functions
   return {
     login,
     signUp,

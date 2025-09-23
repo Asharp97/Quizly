@@ -5,14 +5,17 @@ import type {
 } from "#gql";
 import { SortOrder } from "#gql/default";
 
+// Composable for managing answer submissions via GraphQL API
 export const useAnswerSubmission = () => {
-  const session = useSession();
+  const session = useSession(); // Access user session
 
+  // Fetches a single answer submission by ID
   const get = async (id: string) => {
     const { GetAnswerSubmission } = await GqlGetAnswerSubmission({ id });
     return GetAnswerSubmission;
   };
 
+  // Fetches all answer submissions for the current user
   const getAll = async () => {
     if (!session.user) {
       navigateTo("/", { replace: true });
@@ -26,6 +29,7 @@ export const useAnswerSubmission = () => {
     return GetAnswerSubmissions;
   };
 
+  // Creates a new answer submission
   const post = async (data: AnswerSubmissionCreateInput) => {
     const { CreateAnswerSubmission } = await GqlCreateAnswerSubmission({
       data,
@@ -33,6 +37,7 @@ export const useAnswerSubmission = () => {
     return CreateAnswerSubmission;
   };
 
+  // Deletes an answer submission by ID
   const del = async (id: string) => {
     const { DeleteAnswerSubmission } = await GqlDeleteAnswerSubmission({
       id,
@@ -40,23 +45,9 @@ export const useAnswerSubmission = () => {
     return DeleteAnswerSubmission;
   };
 
+  // Updates an answer submission by ID
   const edit = async (id: string, data: AnswerSubmissionUpdateInput) => {
-    // const allowedFields = [
-    //   "title",
-    //   "description",
-    //   "timeLimit",
-    //   "deadline",
-    //   "publishedAt",
-    //   "enableFeedback",
-    // ];
-    // const updateData: Record<string, any> = {};
-
-    // allowedFields.forEach((key) => {
-    //   if (key in data) {
-    //     updateData[key] = { set: (data as Record<string, any>)[key] };
-    //   }
-    // });
-
+    // Directly updates answer submission fields
     const { UpdateAnswerSubmission } = await GqlUpdateAnswerSubmission({
       id,
       data,
@@ -64,6 +55,7 @@ export const useAnswerSubmission = () => {
     return UpdateAnswerSubmission;
   };
 
+  // Expose answer submission management functions
   return {
     getAll,
     get,
