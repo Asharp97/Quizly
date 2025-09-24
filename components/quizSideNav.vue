@@ -6,6 +6,7 @@
         <div class="icon-wrapper">
           <Icon
             class="icon"
+            data-testid="create-quiz-button"
             name="material-symbols:add-2-rounded"
             @click="postQuizHandler()" />
         </div>
@@ -65,6 +66,7 @@
             <div class="quiz-inputs">
               <input
                 v-model="quizForm.title"
+                data-testid="quiz-title-input"
                 ref="quizModalInput"
                 type="text"
                 placeholder="Quiz Title" />
@@ -124,7 +126,7 @@
                 type="datetime-local" />
             </div>
           </div>
-          <Btn @click="submitQuizHandler()">{{
+          <Btn data-testid="submit-quiz-button" @click="submitQuizHandler()">{{
             modal.show == ModalType.POST_QUIZ ? "Submit Quiz" : "Submit Edit"
           }}</Btn>
         </div>

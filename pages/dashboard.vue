@@ -4,7 +4,10 @@
     <div class="quizes-list">
       <!-- Top bar with button to create a new question -->
       <div class="top-bar">
-        <btn class="newQuizBtn" @click="postQuestionHandler()">
+        <btn
+          data-testid="create-question-button"
+          class="newQuizBtn"
+          @click="postQuestionHandler()">
           <div class="icon-wrapper">
             <Icon class="icon" name="material-symbols:add-2-rounded" />
           </div>
@@ -35,6 +38,7 @@
               <Icon
                 name="material-symbols:delete-outline-rounded"
                 class="icon"
+                data-testid="delete-question-button"
                 @click="modal.show = ModalType.DELETE_QUESTION" />
             </div>
           </div>
@@ -46,6 +50,7 @@
               <!-- Edit question text -->
               <div class="input-wrapper question">
                 <input
+                  data-testid="question-input"
                   v-model="activeQuestion.text"
                   type="text"
                   placeholder="Enter Your quesion here" />
@@ -77,7 +82,7 @@
                     :class="{ disabled: answerList.length == 2 }"
                     name="material-symbols:delete-outline-rounded"
                     class="icon"
-                    @click="Answer.del(ans.id, n)" />
+                    @click="handleDeleteAnswer(ans.id, n)" />
                 </div>
               </div>
               <!-- True/False answer selection -->
@@ -177,7 +182,9 @@
             <question-type
               :title="false"
               v-model:questionType="questionForm.type" />
-            <Btn @click="createQuestion()">Submit Question</Btn>
+            <Btn data-testid="submit-question-button" @click="createQuestion()"
+              >Submit Question</Btn
+            >
           </div>
         </ModalComponent>
         <prompt
@@ -265,13 +272,14 @@ const postQuestionHandler = async () => {
 
 // Creates a new question and adds it to the list
 const createQuestion = async () => {
-  if (!questionForm.value.text || !questionForm.value.quizId) {
-    console.log("No question text or quiz ID");
+  if (!questionForm.value.text) {
     return;
   }
   loading.value = true;
   const createdQuestion = await Question.post(questionForm.value);
   questionList.value.push(createdQuestion);
+  if (!questionForm.value.quizId)
+    quizList.value.push({ title: "Quiz #1", id: 123 });
   loading.value = false;
   modal.close();
   if (createdQuestion.type === Question_Type.MULTIPLE_CHOICE)
@@ -291,6 +299,13 @@ const addAnswer = async () => {
     ".answer-list .answer-wrapper .answer input"
   );
   if (answerInputs.length) answerInputs[answerInputs.length - 1].focus();
+};
+const Answer = useAnswer(); // Answer API
+// Handles deletion of an answer, ensuring minimum answers remain
+const handleDeleteAnswer = (id, index) => {
+  if (answerList.value.length <= 2) return;
+  // const confirmDelete = Answer.del(id);
+  answerList.value.splice(index, 1);
 };
 // Saves the current question and its answers
 const save = async () => {

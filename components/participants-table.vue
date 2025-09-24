@@ -103,10 +103,10 @@
 <script setup>
 const prop = defineProps(["dataset", "limit", "score"]);
 const emit = defineEmits(["order"]);
-const participant = useParticipant();
-const quiz = useQuiz();
-const question = useQuestion();
+const Quiz = useQuiz();
+const Question = useQuestion();
 const stat = stats();
+const question = 12;
 
 const bool = ref(false);
 const col = ref("");

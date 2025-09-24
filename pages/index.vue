@@ -27,7 +27,10 @@
         for educators, enterprises, and everyone in between.
       </p>
       <!-- Call-to-action button, triggers login or dashboard navigation -->
-      <Btn text="START NOW" @click="handleStartNowClick()" />
+      <Btn
+        data-testid="start-now-button"
+        text="START NOW"
+        @click="handleStartNowClick()" />
     </div>
   </div>
 </template>
@@ -43,7 +46,7 @@ const router = useRouter();
 // If user is logged in, go to dashboard; otherwise, open auth modal
 const handleStartNowClick = () => {
   if (isLoggedIn.value) router.push("/dashboard");
-  else modal.auth = true;
+  else modal.show = ModalType.AUTH;
 };
 </script>
 

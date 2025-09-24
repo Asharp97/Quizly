@@ -77,3 +77,25 @@ mutation CreateQuizSubmission($data: CreateQuizSubmissionInput!) {
     deletedAt
   }
 }
+
+query GetParticipants($quizId: String!) {
+  GetQuizSubmissions(where: { quizId: { equals: $quizId } }) {
+    User {
+      id
+      email
+      role
+      name
+      createdAt
+      updatedAt
+      deletedAt
+    }
+    score
+    timeTaken
+    submittedAt
+    createdAt
+  }
+}
+
+query GetQuizSubmissionsCount ($quizId: String!) {
+    GetQuizSubmissionsCount(where: { quizId: { equals: $quizId } })
+}

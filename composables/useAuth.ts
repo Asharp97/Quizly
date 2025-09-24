@@ -7,7 +7,7 @@ export const useAuth = () => {
   // Logs in a user and sets session
   const login = async (email: string, password: string) => {
     const { Login } = await GqlLogin({ email, password });
-    if (Login) setSession(Login);
+    if (Login.accessToken) setSession(Login);
     else resetSession();
     return Login;
   };

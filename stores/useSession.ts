@@ -6,25 +6,26 @@ export const useSession = defineStore("session", () => {
   // Stores the current user object
   const user = ref<user | null>(null);
 
-  // Access and refresh tokens from cookies
-  const accessToken = useCookie("accessToken");
-  const refreshToken = useCookie("refreshToken");
-
-  // Options for cookie storage
   const cookieOptions = {
     maxAge: 60 * 15, // 15 minutes
     // secure: true, // Uncomment if using HTTPS
     // httpOnly: true, // Uncomment to prevent client-side access
     // sameSite: 'lax', // Adjust based on your needs
   };
+  // Access and refresh tokens from cookies
+  const accessToken = useCookie("accessToken", cookieOptions);
+  const refreshToken = useCookie("refreshToken");
+  const isLoggedIn = computed(() => !!accessToken.value);
+
+  // Options for cookie storage
 
   // Sets session data from authentication response
   const setSession = (session: authResponseDTO) => {
     if (!session || !session.user) return;
     user.value = session.user;
 
-    useCookie("accessToken", cookieOptions).value = session.accessToken;
-    useCookie("refreshToken").value = session.refreshToken;
+    accessToken.value = session.accessToken;
+    refreshToken.value = session.refreshToken;
   };
 
   // Clears session and tokens
@@ -35,7 +36,6 @@ export const useSession = defineStore("session", () => {
   };
 
   // Computed property to check if user is logged in
-  const isLoggedIn = computed(() => !!accessToken.value);
 
   // Fetches current user info from API if token exists
   const fetchCurrentUser = async () => {

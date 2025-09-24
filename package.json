@@ -8,7 +8,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "test": "vitest"
+    "test": "vitest", 
+    "e2e": "cypress open"
   },
   "dependencies": {
     "@nuxt/icon": "^1.15.0",
@@ -27,6 +28,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^0.6.2",
     "@vueuse/nuxt": "^11.3.0",
+    "cypress": "^15.2.0",
     "sass-embedded": "^1.92.1",
     "sass-loader": "^12.6.0",
     "vitest": "^3.2.4"

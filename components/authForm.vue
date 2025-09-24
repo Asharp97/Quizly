@@ -14,6 +14,7 @@
       <div class="input-wrapper" :class="{ error: emailError }">
         <input
           v-model="email"
+          data-testid="email-input"
           required
           name="email"
           type="Email"
@@ -28,6 +29,7 @@
       <div class="input-wrapper" :class="{ error: passwordError }">
         <input
           v-model="password"
+          data-testid="password-input"
           required
           name="password"
           :type="showPassword ? 'text' : 'password'"
@@ -48,20 +50,24 @@
       <button @click="fillform">fill form for dev</button>
       <div class="form-buttons">
         <Transition name="slide-up">
-          <btn v-if="signupActive" text="Sign up with email" @click="signUp" />
+          <btn v-if="!signUpActive" text="Sign up with email" @click="signUp" />
         </Transition>
         <Transition name="slide-up">
           <btn
-            v-if="!signupActive"
+            v-if="signUpActive"
+            data-testid="login-button"
             text="Log right in with email"
             :provider="true"
             @click="login" />
         </Transition>
       </div>
-      <p v-if="signupActive" class="member" @click="signupActive = false">
+      <p
+        v-if="signUpActive"
+        class="member"
+        @click="signUpActive = !signUpActive">
         Already a member? Login Now
       </p>
-      <p v-else class="member" @click="signupActive = true">
+      <p v-else class="member" @click="signUpActive = !signUpActive">
         Not a member? Sign up now
       </p>
     </form>
@@ -78,17 +84,19 @@ const modal = useModal();
 const router = useRouter();
 const auth = useAuth();
 const showPassword = ref(false);
-const signupActive = ref(false);
 
 const email = ref("");
 const password = ref("");
 
 const emailError = ref(null);
 const passwordError = ref(null);
+const signUpActive = ref(false);
 
 let currentUrl = "";
 onMounted(() => {
   currentUrl = window.location.href;
+  if (modal.show === ModalType.AUTH) signUpActive.value = true;
+  else signUpActive.value = false;
 });
 
 const emailCheck = () => {
@@ -105,7 +113,7 @@ const passCheck = () => {
 const handleRedirect = () => {
   if (
     isLoggedIn.value &&
-    currentUrl.startsWith(config.public.frontendUrl + "quiz/")
+    currentUrl.startsWith(config.public.frontendUrl + "quiz")
   ) {
     modal.close();
   } else if (isLoggedIn.value && currentUrl === config.public.frontendUrl) {
@@ -116,15 +124,21 @@ const handleRedirect = () => {
 
 const login = async () => {
   if (!emailCheck() || !passCheck()) return;
-  const { error } = await auth.login(email.value, password.value);
+  const login = await auth.login(email.value, password.value);
+  if (!login) {
+    passwordError.value = "Oh no! Something went wrong.";
+    return;
+  }
   handleRedirect();
-  if (error) passwordError.value = "Invalid email or password";
 };
 
 const signUp = async () => {
-  const { error } = await auth.signUp(email.value, password.value);
+  const signup = await auth.signUp(email.value, password.value);
+  if (!signup) {
+    passwordError.value = "Oh no! Something went wrong.";
+    return;
+  }
   handleRedirect();
-  if (error) passwordError.value = "Oh no! Something went wrong.";
 };
 const googleAuth = (event) => {
   event.preventDefault();

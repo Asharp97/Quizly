@@ -1,6 +1,7 @@
-import type {
-  QuestionUncheckedCreateInput,
-  QuestionUpdateInput,
+import {
+  SortOrder,
+  type QuestionUncheckedCreateInput,
+  type QuestionUpdateInput,
 } from "#gql/default";
 
 // Composable for managing questions via GraphQL API
@@ -18,12 +19,20 @@ export const useQuestion = () => {
     if (!quiz_id) return [];
     const { GetQuestions } = await GqlGetQuestions({
       where: { quizId: { equals: quiz_id }, deletedAt: { equals: null } },
+      orderBy: { createdAt: SortOrder.Desc },
     });
     return GetQuestions;
   };
-
+  const Quiz = useQuiz();
   // Creates a new question
   const post = async (data: QuestionUncheckedCreateInput) => {
+    if (!data.quizId) {
+      const quiz = await Quiz.post({
+        title: "Quiz #1",
+        description: "This is a sample quiz",
+      });
+      data.quizId = quiz.id;
+    }
     const { CreateQuestion } = await GqlCreateQuestion({
       data,
     });

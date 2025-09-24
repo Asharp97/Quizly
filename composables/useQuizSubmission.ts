@@ -22,10 +22,17 @@ export const useQuizSubmission = () => {
     }
     const user_Id: string = session.user?.id;
     const { GetQuizSubmissions } = await GqlGetQuizSubmissions({
-      where: { userId: { equals: user_Id }, deletedAt: { equals: null } },
+      where: { deletedAt: { equals: null } },
       orderBy: { createdAt: SortOrder.Asc },
     });
     return GetQuizSubmissions;
+  };
+
+  const getCount = async (quizId: string) => {
+    const { GetQuizSubmissionsCount } = await GqlGetQuizSubmissionsCount({
+      quizId,
+    });
+    return GetQuizSubmissionsCount;
   };
 
   // Creates a new quiz submission
@@ -76,5 +83,6 @@ export const useQuizSubmission = () => {
     post,
     del,
     edit,
+    getCount,
   };
 };

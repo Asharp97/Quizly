@@ -11,9 +11,11 @@ declare global {
 }
 
 beforeEach(() => {
-  globalThis.GqlGetQuiz = vi.fn(async ({ id }) => ({
-    GetQuiz: { id, title: "Quiz", description: "Desc" },
-  }));
+  globalThis.GqlGetQuiz = vi.fn(async (args) => {
+    return {
+      GetQuiz: { id: args.where?.id, title: "Quiz", description: "Desc" },
+    };
+  });
   globalThis.GqlGetQuizzes = vi.fn(async ({ where, orderBy }) => ({
     GetQuizzes: [
       { id: "1", title: "Q1" },
@@ -37,7 +39,7 @@ describe("useQuiz", () => {
   it("gets a single quiz", async () => {
     const { useQuiz } = await import("../useQuiz");
     const quiz = useQuiz();
-    const result = await quiz.get(where: { id: "123" });
+    const result = await quiz.get({ where: { id: "123" } });
     expect(result).toEqual({ id: "123", title: "Quiz", description: "Desc" });
   });
 

@@ -11,27 +11,20 @@ export enum ModalType {
   LOGOUT_CONFIRM = "logoutConfirm",
   SHARE_QUIZ = "shareQuiz",
   AUTH = "auth",
+  AUTH_SIGNUP = "authSignUp",
   END_QUIZ = "endQuiz",
 }
 
 // Pinia store for managing modal state
 export const useModal = defineStore("modal", () => {
-  // Tracks if auth modal is open
-  const auth = ref(false);
   // Tracks which modal is currently shown
   const show = ref("");
 
   // Closes any open modal
   function close() {
-    auth.value = false;
     show.value = "";
   }
 
-  // Opens the auth modal
-  function showAuth() {
-    auth.value = true;
-  }
-
   // Expose modal state and functions
-  return { auth, show, close, showAuth };
+  return { show, close };
 });

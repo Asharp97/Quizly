@@ -9,8 +9,8 @@
         <UserMenu v-if="isLoggedIn" />
 
         <div v-else class="auth-buttons">
-          <Btn text="Sign Up" @click="modal.auth = true" />
-          <Btn text="Login" inv="true" @click="modal.auth = true" />
+          <Btn text="Sign Up" @click="modal.show = ModalType.AUTH_SIGNUP" />
+          <Btn text="Login" inv="true" @click="modal.show = ModalType.AUTH" />
         </div>
       </div>
     </nav>
