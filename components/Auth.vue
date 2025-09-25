@@ -39,4 +39,13 @@
 const modal = useModal();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.form {
+  h2 {
+    margin-bottom: 1rem;
+  }
+  p{
+    margin-bottom: 2rem;
+  }
+}
+</style>

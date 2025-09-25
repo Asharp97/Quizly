@@ -15,14 +15,14 @@ export const useQuizSubmission = () => {
   };
 
   // Fetches all quiz submissions for the current user
-  const getAll = async () => {
+  const getAll = async (quizId: string) => {
     if (!session.user) {
       navigateTo("/", { replace: true });
       throw new Error("No user in session");
     }
     const user_Id: string = session.user?.id;
     const { GetQuizSubmissions } = await GqlGetQuizSubmissions({
-      where: { deletedAt: { equals: null } },
+      where: { deletedAt: { equals: null }, quizId: { equals: quizId } },
       orderBy: { createdAt: SortOrder.Asc },
     });
     return GetQuizSubmissions;

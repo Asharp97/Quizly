@@ -47,7 +47,7 @@
           @click="showPassword = !showPassword" />
       </div>
 
-      <button @click="fillform">fill form for dev</button>
+      <button @click="fillform">REMOVE IN PRODUCTION</button>
       <div class="form-buttons">
         <Transition name="slide-up">
           <btn v-if="!signUpActive" text="Sign up with email" @click="signUp" />

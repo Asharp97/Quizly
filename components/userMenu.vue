@@ -7,7 +7,7 @@
       <div class="menu-bg">
         <div class="menu">
           <NuxtLink to="/dashboard" class="item"> Dashboard </NuxtLink>
-          <NuxtLink to="/quiz-analytics" class="item"> Quiz Analytics</NuxtLink>
+          <NuxtLink to="/quiz-analytics" class="item"> Analytics</NuxtLink>
           <NuxtLink to="/participants" class="item">
             Participants Table</NuxtLink
           >

@@ -8,6 +8,7 @@ declare global {
     GqlDeleteQuestion: any;
     GqlUpdateQuestion: any;
     GqlUpdateQuestionWithAnswers: any;
+    GqlCreateQuiz: any;
   }
 }
 
@@ -35,6 +36,9 @@ beforeEach(() => {
       UpdateQuestionWithAnswers: { questionId, question, answers },
     })
   );
+  globalThis.GqlCreateQuiz = vi.fn(async ({ data }) => ({
+    CreateQuiz: { ...data, id: "new-id" },
+  }));
 });
 
 describe("useQuestion", () => {

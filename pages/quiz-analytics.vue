@@ -2,7 +2,7 @@
   <div class="results">
     <Loading v-show="loading" />
     <div v-show="list.length && !loading" class="results-content">
-      <participants-table :limit="true" :dataset="list" :score="scoreList" />
+      <!-- <participants-table :limit="true" :dataset="list" :score="scoreList" /> -->
       <div class="insights">
         <div class="title">
           <h2>Aggregate Insights</h2>
@@ -11,38 +11,31 @@
           <databox
             title="Participants count"
             icon="iconoir:community"
-            :number="count"
-          />
+            :number="count" />
           <databox
             title="Average Score"
             icon="ic:round-percentage"
-            :number="avg"
-          />
+            :number="avg" />
           <databox
             title="Minimum Score"
             icon="carbon:chart-minimum"
-            :number="min"
-          />
+            :number="min" />
           <databox
             title="Maximum Score"
             icon="icon-park-outline:maximum"
-            :number="max"
-          />
+            :number="max" />
           <databox
             title="Median Score"
             icon="carbon:chart-median"
-            :number="median"
-          />
+            :number="median" />
           <databox
             title="Standard Deviation"
             icon="mdi:sigma-lower"
-            :number="stat.round(sd)"
-          />
+            :number="stat.round(sd)" />
           <databox
             title="Mean"
             icon="carbon:arithmetic-mean"
-            :number="stat.round(mean)"
-          />
+            :number="stat.round(mean)" />
         </div>
       </div>
       <div class="graphs">
@@ -51,11 +44,10 @@
         </div>
         <div class="chart-wrapper">
           <VChart :option="gradeDist" class="chart" autoresize />
-          <VChart :option="option" class="chart" autoresize />
         </div>
       </div>
     </div>
-    <Fscreen v-show="!list.length && !loading">
+    <Fscreen v-show="list.length === 0 && !loading">
       <h2>no participants yet <Icon name="solar:sad-square-outline" /></h2>
     </Fscreen>
   </div>
@@ -75,11 +67,10 @@ definePageMeta({
   middleware: "auth",
   layout: "dashboard",
 });
-const quiz = useQuiz();
-const participant = useParticipant();
+const dashboard = useDashboardStore();
+const { activeQuiz } = storeToRefs(dashboard);
 const stat = stats();
 
-const score = useScore();
 const question = useQuestion();
 const loading = ref(false);
 
@@ -117,13 +108,28 @@ const gradeDist = ref({
   ],
 });
 
+const QuizSub = useQuizSubmission();
+
 const onPageLoad = async () => {
   loading.value = true;
-  if (quiz.id) {
-    list.value = await participant.getLimited(quiz.id);
-    count.value = await participant.getCount(quiz.id);
-    scoreList.value = await participant.getScores(quiz.id);
-    if (scoreList.value.length) {
+  list.value = [
+    ...Array.from({ length: 20 }, (_, i) => ({
+      id: `${i + 1}`,
+      name: `Participant ${i + 1}`,
+      email: `participant${i + 1}@example.com`,
+      score: Math.floor(Math.random() * 101), // Random score between 0 and 100
+      time_spent: Math.floor(Math.random() * 3600), // Random time spent in seconds
+      created_at: new Date(
+        Date.now() - Math.floor(Math.random() * 1000000000)
+      ).toISOString(), // Random past date
+      correct_count: Math.floor(Math.random() * 21), // Random correct answers out of 20
+    })),
+  ];
+  if (activeQuiz.value && activeQuiz.value.id) {
+    count.value = await QuizSub.getCount(activeQuiz.value.id);
+    const submissions = await QuizSub.getAll(activeQuiz.value.id);
+    scoreList.value = submissions.map((sub) => sub.score);
+    if (scoreList.value.length > 0) {
       avg.value = stat.avg(scoreList.value);
       median.value = stat.median(scoreList.value);
 
@@ -135,9 +141,9 @@ const onPageLoad = async () => {
       min.value = Math.min(...scoreList.value);
       gradeCount.value = stat.gradeWithCounts(scoreList.value);
     }
-    await question.getCount(quiz.id);
-    correctCount.value = await score.getCorrectCount();
-    totalCount.value = await score.getTotaltCount();
+    // await question.getCount();
+    // correctCount.value = await score.getCorrectCount();
+    // totalCount.value = await score.getTotaltCount();
   }
   loading.value = false;
 };
@@ -151,7 +157,7 @@ onMounted(async () => {
   await onPageLoad();
 });
 watch(
-  () => quiz.id,
+  () => activeQuiz.value?.id,
   async () => {
     await onPageLoad();
   }

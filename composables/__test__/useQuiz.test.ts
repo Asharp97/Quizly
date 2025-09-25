@@ -13,7 +13,7 @@ declare global {
 beforeEach(() => {
   globalThis.GqlGetQuiz = vi.fn(async (args) => {
     return {
-      GetQuiz: { id: args.where?.id, title: "Quiz", description: "Desc" },
+      GetQuiz: { id: "123", title: "Quiz", description: "Desc" },
     };
   });
   globalThis.GqlGetQuizzes = vi.fn(async ({ where, orderBy }) => ({

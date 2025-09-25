@@ -96,6 +96,6 @@ query GetParticipants($quizId: String!) {
   }
 }
 
-query GetQuizSubmissionsCount ($quizId: String!) {
-    GetQuizSubmissionsCount(where: { quizId: { equals: $quizId } })
+query GetQuizSubmissionsCount($quizId: String!) {
+  GetQuizSubmissionsCount(where: { quizId: { equals: $quizId } })
 }

@@ -19,7 +19,7 @@ export const useQuestion = () => {
     if (!quiz_id) return [];
     const { GetQuestions } = await GqlGetQuestions({
       where: { quizId: { equals: quiz_id }, deletedAt: { equals: null } },
-      orderBy: { createdAt: SortOrder.Desc },
+      orderBy: { updatedAt: SortOrder.Desc },
     });
     return GetQuestions;
   };
@@ -68,12 +68,17 @@ export const useQuestion = () => {
     const questionUpdateInput = {
       ...rest,
       id: questionId,
-      Quiz: quizId ? { connect: { id: quizId } } : undefined,
+      Quiz: { connect: { id: quizId! } },
     };
+    const answerUpdateInput = answers.map((ans) => ({
+      ...ans,
+      questionId,
+    }));
+    // Question: { connect: { id: questionId } },
     const { UpdateQuestionWithAnswers } = await GqlUpdateQuestionWithAnswers({
       questionId,
       question: questionUpdateInput,
-      answers,
+      answers: answerUpdateInput,
     });
     return UpdateQuestionWithAnswers;
   };

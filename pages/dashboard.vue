@@ -72,6 +72,7 @@
                       v-model="ans.text"
                       type="text"
                       placeholder="And here is your answer" />
+                      <!-- <span v-html="ans.text"></span> -->
                   </div>
                   <input
                     v-model="ans.isCorrect"

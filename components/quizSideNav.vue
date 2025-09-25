@@ -184,7 +184,8 @@ const copyQuiz = async (link: string | undefined) => {
 const updateQuizForm = () => {
   if (!activeQuiz.value) return;
   quizForm.value = {
-    ...activeQuiz.value,
+    title: quizForm.value.title || activeQuiz.value.title,
+    description: quizForm.value.description || activeQuiz.value.description,
     enableFeedback: !!quizForm.value.enableFeedback,
     timeLimit: quizOptions.value.timeLimited ? quizForm.value.timeLimit : null,
     deadline:
@@ -249,6 +250,7 @@ const submitQuizHandler = async () => {
   if (modal.show == ModalType.EDIT_QUIZ && activeQuiz.value) {
     updateQuizForm();
     await Quiz.edit(activeQuiz.value.id, quizForm.value);
+    await fetchQuizzes();
   }
   modal.close();
 };
